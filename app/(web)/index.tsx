@@ -466,20 +466,36 @@ export default function WebLandingScreen() {
               </View>
               <View style={styles.foundersCard}>
                 <Text style={styles.foundersTitle}>
-                  Welcome to the Collective.
+                  Welcome to the Founder&apos;s Club
                 </Text>
                 <Text style={styles.foundersBody}>
                   The first{" "}
                   <Text style={styles.foundersBodyBold}>10,000 members</Text>{" "}
-                  receive exclusive Founder&apos;s Club status. Secure your spot
-                  in history.
+                  earn permanent Founder&apos;s Club status — a once-ever honor.
                 </Text>
                 <Text style={styles.foundersBody}>
-                  We are also seeking{" "}
+                  Enjoy exclusive badges, priority access, special perks, and
+                  members-only invitations that will never be offered again.
+                </Text>
+                <Text style={styles.foundersBody}>
+                  Secure your spot in history as one of the originals who
+                  helped shape this community.
+                </Text>
+                <Text style={styles.foundersBody}>
+                  We&apos;re opening just{" "}
                   <Text style={styles.foundersBodyBold}>
-                    20 Founding Vendor Partners
+                    20 Founding Vendor Partner spots
                   </Text>{" "}
-                  per region. Early belief secures lifetime benefits.
+                  per region.
+                </Text>
+                <Text style={styles.foundersBody}>
+                  Early partners receive lifetime reduced commissions, premium
+                  placement, exclusive event access, and ongoing visibility that
+                  future vendors can&apos;t match.
+                </Text>
+                <Text style={styles.foundersBody}>
+                  Join early and lock in lasting benefits while helping build
+                  the foundation of our marketplace.
                 </Text>
                 <View style={styles.foundersFieldGroup}>
                   <Text style={styles.foundersLabel}>Email Address</Text>
