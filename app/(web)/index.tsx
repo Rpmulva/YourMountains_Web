@@ -9,7 +9,6 @@ import {
     Modal,
     Platform,
     ScrollView,
-    Share,
     StyleSheet,
     Text,
     TextInput,
@@ -45,7 +44,7 @@ const PARTNER_SURVEY_URL =
   "https://forms.office.com/Pages/ResponsePage.aspx?id=MQA3jGPCNki0BLhvtw0_nFLgk1DC_whHmx5uhgS8F8lUNlIwMEs1QktXRVFUQ05CT1Q3WDFEWFFFUS4u";
 // Add TestFlight link when there is a iOS build to share
 const TESTFLIGHT_URL = "";
-const CONTACT_EMAIL = "founders@yourmountains.life";
+const CONTACT_EMAIL = "Ryan@YourMountains.Life";
 const brandLogo = require("../../assets/brand-logo.png");
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -75,7 +74,10 @@ type JoinAs = "Explorer" | "Vendor Partner" | "Both";
 export default function WebLandingScreen() {
   const [overlayDone, setOverlayDone] = useState(false);
   const [showContactModal, setShowContactModal] = useState(false);
-  const [copiedFeedback, setCopiedFeedback] = useState(false);
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactEmailBlurred, setContactEmailBlurred] = useState(false);
+  const [contactSubmitting, setContactSubmitting] = useState(false);
   const [foundersEmail, setFoundersEmail] = useState("");
   const [foundersEmailBlurred, setFoundersEmailBlurred] = useState(false);
   const [joinAs, setJoinAs] = useState<JoinAs | null>(null);
@@ -105,23 +107,56 @@ export default function WebLandingScreen() {
   const openContactModal = () => setShowContactModal(true);
   const closeContactModal = () => {
     setShowContactModal(false);
-    setCopiedFeedback(false);
+    setContactEmail("");
+    setContactMessage("");
+    setContactEmailBlurred(false);
+    setContactSubmitting(false);
   };
-  const copyEmail = async () => {
-    if (
-      Platform.OS === "web" &&
-      typeof navigator !== "undefined" &&
-      navigator.clipboard
-    ) {
-      await navigator.clipboard.writeText(CONTACT_EMAIL);
-      setCopiedFeedback(true);
-    } else {
-      try {
-        await Share.share({ message: CONTACT_EMAIL, title: "Contact email" });
-        closeContactModal();
-      } catch {
-        closeContactModal();
+  const encodeForm = (data: Record<string, string>) =>
+    Object.keys(data)
+      .map(
+        (key) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(data[key] || "")}`
+      )
+      .join("&");
+
+  const handleContactSend = async () => {
+    const email = contactEmail.trim();
+    if (!email || !isValidEmail(email)) {
+      if (Platform.OS === "web" && typeof alert !== "undefined") {
+        alert("Please enter a valid email address.");
       }
+      return;
+    }
+    if (!contactMessage.trim()) {
+      if (Platform.OS === "web" && typeof alert !== "undefined") {
+        alert("Please enter a message.");
+      }
+      return;
+    }
+    setContactSubmitting(true);
+    try {
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encodeForm({
+          "form-name": "contact",
+          email,
+          message: contactMessage.trim(),
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to submit contact form");
+      }
+      if (Platform.OS === "web" && typeof alert !== "undefined") {
+        alert("Message sent! We'll reply as soon as we can.");
+      }
+      closeContactModal();
+    } catch {
+      if (Platform.OS === "web" && typeof alert !== "undefined") {
+        alert("Something went wrong. Please try again.");
+      }
+      setContactSubmitting(false);
     }
   };
   const closeWelcomeModal = () => {
@@ -621,7 +656,7 @@ export default function WebLandingScreen() {
         </View>
       )}
 
-      {/* Contact Us modal: Open in Mail or Copy Email */}
+      {/* Contact Us modal */}
       <Modal
         visible={showContactModal}
         transparent
@@ -639,61 +674,73 @@ export default function WebLandingScreen() {
             onPress={(e) => e.stopPropagation()}
           >
             <Text style={styles.contactModalTitle}>Contact Us</Text>
-            <Text style={styles.contactModalEmail}>{CONTACT_EMAIL}</Text>
-            {copiedFeedback ? (
-              <>
-                <View style={styles.contactModalSuccessWrap}>
-                  <View style={styles.contactModalSuccessRow}>
-                    <Ionicons
-                      name="checkmark-circle"
-                      size={22}
-                      color={Colors.semantic.success}
-                    />
-                    <Text style={styles.contactModalSuccessLine}>
-                      Email copied
-                    </Text>
-                  </View>
-                  <Text style={styles.contactModalSuccessSub}>
-                    Send us a note in your favorite email client.
+            <Text style={styles.contactModalBody}>
+              The best trails are forged together, and we can&apos;t build this
+              without you. No question is too small and no idea is too big.
+              Drop us a line below—we are real people on the other end, and
+              we&apos;ll do our best to respond ASAP.
+            </Text>
+            <View style={styles.contactFieldGroup}>
+              <Text style={styles.contactLabel}>Email Address</Text>
+              <TextInput
+                style={[
+                  styles.contactInput,
+                  contactEmailBlurred &&
+                    contactEmail.length > 0 &&
+                    !isValidEmail(contactEmail) &&
+                    styles.contactInputError,
+                ]}
+                placeholder="you@example.com"
+                placeholderTextColor={Colors.ui.textTertiary}
+                value={contactEmail}
+                onChangeText={setContactEmail}
+                onBlur={() => setContactEmailBlurred(true)}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              {contactEmailBlurred &&
+                contactEmail.length > 0 &&
+                !isValidEmail(contactEmail) && (
+                  <Text style={styles.contactInputErrorText}>
+                    Please enter a valid email address.
                   </Text>
-                </View>
-                <TouchableOpacity
-                  style={[
-                    styles.contactModalButton,
-                    styles.contactModalButtonSingle,
-                  ]}
-                  onPress={closeContactModal}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.contactModalButtonText}>Done</Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TouchableOpacity
-                  style={[
-                    styles.contactModalButton,
-                    styles.contactModalButtonSingle,
-                  ]}
-                  onPress={copyEmail}
-                  activeOpacity={0.8}
-                >
-                  <Ionicons
-                    name="copy-outline"
-                    size={22}
-                    color={Colors.ui.text}
-                  />
-                  <Text style={styles.contactModalButtonText}>Copy Email</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.contactModalCancel}
-                  onPress={closeContactModal}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.contactModalCancelText}>Cancel</Text>
-                </TouchableOpacity>
-              </>
-            )}
+                )}
+            </View>
+            <View style={styles.contactFieldGroup}>
+              <Text style={styles.contactLabel}>Message</Text>
+              <TextInput
+                style={[styles.contactInput, styles.contactMessageInput]}
+                placeholder="Write your message here..."
+                placeholderTextColor={Colors.ui.textTertiary}
+                value={contactMessage}
+                onChangeText={setContactMessage}
+                multiline
+                textAlignVertical="top"
+              />
+            </View>
+            <View style={styles.contactActions}>
+              <TouchableOpacity
+                style={styles.contactCancel}
+                onPress={closeContactModal}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.contactCancelText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.contactSendButton,
+                  contactSubmitting && styles.contactSendButtonDisabled,
+                ]}
+                onPress={handleContactSend}
+                disabled={contactSubmitting}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.contactSendText}>
+                  {contactSubmitting ? "Sending..." : "Send Message"}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
@@ -1342,7 +1389,7 @@ const styles = StyleSheet.create({
     maxWidth: 420,
     minWidth: 320,
     width: "100%",
-    alignItems: "center",
+    alignItems: "stretch",
   },
   contactModalTitle: {
     ...Typography.h3,
@@ -1350,59 +1397,68 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: Spacing.sm,
   },
-  contactModalEmail: {
-    ...Typography.body,
-    color: Colors.claire.primary,
-    textAlign: "center",
-    marginBottom: Spacing.lg,
-  },
-  contactModalSuccessWrap: {
-    marginBottom: Spacing.lg,
-    paddingHorizontal: Spacing.sm,
-    alignItems: "center",
-  },
-  contactModalSuccessRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    marginBottom: 6,
-  },
-  contactModalSuccessLine: {
-    ...Typography.bodyBold,
-    color: Colors.ui.text,
-    fontSize: 16,
-  },
-  contactModalSuccessSub: {
+  contactModalBody: {
     ...Typography.body,
     color: Colors.ui.textSecondary,
     textAlign: "center",
-  },
-  contactModalButtonSingle: {
     marginBottom: Spacing.lg,
   },
-  contactModalButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+  contactFieldGroup: {
+    width: "100%",
+    marginBottom: Spacing.md,
+  },
+  contactLabel: {
+    ...Typography.bodyBold,
+    color: Colors.ui.text,
+    marginBottom: Spacing.xs,
+  },
+  contactInput: {
     backgroundColor: Colors.ui.surfaceElevated,
     borderRadius: Radius.md,
     borderWidth: 1,
     borderColor: Colors.ui.border,
-  },
-  contactModalButtonText: {
-    ...Typography.bodyBold,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
     color: Colors.ui.text,
+    fontSize: 16,
   },
-  contactModalCancel: {
-    alignSelf: "center",
+  contactMessageInput: {
+    minHeight: 140,
+  },
+  contactInputError: {
+    borderColor: Colors.semantic.error,
+  },
+  contactInputErrorText: {
+    ...Typography.caption,
+    color: Colors.semantic.error,
+    marginTop: Spacing.xs,
+  },
+  contactActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: Spacing.sm,
+  },
+  contactCancel: {
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
   },
-  contactModalCancelText: {
+  contactCancelText: {
     ...Typography.body,
     color: Colors.ui.textTertiary,
+  },
+  contactSendButton: {
+    backgroundColor: Colors.claire.primary,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+  },
+  contactSendButtonDisabled: {
+    opacity: 0.6,
+  },
+  contactSendText: {
+    ...Typography.bodyBold,
+    color: "#FFF",
   },
 
   // Welcome modal (after Founder's Club signup)
