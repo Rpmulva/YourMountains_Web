@@ -91,6 +91,7 @@ export default function WebLandingScreen() {
   const foundersSectionY = useRef(0);
   const appPreviewSectionY = useRef(0);
   const scrollViewRef = useRef<ScrollView>(null);
+  const headerHeight = useRef(120);
   const contentOpacity = useRef(new Animated.Value(isWeb ? 0 : 1)).current;
   const joinAsStacked = windowWidth < 480;
 
@@ -232,13 +233,13 @@ export default function WebLandingScreen() {
 
   const scrollToSurvey = () => {
     scrollViewRef.current?.scrollTo({
-      y: surveySectionY.current,
+      y: Math.max(0, surveySectionY.current - headerHeight.current - 20),
       animated: true,
     });
   };
   const scrollToFounders = () => {
     scrollViewRef.current?.scrollTo({
-      y: foundersSectionY.current,
+      y: Math.max(0, foundersSectionY.current - headerHeight.current - 20),
       animated: true,
     });
   };
@@ -251,7 +252,11 @@ export default function WebLandingScreen() {
 
   return (
     <View style={styles.wrapper}>
-      <WebHeader />
+      <WebHeader 
+        onScrollToSurvey={scrollToSurvey}
+        onScrollToFounders={scrollToFounders}
+        onHeaderLayout={(h) => { headerHeight.current = h; }}
+      />
       <Animated.View
         style={[styles.contentFadeWrap, { opacity: contentOpacity }]}
       >
@@ -280,155 +285,38 @@ export default function WebLandingScreen() {
                   community — powered by AI to inspire movement, exploration,
                   and thriving beyond walls.
                 </Text>
-                <View style={styles.heroCtaRow}>
-                  <TouchableOpacity
-                    style={styles.heroCtaButton}
-                    onPress={scrollToSurvey}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.heroCtaButtonText}>
-                      Help us build it
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.heroCtaButton, styles.heroCtaButtonAlt]}
-                    onPress={scrollToFounders}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.heroCtaButtonText}>
-                      Join the Founder&apos;s Club
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <TouchableOpacity
-                  style={styles.comingSoonTouchable}
-                  onPress={scrollToAppPreview}
-                  activeOpacity={0.9}
-                >
-                  <Text style={styles.comingSoonLabel}>Coming soon to</Text>
-                  <View style={styles.storeBadges}>
-                    <View style={styles.storeBadge}>
-                      <Image
-                        source={{ uri: APP_STORE_BADGE_URI }}
-                        style={styles.storeBadgeImage}
-                        resizeMode="contain"
-                      />
-                    </View>
-                    <View style={styles.storeBadge}>
-                      <Image
-                        source={{ uri: GOOGLE_PLAY_BADGE_URI }}
-                        style={styles.storeBadgeImageGoogle}
-                        resizeMode="contain"
-                      />
-                    </View>
-                  </View>
-                </TouchableOpacity>
               </View>
             </View>
 
-            {/* Barriers — "we're crushing these" */}
-            <View style={[styles.section, styles.barriersSection]}>
-              <View style={styles.barriersCard}>
-                <View style={styles.container}>
-                  <Text style={styles.barriersLabel}>
-                    WE&apos;RE UNLOCKING THE OUTDOORS
-                  </Text>
-                  <View style={styles.barriersList}>
-                    <Text style={styles.barrierItem}>
-                      &ldquo;Adventure is within your reach.&rdquo;
-                    </Text>
-                    <Text style={styles.barrierItem}>
-                      &ldquo;The right gear is accessible.&rdquo;
-                    </Text>
-                    <Text style={styles.barrierItem}>
-                      &ldquo;There is a community waiting for you.&rdquo;
-                    </Text>
-                  </View>
-                  <Text style={styles.barriersPunch}>
-                    So that everyone can live a healthier life!
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            {/* Two paths — Adventurers & Partners */}
-            <View
-              style={[styles.section, styles.pathsSection]}
-              onLayout={(e) => {
-                surveySectionY.current = e.nativeEvent.layout.y;
-              }}
-            >
-              <View style={styles.container}>
-                <Text style={styles.h2}>Help Shape the Future</Text>
-                <Text style={styles.pathsIntro}>
-                  We&apos;re not guessing what you need. We&apos;re asking. Your
-                  input shapes what we build.
+            {/* Mission — combined manifesto */}
+            <View style={[styles.section, styles.missionSection]}>
+              <View style={styles.missionCard}>
+                <Text style={styles.missionLabel}>OUR MISSION</Text>
+                <Text style={styles.missionBody}>
+                  We make the outdoors radically more accessible by removing
+                  barriers, inspiring lifelong motion, and proving that with
+                  community, anything is possible. We are the bridge between
+                  human passion and innovation — a new era of outdoor
+                  connection.
                 </Text>
-                <View style={styles.pathsGrid}>
-                  <View style={styles.pathCard}>
-                    <View style={styles.pathIconWrap}>
-                      <Ionicons
-                        name="compass-outline"
-                        size={28}
-                        color={Colors.claire.primary}
-                      />
-                    </View>
-                    <Text style={styles.h3}>Adventurers & Explorers</Text>
-                    <Text style={styles.body}>
-                      What stops you from getting outside? Gear, time, or
-                      confidence? Help us crush those barriers.
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.pathCtaButton}
-                      onPress={openSurvey}
-                      activeOpacity={0.8}
-                    >
-                      <Text style={styles.pathCtaButtonText}>
-                        Take the 2-Min Survey
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.pathCard}>
-                    <View style={styles.pathIconWrap}>
-                      <Ionicons
-                        name="storefront-outline"
-                        size={28}
-                        color={Colors.claire.primary}
-                      />
-                    </View>
-                    <Text style={styles.h3}>Gear Shops & Guides</Text>
-                    <Text style={styles.body}>
-                      Let&apos;s focus on meaningful impressions. Tell us how we
-                      can help you reach high-intent, loyal customers.
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.pathCtaButton}
-                      onPress={openPartnerSurvey}
-                      activeOpacity={0.8}
-                    >
-                      <Text style={styles.pathCtaButtonText}>
-                        Take Partner Survey
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              </View>
-            </View>
-
-            {/* Manifesto — big statement */}
-            <View style={[styles.section, styles.manifestoSection]}>
-              <View style={styles.manifestoCard}>
-                <View style={styles.container}>
-                  <Text style={styles.manifestoQuote}>
-                    We make the outdoors radically more accessible by removing
-                    barriers, inspiring lifelong motion, and proving that with
-                    community, anything is possible.
+                <View style={styles.missionDivider} />
+                <Text style={styles.missionLabel}>
+                  WE&apos;RE UNLOCKING THE OUTDOORS
+                </Text>
+                <View style={styles.missionPillars}>
+                  <Text style={styles.missionPillar}>
+                    &ldquo;Adventure is within your reach.&rdquo;
                   </Text>
-                  <Text style={styles.manifestoSub}>
-                    The bridge between human passion and innovation. A new era
-                    of outdoor connection.
+                  <Text style={styles.missionPillar}>
+                    &ldquo;The right gear is accessible.&rdquo;
+                  </Text>
+                  <Text style={styles.missionPillar}>
+                    &ldquo;There is a community waiting for you.&rdquo;
                   </Text>
                 </View>
+                <Text style={styles.missionAccent}>
+                  So that everyone can live a healthier life.
+                </Text>
               </View>
             </View>
 
@@ -445,8 +333,8 @@ export default function WebLandingScreen() {
                   <Text style={styles.appPreviewSub}>
                     Community, and the outdoors in your pocket.
                   </Text>
-                  <View style={styles.appPreviewBetaBlock}>
-                    {TESTFLIGHT_URL ? (
+                  {TESTFLIGHT_URL && (
+                    <View style={styles.appPreviewBetaBlock}>
                       <TouchableOpacity
                         style={styles.ctaPrimary}
                         onPress={openTestFlight}
@@ -456,12 +344,33 @@ export default function WebLandingScreen() {
                           Try the iOS beta
                         </Text>
                       </TouchableOpacity>
-                    ) : (
-                      <Text style={styles.appPreviewComing}>
-                        beta coming soon
-                      </Text>
-                    )}
-                  </View>
+                    </View>
+                  )}
+                  <TouchableOpacity
+                    style={styles.comingSoonTouchable}
+                    onPress={scrollToAppPreview}
+                    activeOpacity={0.9}
+                  >
+                    <Text style={styles.comingSoonLabel}>
+                      Beta coming soon to
+                    </Text>
+                    <View style={styles.storeBadges}>
+                      <View style={styles.storeBadge}>
+                        <Image
+                          source={{ uri: APP_STORE_BADGE_URI }}
+                          style={styles.storeBadgeImage}
+                          resizeMode="contain"
+                        />
+                      </View>
+                      <View style={styles.storeBadge}>
+                        <Image
+                          source={{ uri: GOOGLE_PLAY_BADGE_URI }}
+                          style={styles.storeBadgeImageGoogle}
+                          resizeMode="contain"
+                        />
+                      </View>
+                    </View>
+                  </TouchableOpacity>
                   <View style={styles.phoneMockup}>
                     <View style={styles.phoneFrame}>
                       <View style={styles.phoneScreen}>
@@ -477,61 +386,134 @@ export default function WebLandingScreen() {
               </View>
             )}
 
-            {/* Final CTA — Build the Future + Founder's Club + Coming soon */}
+            {/* Two paths — Explorers & Vendor Partners (combined) */}
+            <View
+              style={[styles.section, styles.pathsSection]}
+              onLayout={(e) => {
+                surveySectionY.current = e.nativeEvent.layout.y;
+              }}
+            >
+              <View style={styles.pathsCombinedCard}>
+                <Text style={styles.pathsCombinedTitle}>Take the Survey</Text>
+                <Text style={styles.pathsCombinedIntro}>
+                  Help us shape the future of the Collective. We are not guessing
+                  what you need — we&apos;re asking. Your input shapes what we
+                  build. Take the survey as an Explorer or a Vendor Partner.
+                </Text>
+                <View style={styles.pathsGrid}>
+                  <View style={styles.pathCard}>
+                    <View style={styles.pathIconWrap}>
+                      <Ionicons
+                        name="compass-outline"
+                        size={28}
+                        color={Colors.claire.primary}
+                      />
+                    </View>
+                    <Text style={styles.h3}>Explorers</Text>
+                    <Text style={styles.body}>
+                      What stops you from getting outside? Gear, time, or
+                      confidence? If you are an outdoor enthusiast, or aspire to
+                      be, take the 2 minute survey, and help us crush those
+                      barriers.
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.pathCtaButton}
+                      onPress={openSurvey}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.pathCtaButtonText}>
+                        Take the Explorer Survey
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.pathCard}>
+                    <View style={styles.pathIconWrap}>
+                      <Ionicons
+                        name="storefront-outline"
+                        size={28}
+                        color={Colors.claire.primary}
+                      />
+                    </View>
+                    <Text style={styles.h3}>Vendor Partners</Text>
+                    <Text style={styles.body}>
+                      Let&apos;s focus on meaningful impressions. If you are an
+                      outdoor business (e.g. gear shop, guides, tour operator)
+                      tell us how we can help you reach high-intent, loyal
+                      customers.
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.pathCtaButton}
+                      onPress={openPartnerSurvey}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.pathCtaButtonText}>
+                        Take the Vendor Partner Survey
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            {/* Final CTA — Founder's Club + Coming soon */}
             <View
               style={[styles.section, styles.finalCtaSection]}
               onLayout={(e) => {
                 foundersSectionY.current = e.nativeEvent.layout.y;
               }}
             >
-              <View style={styles.finalCtaHeadlineBlock}>
-                <Text style={styles.finalCtaHeadline}>
-                  Build the Future of Outdoor Access
-                </Text>
-                <Text style={styles.finalCtaBody}>
-                  We&apos;re gathering the explorers, the guides, the gear
-                  shops, and the dreamers.
-                </Text>
-              </View>
               <View style={styles.foundersCard}>
                 <Text style={styles.foundersTitle}>
-                  Welcome to the Founder&apos;s Club
+                  Join the Founder&apos;s Club
                 </Text>
-                <Text style={styles.foundersSectionTitle}>
-                  For Explorers
+                <Text style={styles.foundersIntro}>
+                  Build the Future of Outdoor Access. We&apos;re gathering the
+                  explorers, the guides, the gear shops, and the dreamers. Join
+                  the Founder&apos;s Club to stay in touch and gain access to
+                  founders only exclusives.
                 </Text>
-                <Text style={styles.foundersBody}>
-                  The first{" "}
-                  <Text style={styles.foundersBodyBold}>10,000 members</Text>{" "}
-                  earn permanent Founder&apos;s Club status — a once-ever honor.
-                </Text>
-                <Text style={styles.foundersBody}>
-                  Enjoy exclusive badges, priority access, special perks, and
-                  members-only invitations that will never be offered again.
-                </Text>
-                <Text style={styles.foundersBody}>
-                  Secure your spot in history as one of the originals who
-                  helped shape this community.
-                </Text>
-                <Text style={styles.foundersSectionTitle}>
-                  For Founding Vendor Partners
-                </Text>
-                <Text style={styles.foundersBody}>
-                  We&apos;re opening just{" "}
-                  <Text style={styles.foundersBodyBold}>
-                    20 Founding Vendor Partner spots
-                  </Text>{" "}
-                  per region.
-                </Text>
-                <Text style={styles.foundersBody}>
-                  Early partners receive lifetime reduced commissions, premium
-                  placement, exclusive event access, and ongoing visibility that
-                  future vendors can&apos;t match.
-                </Text>
-                <Text style={styles.foundersBody}>
-                  Join early and lock in lasting benefits while helping build
-                  the foundation of our marketplace.
-                </Text>
+                <View style={styles.pathsGrid}>
+                  <View style={styles.pathCard}>
+                    <View style={styles.pathIconWrap}>
+                      <Ionicons
+                        name="compass-outline"
+                        size={28}
+                        color={Colors.claire.primary}
+                      />
+                    </View>
+                    <Text style={styles.h3}>Explorers</Text>
+                    <Text style={styles.foundersPathBody}>
+                      The first{" "}
+                      <Text style={styles.foundersBodyBold}>10,000 members</Text>{" "}
+                      earn permanent Founder&apos;s Club status — a once-ever
+                      honor. Enjoy exclusive badges, priority access, special
+                      perks, and members-only invitations that will never be
+                      offered again. Secure your spot in history as one of the
+                      originals who helped shape this community.
+                    </Text>
+                  </View>
+                  <View style={styles.pathCard}>
+                    <View style={styles.pathIconWrap}>
+                      <Ionicons
+                        name="storefront-outline"
+                        size={28}
+                        color={Colors.claire.primary}
+                      />
+                    </View>
+                    <Text style={styles.h3}>Vendor Partners</Text>
+                    <Text style={styles.foundersPathBody}>
+                      We&apos;re opening just{" "}
+                      <Text style={styles.foundersBodyBold}>
+                        20 Founding Vendor Partner spots
+                      </Text>{" "}
+                      per region. Early partners receive lifetime reduced
+                      commissions, premium placement, exclusive event access,
+                      and ongoing visibility that future vendors can&apos;t match.
+                      Join early and lock in lasting benefits while helping
+                      build the foundation of our marketplace.
+                    </Text>
+                  </View>
+                </View>
                 <View style={styles.foundersFieldGroup}>
                   <Text style={styles.foundersLabel}>Email Address</Text>
                   <TextInput
@@ -585,7 +567,11 @@ export default function WebLandingScreen() {
                                 styles.joinAsOptionTextSelected,
                             ]}
                           >
-                            {option}
+                            {option === "Explorer"
+                              ? "an Explorer"
+                              : option === "Vendor Partner"
+                                ? "a Vendor Partner"
+                                : option}
                           </Text>
                         </TouchableOpacity>
                       ),
@@ -927,11 +913,11 @@ const styles = StyleSheet.create({
   ctaPrimaryDisabled: { opacity: 0.6 },
   comingSoonTouchable: {
     alignItems: "center",
-    marginTop: Spacing.md,
+    marginTop: Spacing.xs,
   },
   comingSoonLabel: {
     ...Typography.body,
-    color: Colors.ui.textTertiary,
+    color: Colors.ui.text,
     marginBottom: Spacing.sm,
     textAlign: "center",
     ...(isWeb && ({ fontSize: 18, lineHeight: 26 } as object)),
@@ -977,13 +963,21 @@ const styles = StyleSheet.create({
   foundersTitle: {
     ...Typography.h2,
     color: Colors.ui.text,
+    marginBottom: Spacing.sm,
     textAlign: "center",
+  },
+  foundersIntro: {
+    ...Typography.body,
+    color: Colors.ui.textSecondary,
     marginBottom: Spacing.md,
+    maxWidth: 640,
+    textAlign: "center",
+    alignSelf: "center",
   },
   foundersBody: {
     ...Typography.body,
     color: Colors.ui.textSecondary,
-    textAlign: "center",
+    textAlign: "left",
     marginBottom: Spacing.md,
   },
   foundersBodyBold: {
@@ -991,10 +985,16 @@ const styles = StyleSheet.create({
     color: Colors.claire.primary,
     fontWeight: "700",
   },
+  foundersPathBody: {
+    ...Typography.body,
+    color: Colors.ui.textSecondary,
+    textAlign: "left",
+    marginBottom: 0,
+  },
   foundersSectionTitle: {
     ...Typography.h4,
     color: Colors.ui.text,
-    textAlign: "center",
+    textAlign: "left",
     marginTop: Spacing.md,
     marginBottom: Spacing.sm,
   },
@@ -1093,9 +1093,9 @@ const styles = StyleSheet.create({
   },
   appPreviewSub: {
     ...Typography.body,
-    color: Colors.ui.textSecondary,
+    color: Colors.ui.text,
     textAlign: "center",
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
     ...(isWeb && ({ fontSize: 19, lineHeight: 29 } as object)),
   },
   appPreviewBeta: {
@@ -1107,6 +1107,7 @@ const styles = StyleSheet.create({
   },
   phoneMockup: {
     alignItems: "center",
+    marginTop: Spacing.xl,
     marginBottom: Spacing.xl,
   },
   appPreviewBetaBlock: {
@@ -1150,84 +1151,98 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
 
-  // Barriers
-  barriersSection: {
+  // Mission (combined barriers + manifesto)
+  missionSection: {
     paddingVertical: Spacing.xxxl,
+    paddingHorizontal: Spacing.lg,
   },
-  barriersCard: {
+  missionCard: {
     backgroundColor: Colors.ui.surface,
     borderRadius: Radius.xl,
-    padding: Spacing.xxl,
-    marginHorizontal: Spacing.lg,
-    maxWidth: 960,
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.xxl,
+    maxWidth: 800,
     alignSelf: "center",
     width: "100%",
     borderWidth: 1,
     borderColor: Colors.ui.border,
   },
-  barriersLabel: {
+  missionLabel: {
+    ...Typography.small,
+    color: Colors.claire.primary,
+    textTransform: "uppercase",
+    letterSpacing: 3,
+    textAlign: "center",
+    marginBottom: Spacing.lg,
+    fontWeight: "600",
+  },
+  missionBody: {
     ...Typography.body,
     color: Colors.ui.textSecondary,
-    textTransform: "uppercase",
-    letterSpacing: 2,
-    marginBottom: Spacing.md,
     textAlign: "center",
+    marginBottom: Spacing.lg,
+    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
   },
-  barriersList: {
+  missionPillars: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: Spacing.lg,
-    marginBottom: Spacing.md,
+    justifyContent: "center",
+    gap: Spacing.md,
+    marginBottom: Spacing.lg,
   },
-  barrierItem: {
-    flex: 1,
-    minWidth: 140,
+  missionPillar: {
     ...Typography.body,
-    fontSize: 18,
-    lineHeight: 26,
     color: Colors.ui.textSecondary,
     textAlign: "center",
+    fontStyle: "italic",
+    flex: 1,
+    minWidth: 160,
+    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
   },
-  barriersPunch: {
-    ...Typography.h4,
-    color: Colors.claire.primary,
-    textAlign: "center",
-  },
-
-  // Manifesto
-  manifestoSection: {
-    paddingVertical: Spacing.xxxl,
-  },
-  manifestoCard: {
-    backgroundColor: Colors.ui.surface,
-    borderRadius: Radius.lg,
-    padding: Spacing.xxl,
-    marginHorizontal: Spacing.lg,
-    maxWidth: 960,
+  missionDivider: {
+    width: 90,
+    height: 2,
+    backgroundColor: Colors.claire.primary,
     alignSelf: "center",
-    width: "100%",
-    borderWidth: 1,
-    borderColor: Colors.ui.border,
+    marginBottom: Spacing.lg,
+    borderRadius: 1,
   },
-  manifestoQuote: {
-    ...Typography.h2,
+  missionAccent: {
+    ...Typography.body,
     color: Colors.ui.text,
     textAlign: "center",
-    lineHeight: 36,
-    marginBottom: Spacing.md,
-    ...(isWeb && ({ fontSize: 28, lineHeight: 40 } as object)),
-  },
-  manifestoSub: {
-    ...Typography.body,
-    color: Colors.ui.textSecondary,
-    textAlign: "center",
-    ...(isWeb && ({ fontSize: 20, lineHeight: 30 } as object)),
+    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
   },
 
   // Paths
   pathsSection: {
     paddingVertical: Spacing.xxxl,
+    paddingHorizontal: Spacing.lg,
+  },
+  pathsCombinedCard: {
+    backgroundColor: Colors.ui.surface,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    borderWidth: 1,
+    borderColor: Colors.ui.border,
+    marginHorizontal: Spacing.lg,
+    maxWidth: 800,
+    alignSelf: "center",
+    width: "100%",
+  },
+  pathsCombinedTitle: {
+    ...Typography.h2,
+    color: Colors.ui.text,
+    marginBottom: Spacing.sm,
+    textAlign: "center",
+  },
+  pathsCombinedIntro: {
+    ...Typography.body,
+    color: Colors.ui.textSecondary,
+    marginBottom: Spacing.md,
+    maxWidth: 640,
+    textAlign: "center",
+    alignSelf: "center",
   },
   h2: {
     ...Typography.h2,

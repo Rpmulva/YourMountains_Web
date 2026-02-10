@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, View, useWindowDimensions } from 'react-native';
 
-const backgroundImage = require('../assets/background-hike.06.png');
+const backgroundImage = require('../assets/Background_Hike_06.jpeg');
 
 /**
  * Web-specific outdoor background. Uses local asset so the site doesn't depend on external URLs.
@@ -27,12 +27,10 @@ export default function OutdoorBackground() {
   );
 }
 
-const HEADER_HEIGHT = 120;
-
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: HEADER_HEIGHT,
+    top: 0,
     left: 0,
     right: 0,
     bottom: -80,
@@ -48,11 +46,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '100%',
-    objectPosition: 'center top',
-    transform: [{ translateY: -60 }],
+    objectPosition: 'center center',
+    transform: [{ translateY: 80 }],
   },
   backgroundImageWide: {
-    transform: [{ translateY: -20 }],
+    transform: [{ translateY: 80 }],
   },
   darkOverlay: {
     position: 'absolute',

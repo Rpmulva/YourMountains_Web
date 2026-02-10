@@ -18,7 +18,7 @@ export const Colors = {
   // Modern Monochromatic Palette - Fully Opaque
   ui: {
     background: '#0A0A0A', // Deep black (fallback, but outdoor bg is used)
-    surface: '#1A1A1A', // Fully opaque dark surface - NO transparency
+    surface: 'rgba(30, 30, 30, 0.75)', // Dark grey transparent surface
     surfaceElevated: '#252525', // Fully opaque elevated surface
     border: 'rgba(255, 255, 255, 0.15)', // Subtle white borders
     text: '#FFFFFF',

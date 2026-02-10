@@ -28,12 +28,12 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'absolute',
-    top: -100, // Extend beyond top to cover status bar area
+    top: 0,
     left: 0,
     right: 0,
     bottom: 0,
     width: '100%',
-    height: '120%', // Extend beyond viewport to ensure full coverage
+    height: '120%',
     zIndex: 0,
   },
   // Dark overlay - subtle darkening for text readability while keeping nature image visible
