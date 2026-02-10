@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 
-const backgroundImage = require('../assets/background-hike.04.png');
+const backgroundImage = require('../assets/background-hike.06.png');
 
 /**
  * Outdoor-themed nature background component
@@ -12,6 +12,7 @@ export default function OutdoorBackground() {
     <ImageBackground 
       source={backgroundImage}
       style={styles.container}
+      imageStyle={styles.backgroundImage}
       resizeMode="cover"
       pointerEvents="none"
     >
@@ -22,6 +23,9 @@ export default function OutdoorBackground() {
 }
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    transform: [{ translateY: -60 }],
+  },
   container: {
     position: 'absolute',
     top: -100, // Extend beyond top to cover status bar area

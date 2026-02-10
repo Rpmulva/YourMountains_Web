@@ -1,19 +1,25 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, View, useWindowDimensions } from 'react-native';
 
-const backgroundImage = require('../assets/background-hike.04.png');
+const backgroundImage = require('../assets/background-hike.06.png');
 
 /**
  * Web-specific outdoor background. Uses local asset so the site doesn't depend on external URLs.
  * Image (not CSS background) is more reliable with Metro-bundled assets on web.
  */
 export default function OutdoorBackground() {
+  const { width } = useWindowDimensions();
+  const isWide = width >= 1024;
+
   return (
     <View style={styles.container} pointerEvents="none">
       <Image
-        key="background-hike-02"
+        key="background-hike-06"
         source={backgroundImage}
-        style={styles.backgroundImage}
+        style={[
+          styles.backgroundImage,
+          isWide && styles.backgroundImageWide,
+        ]}
         resizeMode="cover"
       />
       <View style={styles.darkOverlay} />
@@ -42,6 +48,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     height: '100%',
+    objectPosition: 'center top',
+    transform: [{ translateY: -60 }],
+  },
+  backgroundImageWide: {
+    transform: [{ translateY: -20 }],
   },
   darkOverlay: {
     position: 'absolute',
