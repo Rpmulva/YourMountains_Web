@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 
-const backgroundImage = require('../assets/background-hike.03.png');
+const backgroundImage = require('../assets/background-hike.04.png');
 
 /**
  * Web-specific outdoor background. Uses local asset so the site doesn't depend on external URLs.

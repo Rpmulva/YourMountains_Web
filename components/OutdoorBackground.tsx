@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 
-const backgroundImage = require('../assets/background-hike.03.png');
+const backgroundImage = require('../assets/background-hike.04.png');
 
 /**
  * Outdoor-themed nature background component

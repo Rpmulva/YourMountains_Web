@@ -4,7 +4,7 @@ import { Animated, Easing, Image, Platform, StyleSheet, Text, View } from 'react
 
 const brandLogo = require('../assets/brand-logo.png');
 
-const INTRO_TEXT = 'We need your help validating our idea';
+const INTRO_TEXT = 'We need your help validating our idea!';
 const LOGO_POP_DELAY_MS = 1600;
 const LOGO_POP_DURATION_MS = 500;
 const LOGO_HOLD_MS = 1400;

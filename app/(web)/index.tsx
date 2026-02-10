@@ -45,6 +45,7 @@ const PARTNER_SURVEY_URL =
 // Add TestFlight link when there is a iOS build to share
 const TESTFLIGHT_URL = "";
 const CONTACT_EMAIL = "Ryan@YourMountains.Life";
+const CONTACT_FORM_NAME = "contact";
 const brandLogo = require("../../assets/brand-logo.png");
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -60,7 +61,7 @@ function Logo({ size = "header" }: { size?: "header" | "hero" | "footer" }) {
     size === "hero"
       ? { width: 260, height: 130 }
       : size === "footer"
-        ? { width: 180, height: 90 }
+        ? { width: 240, height: 120 }
         : { width: 160, height: 80 };
   return (
     <View style={[styles.logoWrap, size === "hero" && styles.logoWrapHero]}>
@@ -112,14 +113,6 @@ export default function WebLandingScreen() {
     setContactEmailBlurred(false);
     setContactSubmitting(false);
   };
-  const encodeForm = (data: Record<string, string>) =>
-    Object.keys(data)
-      .map(
-        (key) =>
-          `${encodeURIComponent(key)}=${encodeURIComponent(data[key] || "")}`
-      )
-      .join("&");
-
   const handleContactSend = async () => {
     const email = contactEmail.trim();
     if (!email || !isValidEmail(email)) {
@@ -136,14 +129,15 @@ export default function WebLandingScreen() {
     }
     setContactSubmitting(true);
     try {
+      const formBody = new URLSearchParams();
+      formBody.append("form-name", CONTACT_FORM_NAME);
+      formBody.append("bot-field", "");
+      formBody.append("email", email);
+      formBody.append("message", contactMessage.trim());
       const response = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeForm({
-          "form-name": "contact",
-          email,
-          message: contactMessage.trim(),
-        }),
+        body: formBody.toString(),
       });
       if (!response.ok) {
         throw new Error("Failed to submit contact form");
@@ -297,7 +291,7 @@ export default function WebLandingScreen() {
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    style={styles.heroCtaButton}
+                    style={[styles.heroCtaButton, styles.heroCtaButtonAlt]}
                     onPress={scrollToFounders}
                     activeOpacity={0.8}
                   >
@@ -503,6 +497,9 @@ export default function WebLandingScreen() {
                 <Text style={styles.foundersTitle}>
                   Welcome to the Founder&apos;s Club
                 </Text>
+                <Text style={styles.foundersSectionTitle}>
+                  For Explorers
+                </Text>
                 <Text style={styles.foundersBody}>
                   The first{" "}
                   <Text style={styles.foundersBodyBold}>10,000 members</Text>{" "}
@@ -515,6 +512,9 @@ export default function WebLandingScreen() {
                 <Text style={styles.foundersBody}>
                   Secure your spot in history as one of the originals who
                   helped shape this community.
+                </Text>
+                <Text style={styles.foundersSectionTitle}>
+                  For Founding Vendor Partners
                 </Text>
                 <Text style={styles.foundersBody}>
                   We&apos;re opening just{" "}
@@ -630,8 +630,11 @@ export default function WebLandingScreen() {
                   <TouchableOpacity
                     onPress={openContactModal}
                     activeOpacity={0.7}
+                    style={styles.footerContactButton}
                   >
-                    <Text style={styles.footerLink}>Contact Us</Text>
+                    <Text style={styles.footerContactText}>
+                      Contact Founders
+                    </Text>
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.footerCopy}>© 2026 Your Mountains</Text>
@@ -908,9 +911,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     ...Shadows.claire,
   },
+  heroCtaButtonAlt: {
+    backgroundColor: Colors.brand.burntGreen,
+  },
   heroCtaButtonText: { ...Typography.bodyBold, color: "#FFF" },
   ctaPrimary: {
-    backgroundColor: Colors.claire.primary,
+    backgroundColor: Colors.brand.burntGreen,
     borderRadius: Radius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.xl,
@@ -984,6 +990,13 @@ const styles = StyleSheet.create({
     ...Typography.body,
     color: Colors.claire.primary,
     fontWeight: "700",
+  },
+  foundersSectionTitle: {
+    ...Typography.h4,
+    color: Colors.ui.text,
+    textAlign: "center",
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
   },
   foundersFieldGroup: {
     maxWidth: 500,
@@ -1074,8 +1087,8 @@ const styles = StyleSheet.create({
       ({
         fontFamily: "'Outfit', system-ui, sans-serif",
         fontWeight: "700",
-        fontSize: 28,
-        lineHeight: 34,
+        fontSize: 30,
+        lineHeight: 36,
       } as object)),
   },
   appPreviewSub: {
@@ -1083,7 +1096,7 @@ const styles = StyleSheet.create({
     color: Colors.ui.textSecondary,
     textAlign: "center",
     marginBottom: Spacing.sm,
-    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
+    ...(isWeb && ({ fontSize: 19, lineHeight: 29 } as object)),
   },
   appPreviewBeta: {
     ...Typography.body,
@@ -1101,9 +1114,9 @@ const styles = StyleSheet.create({
   },
   appPreviewComing: {
     ...Typography.body,
-    color: Colors.ui.textTertiary,
+    color: Colors.ui.text,
     textAlign: "center",
-    ...(isWeb && ({ fontSize: 16, lineHeight: 24 } as object)),
+    ...(isWeb && ({ fontSize: 19, lineHeight: 27 } as object)),
   },
   phoneFrame: {
     width: 260,
@@ -1209,7 +1222,7 @@ const styles = StyleSheet.create({
     ...Typography.body,
     color: Colors.ui.textSecondary,
     textAlign: "center",
-    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
+    ...(isWeb && ({ fontSize: 20, lineHeight: 30 } as object)),
   },
 
   // Paths
@@ -1229,7 +1242,7 @@ const styles = StyleSheet.create({
     maxWidth: 640,
     textAlign: "center",
     alignSelf: "center",
-    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
+    ...(isWeb && ({ fontSize: 20, lineHeight: 30 } as object)),
   },
   pathsGrid: {
     flexDirection: "column",
@@ -1328,7 +1341,7 @@ const styles = StyleSheet.create({
     color: Colors.ui.textSecondary,
     textAlign: "center",
     marginBottom: Spacing.md,
-    ...(isWeb && ({ fontSize: 18, lineHeight: 28 } as object)),
+    ...(isWeb && ({ fontSize: 20, lineHeight: 30 } as object)),
   },
   finalCtaBadge: {
     ...Typography.h4,
@@ -1369,8 +1382,19 @@ const styles = StyleSheet.create({
     marginTop: Spacing.md,
     marginBottom: Spacing.sm,
   },
-  footerLink: { ...Typography.bodyBold, color: Colors.claire.primary },
-  footerCopy: { ...Typography.caption, color: Colors.ui.textTertiary },
+  footerContactButton: {
+    backgroundColor: Colors.brand.burntGreen,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.xl,
+    width: 250,
+    alignItems: "center",
+  },
+  footerContactText: { ...Typography.bodyBold, color: "#FFF" },
+  footerCopy: {
+    ...Typography.body,
+    color: Colors.ui.textSecondary,
+  },
 
   // Contact Us modal
   contactModalOverlay: {

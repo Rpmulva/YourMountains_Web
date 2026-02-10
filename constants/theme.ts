@@ -9,10 +9,10 @@ import { Platform } from 'react-native';
 export const Colors = {
   // Primary Brand - Claire (Single accent color)
   claire: {
-    primary: '#FF6B35', // Vibrant orange (only accent)
-    secondary: '#FF8C5A',
-    accent: '#FFB88C',
-    dark: '#E55A2B',
+    primary: '#B44A1F', // Rusty burnt orange
+    secondary: '#C85C2A',
+    accent: '#E08B55',
+    dark: '#953A15',
   },
   
   // Modern Monochromatic Palette - Fully Opaque
@@ -32,6 +32,12 @@ export const Colors = {
     green: '#4CAF50',
     blue: '#2196F3',
     gold: '#FFC107',
+  },
+
+  // Brand accents derived from logo
+  brand: {
+    burntGreen: '#6F7D45',
+    burntBlue: '#4A6278',
   },
   
   // Semantic Colors (muted, modern)

@@ -10,7 +10,7 @@ export default function WebHeader() {
       <View style={styles.left}>
         <Image source={brandLogo} style={styles.logo} resizeMode="contain" />
         <Text style={styles.message}>
-          We need your help validating our idea
+          We need your help validating our idea!
         </Text>
       </View>
     </View>
