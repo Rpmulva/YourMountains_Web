@@ -21,15 +21,17 @@ export default function OutdoorBackground() {
   );
 }
 
+const HEADER_HEIGHT = 120;
+
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    top: -100,
+    top: HEADER_HEIGHT,
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: -80,
     width: '100%',
-    minHeight: '120vh',
+    minHeight: '100vh',
     zIndex: 0,
   },
   backgroundImage: {
