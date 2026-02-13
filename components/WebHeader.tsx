@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -11,6 +11,9 @@ import { Colors, Radius, Spacing, Typography } from '../constants/theme';
 
 const brandLogo = require('../assets/brand-logo.png');
 
+/** Fallback width when dimensions are 0 (e.g. mobile restore from cache / initial paint). */
+const FALLBACK_WIDTH = 375;
+
 interface WebHeaderProps {
   onScrollToSurvey?: () => void;
   onScrollToFounders?: () => void;
@@ -18,7 +21,13 @@ interface WebHeaderProps {
 }
 
 export default function WebHeader({ onScrollToSurvey, onScrollToFounders, onHeaderLayout }: WebHeaderProps) {
-  const { width } = useWindowDimensions();
+  const { width: rawWidth } = useWindowDimensions();
+  const [width, setWidth] = useState(() => (rawWidth > 0 ? rawWidth : FALLBACK_WIDTH));
+
+  useEffect(() => {
+    if (rawWidth > 0) setWidth(rawWidth);
+  }, [rawWidth]);
+
   const narrow = width < 900;
   const compact = width < 640;
 
@@ -109,7 +118,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    zIndex: 20,
+    zIndex: 100,
   },
   left: {
     flexDirection: 'row',
