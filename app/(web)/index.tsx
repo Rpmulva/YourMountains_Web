@@ -43,6 +43,9 @@ const TESTFLIGHT_URL = "";
 // ——— Backend endpoints (Power Automate) ———
 // Set in Netlify env: MS_FLOW_SIGNUP_URL (YM Signup List), MS_FLOW_MESSAGES_URL (YM Messages).
 // Signup List = Founder's Club only. Messages = Contact Founders only.
+//
+// Founder's Club (Signup) request body — use these exact keys in your flow when mapping to SharePoint:
+//   { "email": "user@example.com", "role": "explorer"|"vendor"|"both", "message": "", "form_source": "Signup", "date": "2025-02-12T..." }
 const MS_FLOW_URL_SIGNUP =
   "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a5e315bd5bc84a499681d1c9d033e486/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nsuBD3lScrWg10v43s_ZMRSXNHm_J6-pE8WADRMdFCw";
 const MS_FLOW_URL_MESSAGES =
@@ -232,12 +235,32 @@ export default function WebLandingScreen() {
       form_source: "Signup",
       date: new Date().toISOString(),
     };
-    try {
-      const response = await fetch(getSignupEndpoint(), {
+    const attemptSignup = async (endpoint: string) => {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      return res;
+    };
+
+    try {
+      let response = await attemptSignup(getSignupEndpoint());
+      if (!response.ok && !isLocalHost()) {
+        const status = response.status;
+        const text = await response.text();
+        if (typeof console !== "undefined") {
+          console.warn("Founder's Club proxy failed", status, text?.slice(0, 200));
+        }
+        if ((status === 500 || status === 502) && text?.toLowerCase().includes("configuration")) {
+          if (Platform.OS === "web" && typeof alert !== "undefined") {
+            alert("Signup isn't configured on the server. Please email Ryan@YourMountains.Life to join the Founder's Club.");
+          }
+          setFoundersSubmitting(false);
+          return;
+        }
+        response = await attemptSignup(MS_FLOW_URL_SIGNUP);
+      }
       if (response.ok) {
         if (role === "explorer") {
           setWelcomeHeadline("The Trail Starts Here.");
@@ -263,14 +286,30 @@ export default function WebLandingScreen() {
         setFoundersEmailBlurred(false);
         setJoinAs(null);
       } else {
+        let msg = "Signup didn't go through.";
+        try {
+          const text = await response.text();
+          if (text) {
+            try {
+              const parsed = JSON.parse(text);
+              if (parsed?.error) msg = parsed.error;
+              else msg = text.slice(0, 100);
+            } catch {
+              msg = text.slice(0, 100);
+            }
+          }
+        } catch {
+          /* use default */
+        }
+        if (typeof console !== "undefined") console.warn("Founder's Club signup error", response.status, msg);
         if (Platform.OS === "web" && typeof alert !== "undefined") {
-          alert("Signup didn't go through. Please check your connection and try again, or email Ryan@YourMountains.Life to join.");
+          alert(`${msg} Please try again or email Ryan@YourMountains.Life to join.`);
         }
       }
     } catch (err) {
       if (typeof console !== "undefined") console.warn("Founder's Club signup request failed:", err);
       if (Platform.OS === "web" && typeof alert !== "undefined") {
-        alert("We couldn't reach the server. Check your internet connection and try again—or email Ryan@YourMountains.Life to join the Founder's Club.");
+        alert("We couldn't reach the server. Check your connection and try again—or email Ryan@YourMountains.Life to join the Founder's Club.");
       }
     } finally {
       setFoundersSubmitting(false);
