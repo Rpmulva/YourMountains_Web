@@ -44,7 +44,7 @@ const TESTFLIGHT_URL = "";
 // Set in Netlify env: MS_FLOW_SIGNUP_URL (YM Signup List), MS_FLOW_MESSAGES_URL (YM Messages).
 // Signup List = Founder's Club only. Messages = Contact Founders only.
 const MS_FLOW_URL_SIGNUP =
-  "REPLACE_WITH_YM_SIGNUP_LIST_HTTP_TRIGGER_URL";
+  "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a5e315bd5bc84a499681d1c9d033e486/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nsuBD3lScrWg10v43s_ZMRSXNHm_J6-pE8WADRMdFCw";
 const MS_FLOW_URL_MESSAGES =
   "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/68f4089b8c464c2a86728b8f59b926fd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KYfA6f9ZDCNuqbke1aJ7YBL6GcqUoe0iiMD7VbAjgYA";
 
@@ -145,8 +145,9 @@ export default function WebLandingScreen() {
       return;
     }
     setContactSubmitting(true);
+    const endpoint = getContactEndpoint();
     try {
-      const response = await fetch(getContactEndpoint(), {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,14 +158,42 @@ export default function WebLandingScreen() {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to submit contact form");
+        let msg = "Something went wrong on our end.";
+        try {
+          const text = await response.text();
+          if (text) {
+            try {
+              const data = JSON.parse(text);
+              if (data?.error) msg = data.error;
+              else msg = text.slice(0, 120);
+            } catch {
+              msg = text.slice(0, 120);
+            }
+          }
+        } catch {
+          /* use default msg */
+        }
+        if (typeof console !== "undefined") {
+          console.warn("Contact form error", response.status, msg);
+        }
+        if (response.status === 500 && msg.toLowerCase().includes("configuration")) {
+          if (Platform.OS === "web" && typeof alert !== "undefined") {
+            alert("Contact form is not configured yet. Please email Ryan@YourMountains.Life directly.");
+          }
+        } else if (Platform.OS === "web" && typeof alert !== "undefined") {
+          alert(`We couldn't send your message (${response.status}). Please try again or email Ryan@YourMountains.Life.`);
+        }
+        setContactSubmitting(false);
+        return;
       }
       if (Platform.OS === "web" && typeof alert !== "undefined") {
         alert("Message sent! We'll reply as soon as we can.");
       }
       closeContactModal();
     } catch (err) {
-      if (typeof console !== "undefined") console.warn("Contact form request failed:", err);
+      if (typeof console !== "undefined") {
+        console.warn("Contact form request failed:", err, "endpoint:", endpoint);
+      }
       if (Platform.OS === "web" && typeof alert !== "undefined") {
         alert("We couldn't send your message. Check your connection and try again, or email Ryan@YourMountains.Life.");
       }
