@@ -1,3 +1,6 @@
+ # Power Automate env (set in Netlify site env):
+ #   MS_FLOW_SIGNUP_URL  = HTTP trigger for YM Signup List (Founder's Club: email + role)
+ #   MS_FLOW_MESSAGES_URL = HTTP trigger for YM Messages (Contact Founders: email + message)
  [build]
   command = "npm run build"
   publish = "dist"

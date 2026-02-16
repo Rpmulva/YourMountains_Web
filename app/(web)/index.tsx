@@ -3,38 +3,31 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRef, useState } from "react";
 import {
-    ActivityIndicator,
-    Animated,
-    Easing,
+  ActivityIndicator,
+  Animated,
+  Easing,
   Image,
-    Linking,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    useWindowDimensions,
-    View,
+  Linking,
+  Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import LogoLoadingScreen from "../../components/LogoLoadingScreen";
 import OutdoorBackground from "../../components/OutdoorBackground";
 import WebHeader from "../../components/WebHeader";
-import {
-    Colors,
-    Radius,
-    Shadows,
-    Spacing,
-    Typography,
-} from "../../constants/theme";
+import { Colors, Radius, Shadows, Spacing, Typography } from "../../constants/theme";
 
 const isWeb = Platform.OS === "web";
 
+// ——— Landing page constants ———
 const HERO_GRADIENT =
   "linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.4) 60%, rgba(10,10,10,0.9) 100%)";
-const SECTION_GRADIENT =
-  "linear-gradient(180deg, #0A0A0A 0%, #111 30%, #0d0d0d 70%, #0A0A0A 100%)";
 
 const APP_STORE_BADGE_URI =
   "https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg";
@@ -44,19 +37,40 @@ const SURVEY_URL =
   "https://forms.office.com/Pages/ResponsePage.aspx?id=MQA3jGPCNki0BLhvtw0_nFLgk1DC_whHmx5uhgS8F8lUMVpGSTJVQktESEFSREJRS1ZNRzhGNkM2UC4u";
 const PARTNER_SURVEY_URL =
   "https://forms.office.com/Pages/ResponsePage.aspx?id=MQA3jGPCNki0BLhvtw0_nFLgk1DC_whHmx5uhgS8F8lUNlIwMEs1QktXRVFUQ05CT1Q3WDFEWFFFUS4u";
-// Add TestFlight link when there is a iOS build to share
+// Add TestFlight link when there is an iOS build to share
 const TESTFLIGHT_URL = "";
-const CONTACT_EMAIL = "Ryan@YourMountains.Life";
-const CONTACT_FORM_NAME = "contact";
+
+// ——— Backend endpoints (Power Automate) ———
+// Set in Netlify env: MS_FLOW_SIGNUP_URL (YM Signup List), MS_FLOW_MESSAGES_URL (YM Messages).
+// Signup List = Founder's Club only. Messages = Contact Founders only.
+const MS_FLOW_URL_SIGNUP =
+  "REPLACE_WITH_YM_SIGNUP_LIST_HTTP_TRIGGER_URL";
+const MS_FLOW_URL_MESSAGES =
+  "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/68f4089b8c464c2a86728b8f59b926fd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KYfA6f9ZDCNuqbke1aJ7YBL6GcqUoe0iiMD7VbAjgYA";
+
 const brandLogo = require("../../assets/brand-logo.png");
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function isValidEmail(value: string): boolean {
   return EMAIL_REGEX.test(value.trim());
 }
-// Founder's Club signup
-const MS_FLOW_URL_SIGNUP =
-  "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/68f4089b8c464c2a86728b8f59b926fd/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=KYfA6f9ZDCNuqbke1aJ7YBL6GcqUoe0iiMD7VbAjgYA";
+
+function isLocalHost(): boolean {
+  if (typeof window === "undefined") return false;
+  const origin = window.location?.origin ?? "";
+  const hostname = window.location?.hostname ?? "";
+  return origin.includes("localhost") || hostname === "127.0.0.1";
+}
+
+function getSignupEndpoint(): string {
+  if (typeof window === "undefined") return MS_FLOW_URL_SIGNUP;
+  return isLocalHost() ? MS_FLOW_URL_SIGNUP : "/.netlify/functions/signup";
+}
+
+function getContactEndpoint(): string {
+  if (typeof window === "undefined") return MS_FLOW_URL_MESSAGES;
+  return isLocalHost() ? MS_FLOW_URL_MESSAGES : "/.netlify/functions/contact";
+}
 
 function Logo({ size = "header" }: { size?: "header" | "hero" | "footer" }) {
   const dims =
@@ -132,15 +146,15 @@ export default function WebLandingScreen() {
     }
     setContactSubmitting(true);
     try {
-      const formBody = new URLSearchParams();
-      formBody.append("form-name", CONTACT_FORM_NAME);
-      formBody.append("bot-field", "");
-      formBody.append("email", email);
-      formBody.append("message", contactMessage.trim());
-      const response = await fetch("/", {
+      const response = await fetch(getContactEndpoint(), {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formBody.toString(),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          message: contactMessage.trim(),
+          form_source: "Contact",
+          date: new Date().toISOString(),
+        }),
       });
       if (!response.ok) {
         throw new Error("Failed to submit contact form");
@@ -149,9 +163,10 @@ export default function WebLandingScreen() {
         alert("Message sent! We'll reply as soon as we can.");
       }
       closeContactModal();
-    } catch {
+    } catch (err) {
+      if (typeof console !== "undefined") console.warn("Contact form request failed:", err);
       if (Platform.OS === "web" && typeof alert !== "undefined") {
-        alert("Something went wrong. Please try again.");
+        alert("We couldn't send your message. Check your connection and try again, or email Ryan@YourMountains.Life.");
       }
       setContactSubmitting(false);
     }
@@ -187,7 +202,7 @@ export default function WebLandingScreen() {
       date: new Date().toISOString(),
     };
     try {
-      const response = await fetch(MS_FLOW_URL_SIGNUP, {
+      const response = await fetch(getSignupEndpoint(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -218,12 +233,13 @@ export default function WebLandingScreen() {
         setJoinAs(null);
       } else {
         if (Platform.OS === "web" && typeof alert !== "undefined") {
-          alert("Something went wrong. Please check your connection.");
+          alert("Signup didn't go through. Please check your connection and try again, or email Ryan@YourMountains.Life to join.");
         }
       }
-    } catch {
+    } catch (err) {
+      if (typeof console !== "undefined") console.warn("Founder's Club signup request failed:", err);
       if (Platform.OS === "web" && typeof alert !== "undefined") {
-        alert("Connection error. Please try again.");
+        alert("We couldn't reach the server. Check your internet connection and try again—or email Ryan@YourMountains.Life to join the Founder's Club.");
       }
     } finally {
       setFoundersSubmitting(false);
@@ -836,7 +852,7 @@ const styles = StyleSheet.create({
   loadingOverlayDone: {
     pointerEvents: "none",
   },
-  scrollWrap: {},
+  scrollWrap: {}, // non-web: no extra layout
   scrollWrapWeb: {
     flexGrow: 1,
     flexBasis: 0,
