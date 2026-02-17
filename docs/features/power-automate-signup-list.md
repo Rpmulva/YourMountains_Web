@@ -21,6 +21,7 @@ You need to tell the **"When a HTTP request is received"** trigger what JSON sha
 
 ```json
 {
+  "Title": "user@example.com",
   "email": "user@example.com",
   "role": "explorer",
   "message": "",
@@ -46,6 +47,7 @@ Some flows only show a **Request Body JSON Schema** box:
 {
   "type": "object",
   "properties": {
+    "Title": { "type": "string" },
     "email": { "type": "string" },
     "role": { "type": "string" },
     "message": { "type": "string" },
@@ -61,27 +63,29 @@ Some flows only show a **Request Body JSON Schema** box:
 
 ## Step 2: Map the parsed body to SharePoint (Create item)
 
-In the step that creates the SharePoint list item (e.g. **Create item** or **Add row**):
+**If rows stay blank, the Create item step is not wired to the trigger.** You must fill every column from the request body.
 
-1. For each column, choose **dynamic content** from the trigger, or use an expression.
-2. Map like this (use the **exact** lowercase names):
+1. Open the step that creates the SharePoint row (**Create item** or **Add row**).
+2. For **each** column in your list, click the value field and **type** one of these expressions (or pick the same from dynamic content if you see them under "When a HTTP request is received"):
 
-| SharePoint column (example) | Value / expression |
-|-----------------------------|--------------------|
-| Title (if required)         | `triggerBody()?['email']` or email from dynamic content |
-| Email                      | `triggerBody()?['email']` |
-| Role                       | `triggerBody()?['role']` |
-| Form Source (if you have it) | `triggerBody()?['form_source']` |
-| Date (if you have it)      | `triggerBody()?['date']` |
+| SharePoint column | Type this exactly |
+|--------------------|--------------------|
+| **Title**          | `triggerBody()?['Title']` |
+| **Email** (if you have it) | `triggerBody()?['email']` |
+| **Role**           | `triggerBody()?['role']` |
+| **Form Source** (if you have it) | `triggerBody()?['form_source']` |
+| **Date** (if you have it) | `triggerBody()?['date']` |
 
-3. Property names from the website are **lowercase**: `email`, `role`, `form_source`, `date`. Use those in expressions (e.g. `triggerBody()?['email']`, not `triggerBody()?['Email']`).
+3. To type an expression: click in the value box → **Expression** tab (or the **fx** / formula icon) → paste the expression (e.g. `triggerBody()?['Title']`) → OK.
+4. Do **not** leave any column blank if you want data in it. Save the flow.
 
-Save the flow and run a test signup from the site; the new row should show email, role, and other mapped fields.
+The website now sends **Title** (same as email) so mapping **Title** to `triggerBody()?['Title']` will at least show the email in the Title column.
 
 ---
 
 ## Reference: request body the website sends
 
+- **Title** – string (same as email; for SharePoint’s Title column)
 - **email** – string  
 - **role** – `"explorer"` | `"vendor"` | `"both"`  
 - **message** – always `""` for signup  

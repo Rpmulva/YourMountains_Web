@@ -45,7 +45,7 @@ const TESTFLIGHT_URL = "";
 // Signup List = Founder's Club only. Messages = Contact Founders only.
 //
 // Founder's Club (Signup) request body — use these exact keys in your flow when mapping to SharePoint:
-//   { "email": "user@example.com", "role": "explorer"|"vendor"|"both", "message": "", "form_source": "Signup", "date": "2025-02-12T..." }
+//   { "Title": "email@...", "email": "...", "role": "explorer"|"vendor"|"both", "message": "", "form_source": "Signup", "date": "..." }
 const MS_FLOW_URL_SIGNUP =
   "https://default8c370031c2634836b404b86fb70d3f.9c.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a5e315bd5bc84a499681d1c9d033e486/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=nsuBD3lScrWg10v43s_ZMRSXNHm_J6-pE8WADRMdFCw";
 const MS_FLOW_URL_MESSAGES =
@@ -229,6 +229,7 @@ export default function WebLandingScreen() {
     setFoundersSubmitting(true);
     const role = roleToApi(joinAs);
     const data = {
+      Title: email,
       email,
       role,
       message: "",
