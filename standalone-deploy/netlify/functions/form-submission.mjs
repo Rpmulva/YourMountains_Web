@@ -22,6 +22,10 @@ const FORM_ROUTES = {
     table: 'core_partner_survey_responses',
     map: mapCorePartnerSurvey,
   },
+  'form-explorer-survey': {
+    table: 'explorer_survey_responses',
+    map: mapExplorerSurvey,
+  },
   // Future forms:
   // 'founders-signup': { table: 'founders_signups', map: mapFoundersSignup },
   // 'contact':         { table: 'contact_messages', map: mapContact },
@@ -107,6 +111,33 @@ function mapCorePartnerSurvey(body) {
     contact_name:                 body.contact_name,
     contact_title:                body.contact_title                || null,
     email:                        body.email,
+  };
+}
+
+function mapExplorerSurvey(body) {
+  const toArr = (val) => val ? (Array.isArray(val) ? val : [val]) : [];
+  return {
+    monthly_activity_count:     body.monthly_activity_count     || null,
+    wished_activity_count:      body.wished_activity_count      || null,
+    barriers_ranked:            body.barriers_ranked            || null,
+    logistics_overwhelm:        body.logistics_overwhelm        || null,
+    group_participation:        body.group_participation        || null,
+    claire_value:               body.claire_value               || null,
+    claire_booking_trust:       body.claire_booking_trust       || null,
+    direction_feature_pref:     body.direction_feature_pref     || null,
+    community_belief:           body.community_belief           || null,
+    gear_rental_likelihood:     body.gear_rental_likelihood     || null,
+    willingness:                body.willingness                || null,
+    trail_buddy_interest:       body.trail_buddy_interest       || null,
+    annual_subscription_spend:  body.annual_subscription_spend  || null,
+    max_monthly_fee:            body.max_monthly_fee            || null,
+    payment_model_pref:         body.payment_model_pref         || null,
+    skill_level:                body.skill_level                || null,
+    community_identities:       toArr(body.community_identities),
+    open_barrier:               body.open_barrier               || null,
+    existing_tool_frustrations: body.existing_tool_frustrations || null,
+    founders_club_interest:     body.founders_club_interest     || null,
+    email:                      body.email,
   };
 }
 

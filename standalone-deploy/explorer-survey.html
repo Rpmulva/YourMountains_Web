@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your Mountains Explorer Survey — Help us build the outdoor app you actually want.">
+  <title>Explorer Survey — Your Mountains</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange:       #C3825A;
+      --orange-dark:  #B44A1F;
+      --green:        #6F7D45;
+      --bg:           #0A0A0A;
+      --surface:      #141414;
+      --card:         rgba(22,22,22,0.95);
+      --border:       rgba(255,255,255,0.12);
+      --text:         #FFFFFF;
+      --text-2:       #E0E0E0;
+      --text-3:       #A0A0A0;
+      --error:        #F44336;
+      --r-md:         12px;
+      --r-lg:         16px;
+    }
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    header {
+      background: rgba(10,10,10,0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img { height: 36px; display: block; }
+    header a { color: var(--text-3); font-size: 14px; text-decoration: none; }
+    header a:hover { color: var(--orange); }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .survey-header { text-align: center; margin-bottom: 40px; }
+    .survey-tag {
+      display: inline-block;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .survey-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+    .survey-intro {
+      font-size: 16px;
+      color: var(--text-2);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-wrap { margin-bottom: 36px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+    .progress-label span { color: var(--orange); font-weight: 600; }
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Section Card ── */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+    }
+    @media (max-width: 600px) { .section-card { padding: 24px 18px; } }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Questions ── */
+    .q-block { margin-bottom: 28px; }
+    .q-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .q-label .q-num {
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .q-hint { font-size: 13px; color: var(--text-3); margin-top: -6px; margin-bottom: 10px; }
+
+    /* ── Standard radio/checkbox options ── */
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .opt-item:hover { border-color: var(--orange); background: rgba(195,130,90,0.07); }
+    .opt-item input[type="radio"],
+    .opt-item input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: var(--orange);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .opt-item label {
+      font-size: 15px;
+      color: var(--text-2);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    /* ── Likert (Q4, Q5) ── */
+    .likert-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .likert-opt { flex: 1; min-width: 80px; }
+    .likert-opt input[type="radio"] { display: none; }
+    .likert-opt label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 12px 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+      min-height: 64px;
+    }
+    .likert-opt input:checked + label {
+      border-color: var(--orange);
+      background: rgba(195,130,90,0.12);
+    }
+    .likert-opt label:hover { border-color: rgba(195,130,90,0.5); }
+    .likert-label { font-size: 12px; color: var(--text-2); line-height: 1.3; font-weight: 600; }
+
+    /* ── Binary large cards (Q11) ── */
+    .binary-row { display: flex; gap: 12px; }
+    .binary-opt { flex: 1; }
+    .binary-opt input[type="radio"] { display: none; }
+    .binary-opt label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-2);
+      transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+    }
+    .binary-opt input:checked + label {
+      border-color: var(--orange);
+      background: rgba(195,130,90,0.12);
+      color: var(--text);
+    }
+    .binary-opt label:hover { border-color: rgba(195,130,90,0.5); }
+
+    /* ── Pricing cards (Q14) ── */
+    .price-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    @media (max-width: 480px) { .price-row { grid-template-columns: 1fr 1fr; } }
+    .price-opt input[type="radio"] { display: none; }
+    .price-opt label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 18px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+    }
+    .price-opt input:checked + label {
+      border-color: var(--orange);
+      background: rgba(195,130,90,0.12);
+    }
+    .price-opt label:hover { border-color: rgba(195,130,90,0.5); }
+    .price-amount { font-size: 22px; font-weight: 800; color: var(--text); }
+    .price-desc { font-size: 12px; color: var(--text-3); }
+
+    /* ── Founders Club CTA (Q20) accent ── */
+    .opt-item.founders-yes {
+      border-color: var(--orange);
+      background: rgba(195,130,90,0.1);
+    }
+    .opt-item.founders-yes label { color: var(--text); font-weight: 700; }
+    .opt-item.founders-yes:hover { background: rgba(195,130,90,0.18); }
+    .founders-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    /* ── Q3 Ranking UI ── */
+    .rank-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      user-select: none;
+    }
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: grab;
+      transition: border-color 0.15s, background 0.15s, opacity 0.15s;
+      touch-action: none;
+    }
+    .rank-item.dragging {
+      opacity: 0.4;
+      border-color: var(--orange);
+    }
+    .rank-item.drag-over {
+      border-color: var(--orange);
+      background: rgba(195,130,90,0.08);
+    }
+    .rank-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .rank-text {
+      flex: 1;
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+    .rank-handle {
+      color: var(--text-3);
+      font-size: 18px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .rank-arrows { display: flex; flex-direction: column; gap: 2px; }
+    .rank-arrow {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      border-radius: 6px;
+      width: 28px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .rank-arrow:hover { border-color: var(--orange); color: var(--orange); }
+    .rank-hint {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Text inputs */
+    .q-input {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 13px 16px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .q-input:focus { border-color: var(--orange); }
+    .q-input.error { border-color: var(--error); }
+    .q-input::placeholder { color: var(--text-3); }
+    textarea.q-input { resize: vertical; }
+    textarea.q-input.lg { min-height: 120px; }
+
+    /* Error text */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
+    }
+    .field-error.hidden { display: none; }
+
+    /* ── Navigation buttons ── */
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 36px;
+      gap: 12px;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      border-radius: var(--r-lg);
+      padding: 13px 28px;
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--text-3); color: var(--text); }
+    .btn-next {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-lg);
+      padding: 13px 36px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-left: auto;
+    }
+    .btn-next:hover { opacity: 0.88; }
+    .btn-submit {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-lg);
+      padding: 14px 40px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-left: auto;
+    }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:not(:disabled):hover { opacity: 0.88; }
+
+    /* Consent line */
+    .consent-line {
+      font-size: 12px;
+      color: var(--text-3);
+      text-align: center;
+      margin-top: 14px;
+    }
+    .consent-line a { color: var(--text-3); text-decoration: underline; }
+
+    /* ── Thank-you state ── */
+    #thankyou {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    .ty-icon { font-size: 56px; margin-bottom: 20px; }
+    .ty-headline {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .ty-body {
+      font-size: 16px;
+      color: var(--text-2);
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .btn-home {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--r-lg);
+      padding: 13px 32px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      transition: opacity 0.2s;
+    }
+    .btn-home:hover { opacity: 0.88; }
+
+    /* ── Hidden Netlify form ── */
+    .netlify-hidden { display: none; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+    footer a { color: var(--text-3); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--text-2); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html"><img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;color:#fff;font-weight:800;">YOUR MOUNTAINS</span></a>
+  <a href="index.html">← Back to Home</a>
+</header>
+
+<!-- Hidden Netlify form declaration -->
+<form name="form-explorer-survey" data-netlify="true" class="netlify-hidden" netlify-honeypot="bot-field">
+  <input type="hidden" name="form-name" value="form-explorer-survey">
+  <input name="bot-field">
+  <input name="monthly_activity_count"> <input name="wished_activity_count">
+  <input name="barriers_ranked"> <input name="logistics_overwhelm"> <input name="group_participation">
+  <input name="claire_value"> <input name="claire_booking_trust"> <input name="direction_feature_pref">
+  <input name="community_belief"> <input name="gear_rental_likelihood"> <input name="willingness">
+  <input name="trail_buddy_interest"> <input name="annual_subscription_spend">
+  <input name="max_monthly_fee"> <input name="payment_model_pref"> <input name="skill_level">
+  <input name="community_identities"> <textarea name="open_barrier"></textarea>
+  <textarea name="existing_tool_frustrations"></textarea>
+  <input name="founders_club_interest"> <input name="email" type="email">
+</form>
+
+<div class="page">
+
+  <!-- Survey Header -->
+  <div class="survey-header">
+    <span class="survey-tag">Explorer Survey</span>
+    <h1 class="survey-title">Help us build the outdoor app<br>you actually want.</h1>
+    <p class="survey-intro">
+      No fluff, no corporate speak. We're asking real questions about why getting outside
+      is harder than it should be — and what would actually fix it.
+      5 sections, about 4 minutes.
+    </p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-text">Section <span id="progress-current">1</span> of 5</span>
+      <span id="progress-section-name">The Reality Check</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+    </div>
+  </div>
+
+  <!-- ══ SURVEY FORM ══════════════════════════════ -->
+  <div id="survey-wrap">
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Section 1: The Reality Check               -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="section-card" id="section-1">
+      <h2 class="section-title">The Reality Check</h2>
+
+      <!-- Q1 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q1 &middot; Required</span>On average, how many times per month do you get outside for an outdoor activity?</label>
+        <div class="opts" id="q1-opts">
+          <div class="opt-item"><input type="radio" name="monthly_activity_count" id="q1a" value="0 Times"><label for="q1a">0 — I'm trying to change that</label></div>
+          <div class="opt-item"><input type="radio" name="monthly_activity_count" id="q1b" value="1–2 Times"><label for="q1b">1–2 times</label></div>
+          <div class="opt-item"><input type="radio" name="monthly_activity_count" id="q1c" value="3–5 Times"><label for="q1c">3–5 times</label></div>
+          <div class="opt-item"><input type="radio" name="monthly_activity_count" id="q1d" value="6+ Times"><label for="q1d">6+ times — I live for it</label></div>
+        </div>
+        <p class="field-error hidden" id="q1-error">Please select an answer.</p>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q2 &middot; Required</span>How many more times per month do you WISH you could get out, but don't?</label>
+        <div class="opts" id="q2-opts">
+          <div class="opt-item"><input type="radio" name="wished_activity_count" id="q2a" value="0 (I go as often as I want)"><label for="q2a">0 — I go as often as I want</label></div>
+          <div class="opt-item"><input type="radio" name="wished_activity_count" id="q2b" value="1–2 times more"><label for="q2b">1–2 times more</label></div>
+          <div class="opt-item"><input type="radio" name="wished_activity_count" id="q2c" value="3–5 times more"><label for="q2c">3–5 times more</label></div>
+          <div class="opt-item"><input type="radio" name="wished_activity_count" id="q2d" value="Significantly more"><label for="q2d">Significantly more — life keeps getting in the way</label></div>
+        </div>
+        <p class="field-error hidden" id="q2-error">Please select an answer.</p>
+      </div>
+
+      <!-- Q3 — Ranking -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q3</span>Rank what stops you from getting outside. Drag to reorder — <strong>#1 is your biggest barrier.</strong></label>
+        <div class="rank-list" id="rank-list">
+          <div class="rank-item" data-value="Cost of gear/activities">
+            <div class="rank-num">1</div>
+            <div class="rank-text">Cost of gear / activities</div>
+            <div class="rank-arrows">
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, -1)" aria-label="Move up">▲</button>
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, 1)" aria-label="Move down">▼</button>
+            </div>
+          </div>
+          <div class="rank-item" data-value="Mental Load (planning)">
+            <div class="rank-num">2</div>
+            <div class="rank-text">Mental load — the effort to plan and coordinate</div>
+            <div class="rank-arrows">
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, -1)" aria-label="Move up">▲</button>
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, 1)" aria-label="Move down">▼</button>
+            </div>
+          </div>
+          <div class="rank-item" data-value="Social Isolation (no one to go with)">
+            <div class="rank-num">3</div>
+            <div class="rank-text">Social isolation — no one to go with</div>
+            <div class="rank-arrows">
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, -1)" aria-label="Move up">▲</button>
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, 1)" aria-label="Move down">▼</button>
+            </div>
+          </div>
+          <div class="rank-item" data-value="Lack of knowledge/confidence">
+            <div class="rank-num">4</div>
+            <div class="rank-text">Lack of knowledge or confidence</div>
+            <div class="rank-arrows">
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, -1)" aria-label="Move up">▲</button>
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, 1)" aria-label="Move down">▼</button>
+            </div>
+          </div>
+          <div class="rank-item" data-value="Physical accessibility/health concerns">
+            <div class="rank-num">5</div>
+            <div class="rank-text">Physical accessibility or health concerns</div>
+            <div class="rank-arrows">
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, -1)" aria-label="Move up">▲</button>
+              <button type="button" class="rank-arrow" onclick="moveRankItem(this, 1)" aria-label="Move down">▼</button>
+            </div>
+          </div>
+        </div>
+        <p class="rank-hint">💡 On desktop you can also drag to reorder</p>
+      </div>
+
+      <!-- Q4 — Likert -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q4</span>"I often cancel or avoid trips because the logistics feel too overwhelming."</label>
+        <div class="likert-row">
+          <div class="likert-opt"><input type="radio" name="logistics_overwhelm" id="q4-1" value="Strongly Disagree"><label for="q4-1"><span class="likert-label">Strongly Disagree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="logistics_overwhelm" id="q4-2" value="Disagree"><label for="q4-2"><span class="likert-label">Disagree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="logistics_overwhelm" id="q4-3" value="Neutral"><label for="q4-3"><span class="likert-label">Neutral</span></label></div>
+          <div class="likert-opt"><input type="radio" name="logistics_overwhelm" id="q4-4" value="Agree"><label for="q4-4"><span class="likert-label">Agree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="logistics_overwhelm" id="q4-5" value="Strongly Agree"><label for="q4-5"><span class="likert-label">Strongly Agree</span></label></div>
+        </div>
+      </div>
+
+      <!-- Q5 — Likert -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q5</span>"I would participate in more activities if I had a reliable, safe group of people to go with."</label>
+        <div class="likert-row">
+          <div class="likert-opt"><input type="radio" name="group_participation" id="q5-1" value="Strongly Disagree"><label for="q5-1"><span class="likert-label">Strongly Disagree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="group_participation" id="q5-2" value="Disagree"><label for="q5-2"><span class="likert-label">Disagree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="group_participation" id="q5-3" value="Neutral"><label for="q5-3"><span class="likert-label">Neutral</span></label></div>
+          <div class="likert-opt"><input type="radio" name="group_participation" id="q5-4" value="Agree"><label for="q5-4"><span class="likert-label">Agree</span></label></div>
+          <div class="likert-opt"><input type="radio" name="group_participation" id="q5-5" value="Strongly Agree"><label for="q5-5"><span class="likert-label">Strongly Agree</span></label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="nextSection(1)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Section 2: AI + Concierge                  -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="section-card" id="section-2" style="display:none;">
+      <h2 class="section-title">Meet Claire</h2>
+
+      <!-- Q6 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q6 &middot; Required</span>Imagine an AI named Claire. You text: <em>"I want a quiet hike near water, easy difficulty, within 45 mins of me."</em> Claire replies instantly with 3 trail options, current weather, and a packing list. How valuable is that to you?</label>
+        <div class="opts" id="q6-opts">
+          <div class="opt-item"><input type="radio" name="claire_value" id="q6a" value="Not Valuable"><label for="q6a">Not valuable — I'd rather figure it out myself</label></div>
+          <div class="opt-item"><input type="radio" name="claire_value" id="q6b" value="Nice to have"><label for="q6b">Nice to have, but not a game-changer</label></div>
+          <div class="opt-item"><input type="radio" name="claire_value" id="q6c" value="Extremely Valuable"><label for="q6c">Extremely valuable — I would use this every week</label></div>
+        </div>
+        <p class="field-error hidden" id="q6-error">Please select an answer.</p>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q7</span>If Claire could also book your campsite, reserve rental gear, and add the trip to your calendar automatically — would you trust it?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="claire_booking_trust" id="q7a" value="No, I prefer to do it myself"><label for="q7a">No — I prefer to control all of that myself</label></div>
+          <div class="opt-item"><input type="radio" name="claire_booking_trust" id="q7b" value="Maybe, I'd want to review before confirming"><label for="q7b">Maybe — I'd want to review everything before it confirms</label></div>
+          <div class="opt-item"><input type="radio" name="claire_booking_trust" id="q7c" value="Maybe, I would still need ability to manage"><label for="q7c">Maybe — as long as I can still manage and cancel</label></div>
+          <div class="opt-item"><input type="radio" name="claire_booking_trust" id="q7d" value="Yes, take my money and save me the time"><label for="q7d">Yes — take my money and save me the time</label></div>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q8</span>Which feature would most effectively kill your "I don't know where to go" excuse?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="direction_feature_pref" id="q8a" value="A standard map (like AllTrails)"><label for="q8a">A standard trail map — like AllTrails</label></div>
+          <div class="opt-item"><input type="radio" name="direction_feature_pref" id="q8b" value="A personalized itinerary builder based on my mood/energy level"><label for="q8b">A personalized itinerary builder based on my mood and energy level that day</label></div>
+          <div class="opt-item"><input type="radio" name="direction_feature_pref" id="q8c" value="A live feed of what locals are doing right now"><label for="q8c">A live feed of what locals are actually doing right now</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(2)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(2)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Section 3: Community                       -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="section-card" id="section-3" style="display:none;">
+      <h2 class="section-title">Community</h2>
+
+      <!-- Q9 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q9</span>Do you believe a dedicated community can solve problems that money alone can't — like sharing gear, teaching skills, or making the outdoors safer for beginners?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="community_belief" id="q9a" value="No, I prefer to rely on myself"><label for="q9a">No — I prefer to rely on myself</label></div>
+          <div class="opt-item"><input type="radio" name="community_belief" id="q9b" value="Somewhat"><label for="q9b">Somewhat — depends on the community</label></div>
+          <div class="opt-item"><input type="radio" name="community_belief" id="q9c" value="Yes, absolutely"><label for="q9c">Yes, absolutely — that's the whole point</label></div>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q10</span>The Gear Locker: would you rent trusted gear from a verified community member — say, snowshoes from a neighbor for $10 instead of a shop for $30?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="gear_rental_likelihood" id="q10a" value="Never"><label for="q10a">Never — I only trust gear from a shop</label></div>
+          <div class="opt-item"><input type="radio" name="gear_rental_likelihood" id="q10b" value="Unlikely"><label for="q10b">Unlikely</label></div>
+          <div class="opt-item"><input type="radio" name="gear_rental_likelihood" id="q10c" value="Likely"><label for="q10c">Likely — if they were verified</label></div>
+          <div class="opt-item"><input type="radio" name="gear_rental_likelihood" id="q10d" value="Very Likely"><label for="q10d">Very likely — that's a no-brainer</label></div>
+        </div>
+      </div>
+
+      <!-- Q11 — Binary large cards -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q11</span>Would you lend your own idle gear to verified community members if the platform provided insurance and guarantees?</label>
+        <div class="binary-row">
+          <div class="binary-opt"><input type="radio" name="willingness" id="q11a" value="Yes"><label for="q11a">Yes</label></div>
+          <div class="binary-opt"><input type="radio" name="willingness" id="q11b" value="No"><label for="q11b">No</label></div>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q12</span>Trail Buddy: if the app matched you with someone based on shared skill level, pace, and interests — like a platonic outdoor dating app — would you use it?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="trail_buddy_interest" id="q12a" value="No, that feels weird"><label for="q12a">No — that feels weird to me</label></div>
+          <div class="opt-item"><input type="radio" name="trail_buddy_interest" id="q12b" value="Maybe"><label for="q12b">Maybe — I'd try it once</label></div>
+          <div class="opt-item"><input type="radio" name="trail_buddy_interest" id="q12c" value="Yes, that solves a huge problem for me"><label for="q12c">Yes — that solves a huge problem for me</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(3)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(3)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Section 4: Willingness to Pay              -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="section-card" id="section-4" style="display:none;">
+      <h2 class="section-title">Willingness to Pay</h2>
+
+      <!-- Q13 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q13</span>How much do you currently spend per year on outdoor subscriptions — Gaia GPS, Strava, OnX, AllTrails, etc.?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="annual_subscription_spend" id="q13a" value="$0"><label for="q13a">$0 — I don't pay for any</label></div>
+          <div class="opt-item"><input type="radio" name="annual_subscription_spend" id="q13b" value="$1–$50"><label for="q13b">$1–$50</label></div>
+          <div class="opt-item"><input type="radio" name="annual_subscription_spend" id="q13c" value="$50–$100"><label for="q13c">$50–$100</label></div>
+          <div class="opt-item"><input type="radio" name="annual_subscription_spend" id="q13d" value="$100+"><label for="q13d">$100+ — I invest in my time outside</label></div>
+        </div>
+      </div>
+
+      <!-- Q14 — Pricing cards -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q14</span>If YourMountains gave you the AI Concierge, Gear Locker, and verified community events — what's the most you'd pay per month?</label>
+        <div class="price-row">
+          <div class="price-opt"><input type="radio" name="max_monthly_fee" id="q14a" value="Free (Ads Only)"><label for="q14a"><span class="price-amount">Free</span><span class="price-desc">Ad-supported only</span></label></div>
+          <div class="price-opt"><input type="radio" name="max_monthly_fee" id="q14b" value="$4.99/month"><label for="q14b"><span class="price-amount">$4.99</span><span class="price-desc">per month</span></label></div>
+          <div class="price-opt"><input type="radio" name="max_monthly_fee" id="q14c" value="$9.99/month"><label for="q14c"><span class="price-amount">$9.99</span><span class="price-desc">per month</span></label></div>
+          <div class="price-opt"><input type="radio" name="max_monthly_fee" id="q14d" value="$14.99/month"><label for="q14d"><span class="price-amount">$14.99</span><span class="price-desc">per month</span></label></div>
+        </div>
+      </div>
+
+      <!-- Q15 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q15</span>How would you prefer to pay?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="payment_model_pref" id="q15a" value="Monthly subscription"><label for="q15a">Monthly subscription — predictable and simple</label></div>
+          <div class="opt-item"><input type="radio" name="payment_model_pref" id="q15b" value="Pay per Use (Transaction Fee)"><label for="q15b">Pay per use — only when I actually book something</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(4)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(4)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────── -->
+    <!-- Section 5: Who Are You?                    -->
+    <!-- ─────────────────────────────────────────── -->
+    <div class="section-card" id="section-5" style="display:none;">
+      <h2 class="section-title">Who Are You?</h2>
+
+      <!-- Q16 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q16</span>How would you describe your outdoor skill level?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="skill_level" id="q16a" value="Beginner (I want to start)"><label for="q16a">Beginner — I want to start getting outside</label></div>
+          <div class="opt-item"><input type="radio" name="skill_level" id="q16b" value="Intermediate (Weekend warrior)"><label for="q16b">Intermediate — weekend warrior</label></div>
+          <div class="opt-item"><input type="radio" name="skill_level" id="q16c" value="Expert (I know what I'm doing)"><label for="q16c">Expert — I know what I'm doing out there</label></div>
+        </div>
+      </div>
+
+      <!-- Q17 — Multi with "None" deselects others -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q17 &middot; Select all that apply</span>Do you identify with any of these communities?</label>
+        <div class="opts" id="q17-opts">
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17a" value="Parent/Family Adventurer"><label for="q17a">Parent / Family Adventurer</label></div>
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17b" value="Solo Traveler"><label for="q17b">Solo Traveler</label></div>
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17c" value="The Trip Planner"><label for="q17c">The Trip Planner — I organize for the group</label></div>
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17d" value="Neurodivergent"><label for="q17d">Neurodivergent</label></div>
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17e" value="Adaptive Athlete/Mobility Challenges"><label for="q17e">Adaptive Athlete / Mobility Challenges</label></div>
+          <div class="opt-item"><input type="checkbox" name="community_identities" id="q17f" value="None of the above" data-exclusive="true"><label for="q17f">None of the above</label></div>
+        </div>
+      </div>
+
+      <!-- Q18 — Long text -->
+      <div class="q-block">
+        <label class="q-label" for="q18-input"><span class="q-num">Q18 &middot; Optional</span>What is the one thing keeping you inside right now that we haven't asked about?</label>
+        <textarea id="q18-input" name="open_barrier" class="q-input lg" placeholder="Tell us anything — we read every response."></textarea>
+      </div>
+
+      <!-- Q19 — Long text -->
+      <div class="q-block">
+        <label class="q-label" for="q19-input"><span class="q-num">Q19 &middot; Optional</span>What's missing or broken about the outdoor tools you use today — AllTrails, Facebook Groups, Reddit, Strava? Be brutally honest.</label>
+        <textarea id="q19-input" name="existing_tool_frustrations" class="q-input lg" placeholder="Be brutally honest — this shapes what we build."></textarea>
+      </div>
+
+      <!-- Q20 — Founders Club CTA -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q20 &middot; Required</span>We're launching a Founders Club for our first 10,000 members — exclusive beta access and lifetime perks. Want an invite?</label>
+        <div class="opts" id="q20-opts">
+          <div class="opt-item founders-yes">
+            <input type="radio" name="founders_club_interest" id="q20a" value="Yes, Count me in">
+            <label for="q20a">Yes, count me in <span class="founders-badge">Founders Club</span></label>
+          </div>
+          <div class="opt-item">
+            <input type="radio" name="founders_club_interest" id="q20b" value="No Thanks">
+            <label for="q20b">No thanks</label>
+          </div>
+        </div>
+        <p class="field-error hidden" id="q20-error">Please let us know.</p>
+      </div>
+
+      <!-- Q21 — Email -->
+      <div class="q-block">
+        <label class="q-label" for="q21-input"><span class="q-num">Q21 &middot; Required</span>Email address</label>
+        <p class="q-hint">So we can send your Founders Club invite.</p>
+        <input type="email" id="q21-input" name="email" class="q-input" placeholder="you@email.com">
+        <p class="field-error hidden" id="q21-error">Please enter a valid email address.</p>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(5)">&larr; Back</button>
+        <button class="btn-submit" id="submit-btn" onclick="submitSurvey()">Submit &rarr;</button>
+      </div>
+      <p class="consent-line">By submitting you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p>
+    </div>
+
+  </div><!-- /survey-wrap -->
+
+  <!-- ══ THANK YOU ══════════════════════════════ -->
+  <div id="thankyou">
+    <div class="ty-icon">🏔️</div>
+    <h2 class="ty-headline">You're officially on the list.</h2>
+    <p class="ty-body">
+      Welcome to the YourMountains community — we'll be in touch
+      with your Founders Club invite soon.
+    </p>
+    <a href="index.html" class="btn-home">Back to Home</a>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <p>&copy; 2026 YourMountains &middot; <a href="privacy-policy.html">Privacy Policy</a> <a href="terms-of-service.html">Terms of Service</a></p>
+</footer>
+
+<script>
+  const TOTAL_SECTIONS = 5;
+  const SECTION_NAMES = ['The Reality Check', 'Meet Claire', 'Community', 'Willingness to Pay', 'Who Are You?'];
+
+  // ── Q17 "None of the above" exclusive logic ──────────────────────────────────
+  document.querySelectorAll('#q17-opts input[type="checkbox"]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.dataset.exclusive && cb.checked) {
+        document.querySelectorAll('#q17-opts input[type="checkbox"]').forEach(other => {
+          if (!other.dataset.exclusive) other.checked = false;
+        });
+      } else if (!cb.dataset.exclusive && cb.checked) {
+        const excl = document.querySelector('#q17-opts input[data-exclusive]');
+        if (excl) excl.checked = false;
+      }
+    });
+  });
+
+  // ── Q3 Drag-and-drop ranking ──────────────────────────────────────────────────
+  const rankList = document.getElementById('rank-list');
+  let dragSrc = null;
+
+  rankList.addEventListener('dragstart', e => {
+    dragSrc = e.target.closest('.rank-item');
+    if (!dragSrc) return;
+    dragSrc.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+
+  rankList.addEventListener('dragover', e => {
+    e.preventDefault();
+    const target = e.target.closest('.rank-item');
+    if (!target || target === dragSrc) return;
+    document.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+    const rect = target.getBoundingClientRect();
+    if (e.clientY < rect.top + rect.height / 2) {
+      rankList.insertBefore(dragSrc, target);
+    } else {
+      rankList.insertBefore(dragSrc, target.nextSibling);
+    }
+    updateRankNumbers();
+  });
+
+  rankList.addEventListener('dragend', () => {
+    if (dragSrc) dragSrc.classList.remove('dragging');
+    document.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+    dragSrc = null;
+  });
+
+  // Make items draggable
+  document.querySelectorAll('.rank-item').forEach(item => {
+    item.setAttribute('draggable', 'true');
+  });
+
+  function updateRankNumbers() {
+    document.querySelectorAll('#rank-list .rank-item').forEach((item, i) => {
+      item.querySelector('.rank-num').textContent = i + 1;
+    });
+  }
+
+  function moveRankItem(btn, direction) {
+    const item = btn.closest('.rank-item');
+    if (direction === -1 && item.previousElementSibling) {
+      rankList.insertBefore(item, item.previousElementSibling);
+    } else if (direction === 1 && item.nextElementSibling) {
+      rankList.insertBefore(item.nextElementSibling, item);
+    }
+    updateRankNumbers();
+  }
+
+  function serializeRanking() {
+    return Array.from(document.querySelectorAll('#rank-list .rank-item'))
+      .map(item => item.dataset.value)
+      .join(',');
+  }
+
+  // ── Section navigation ────────────────────────────────────────────────────────
+  function showSection(n) {
+    for (let i = 1; i <= TOTAL_SECTIONS; i++) {
+      const el = document.getElementById('section-' + i);
+      if (el) el.style.display = (i === n) ? '' : 'none';
+    }
+    document.getElementById('progress-current').textContent = n;
+    document.getElementById('progress-section-name').textContent = SECTION_NAMES[n - 1];
+    document.getElementById('progress-fill').style.width = ((n / TOTAL_SECTIONS) * 100) + '%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function validateSection(n) {
+    let ok = true;
+    if (n === 1) {
+      const q1 = document.querySelector('input[name="monthly_activity_count"]:checked');
+      document.getElementById('q1-error').classList.toggle('hidden', !!q1);
+      if (!q1) ok = false;
+
+      const q2 = document.querySelector('input[name="wished_activity_count"]:checked');
+      document.getElementById('q2-error').classList.toggle('hidden', !!q2);
+      if (!q2) ok = false;
+    }
+    if (n === 2) {
+      const q6 = document.querySelector('input[name="claire_value"]:checked');
+      document.getElementById('q6-error').classList.toggle('hidden', !!q6);
+      if (!q6) ok = false;
+    }
+    if (n === 5) {
+      const q20 = document.querySelector('input[name="founders_club_interest"]:checked');
+      document.getElementById('q20-error').classList.toggle('hidden', !!q20);
+      if (!q20) ok = false;
+
+      const email = document.getElementById('q21-input').value.trim();
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      document.getElementById('q21-error').classList.toggle('hidden', emailOk);
+      document.getElementById('q21-input').classList.toggle('error', !emailOk);
+      if (!emailOk) ok = false;
+    }
+    return ok;
+  }
+
+  function nextSection(n) {
+    if (!validateSection(n)) return;
+    showSection(n + 1);
+  }
+
+  function prevSection(n) {
+    showSection(n - 1);
+  }
+
+  function getChecked(name) {
+    return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+  }
+
+  // ── Submit ────────────────────────────────────────────────────────────────────
+  async function submitSurvey() {
+    if (!validateSection(5)) return;
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const payload = {
+      'form-name':                 'form-explorer-survey',
+      monthly_activity_count:      (document.querySelector('input[name="monthly_activity_count"]:checked') || {}).value || '',
+      wished_activity_count:       (document.querySelector('input[name="wished_activity_count"]:checked') || {}).value || '',
+      barriers_ranked:             serializeRanking(),
+      logistics_overwhelm:         (document.querySelector('input[name="logistics_overwhelm"]:checked') || {}).value || '',
+      group_participation:         (document.querySelector('input[name="group_participation"]:checked') || {}).value || '',
+      claire_value:                (document.querySelector('input[name="claire_value"]:checked') || {}).value || '',
+      claire_booking_trust:        (document.querySelector('input[name="claire_booking_trust"]:checked') || {}).value || '',
+      direction_feature_pref:      (document.querySelector('input[name="direction_feature_pref"]:checked') || {}).value || '',
+      community_belief:            (document.querySelector('input[name="community_belief"]:checked') || {}).value || '',
+      gear_rental_likelihood:      (document.querySelector('input[name="gear_rental_likelihood"]:checked') || {}).value || '',
+      willingness:                 (document.querySelector('input[name="willingness"]:checked') || {}).value || '',
+      trail_buddy_interest:        (document.querySelector('input[name="trail_buddy_interest"]:checked') || {}).value || '',
+      annual_subscription_spend:   (document.querySelector('input[name="annual_subscription_spend"]:checked') || {}).value || '',
+      max_monthly_fee:             (document.querySelector('input[name="max_monthly_fee"]:checked') || {}).value || '',
+      payment_model_pref:          (document.querySelector('input[name="payment_model_pref"]:checked') || {}).value || '',
+      skill_level:                 (document.querySelector('input[name="skill_level"]:checked') || {}).value || '',
+      community_identities:        getChecked('community_identities'),
+      open_barrier:                document.getElementById('q18-input').value.trim(),
+      existing_tool_frustrations:  document.getElementById('q19-input').value.trim(),
+      founders_club_interest:      (document.querySelector('input[name="founders_club_interest"]:checked') || {}).value || '',
+      email:                       document.getElementById('q21-input').value.trim(),
+    };
+
+    try {
+      const netlifyBody = new URLSearchParams();
+      Object.entries(payload).forEach(([k, v]) => {
+        netlifyBody.set(k, Array.isArray(v) ? v.join(', ') : v);
+      });
+      await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: netlifyBody.toString() });
+    } catch (_) { /* non-fatal */ }
+
+    try {
+      await fetch('/.netlify/functions/form-submission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+    } catch (_) { /* non-fatal */ }
+
+    document.getElementById('survey-wrap').style.display = 'none';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    document.querySelector('.survey-header').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
