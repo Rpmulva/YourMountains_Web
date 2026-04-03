@@ -14,6 +14,10 @@ const FORM_ROUTES = {
     table: 'vendor_survey_responses',
     map: mapVendorSurvey,
   },
+  'form-influencer-survey': {
+    table: 'influencer_survey_responses',
+    map: mapInfluencerSurvey,
+  },
   // Future forms:
   // 'founders-signup': { table: 'founders_signups', map: mapFoundersSignup },
   // 'contact':         { table: 'contact_messages', map: mapContact },
@@ -42,6 +46,35 @@ function mapVendorSurvey(body) {
     contact_person:            body.contact_person,
     email:                     body.email,
     phone:                     body.phone                     || null,
+  };
+}
+
+function mapInfluencerSurvey(body) {
+  const toArr = (val) => val ? (Array.isArray(val) ? val : [val]) : [];
+  const toInt = (val) => val ? parseInt(val, 10) : null;
+  return {
+    platforms:                 toArr(body.platforms),
+    total_followers:           body.total_followers           || null,
+    content_niches:            toArr(body.content_niches),
+    audience_location:         body.audience_location         || null,
+    audience_skill_level:      body.audience_skill_level      || null,
+    monetization_methods:      toArr(body.monetization_methods),
+    brand_deal_frustrations:   body.brand_deal_frustrations   || null,
+    promotion_values:          toArr(body.promotion_values),
+    best_current_platforms:    toArr(body.best_current_platforms),
+    ym_audience_value:         body.ym_audience_value         || null,
+    gear_locker_interest:      body.gear_locker_interest      || null,
+    compensation_model_vision: body.compensation_model_vision || null,
+    desired_creator_tools:     toArr(body.desired_creator_tools),
+    promotion_likelihood:      toInt(body.promotion_likelihood),
+    colorado_presence:         body.colorado_presence         || null,
+    event_interest:            body.event_interest            || null,
+    in_person_preferences:     toArr(body.in_person_preferences),
+    founding_creator_vision:   body.founding_creator_vision   || null,
+    founding_creator_interest: body.founding_creator_interest || null,
+    creator_name:              body.creator_name,
+    social_handle:             body.social_handle,
+    email:                     body.email,
   };
 }
 
