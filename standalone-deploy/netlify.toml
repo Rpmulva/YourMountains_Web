@@ -1,0 +1,18 @@
+# Power Automate env vars (set in Netlify site settings → Environment variables):
+#   MS_FLOW_SIGNUP_URL   = HTTP trigger URL for YM Signup List (Founder's Club)
+#   MS_FLOW_MESSAGES_URL = HTTP trigger URL for YM Messages (Contact Founders)
+#
+# Optional Supabase mirror (set once tables are created):
+#   MARKETING_SUPABASE_URL = https://jeukkkxmamedvubookiw.supabase.co
+#   MARKETING_SUPABASE_KEY = (service role key from Supabase dashboard)
+
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

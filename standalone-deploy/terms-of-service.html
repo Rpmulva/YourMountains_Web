@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terms of Service — Your Mountains</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #B44A1F;
+      --green:  #6F7D45;
+      --bg:     #0A0A0A;
+      --border: rgba(255,255,255,0.1);
+      --text:   #FFFFFF;
+      --text-2: #E0E0E0;
+      --text-3: #A0A0A0;
+    }
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+    header {
+      background: rgba(10,10,10,0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img { height: 34px; display: block; }
+    header a { color: var(--text-3); font-size: 14px; text-decoration: none; }
+    header a:hover { color: var(--orange); }
+    .page { max-width: 800px; margin: 0 auto; padding: 56px 24px 80px; }
+
+    /* Banners */
+    .banner-draft {
+      background: rgba(255,193,7,0.1);
+      border: 1px solid rgba(255,193,7,0.35);
+      border-radius: 10px;
+      padding: 14px 20px;
+      font-size: 14px;
+      color: #ffe082;
+      margin-bottom: 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .banner-info {
+      background: rgba(180,74,31,0.1);
+      border: 1px solid rgba(180,74,31,0.3);
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: #e0a07a;
+      margin-bottom: 32px;
+      line-height: 1.6;
+    }
+
+    h1 { font-size: 34px; font-weight: 800; color: var(--text); margin-bottom: 6px; }
+    .meta { font-size: 14px; color: var(--text-3); margin-bottom: 36px; }
+    .meta strong { color: var(--text-2); }
+
+    .toc {
+      background: rgba(25,25,25,0.7);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .toc-title { font-size: 14px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a { color: var(--text-3); font-size: 14px; text-decoration: none; }
+    .toc a:hover { color: var(--orange); }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 44px 0 14px;
+      border-left: 3px solid var(--orange);
+      padding-left: 14px;
+      scroll-margin-top: 80px;
+    }
+    p { color: var(--text-2); font-size: 15px; margin-bottom: 14px; }
+    ul, ol { color: var(--text-2); font-size: 15px; padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 8px; }
+    a { color: var(--orange); }
+    strong { color: var(--text); font-weight: 600; }
+    .caps { text-transform: uppercase; font-weight: 700; }
+    .note {
+      background: rgba(255,255,255,0.04);
+      border-left: 3px solid var(--orange);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 13px;
+      color: var(--text-3);
+      margin: 10px 0 14px;
+    }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 24px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+    footer a { color: var(--text-3); text-decoration: none; margin: 0 10px; }
+    footer a:hover { color: var(--text-2); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html"><img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none'"></a>
+  <a href="index.html">← Back to Home</a>
+</header>
+
+<div class="page">
+
+  <div class="banner-draft">⚠️ DRAFT — Pending legal review. Not yet in force.</div>
+  <div class="banner-info">
+    This document incorporates Walker's v1 Terms of Service with gap fills and additions approved by Ryan on April 3, 2026.
+    Substantive legal language is preserved as written. Additions are noted where applicable.
+  </div>
+
+  <h1>Terms of Service</h1>
+  <p class="meta">
+    <strong>Effective Date:</strong> April 3, 2026 &nbsp;|&nbsp;
+    <strong>Last Updated:</strong> April 3, 2026 &nbsp;|&nbsp;
+    <strong>Entity:</strong> YourMountains Outdoor Collective
+  </p>
+
+  <div class="toc">
+    <p class="toc-title">Table of Contents</p>
+    <ol>
+      <li><a href="#s1">Acceptance and Agreement</a></li>
+      <li><a href="#s2">Description of Service</a></li>
+      <li><a href="#s3">Eligibility and Age Restrictions</a></li>
+      <li><a href="#s4">Communications, Unsubscribe, and Data Retention</a></li>
+      <li><a href="#s5">Survey Participation and License</a></li>
+      <li><a href="#s6">Rewards, Promotions, and Founder's Benefits</a></li>
+      <li><a href="#s7">User Conduct and Prohibited Activities</a></li>
+      <li><a href="#s8">Intellectual Property Rights</a></li>
+      <li><a href="#s9">Disclaimer of Warranties</a></li>
+      <li><a href="#s10">Third-Party Services</a></li>
+      <li><a href="#s11">Privacy Policy and Cookies</a></li>
+      <li><a href="#s12">Limitation of Liability</a></li>
+      <li><a href="#s13">Indemnification</a></li>
+      <li><a href="#s14">Termination</a></li>
+      <li><a href="#s15">Changes to These Terms</a></li>
+      <li><a href="#s16">Governing Law and Dispute Resolution</a></li>
+      <li><a href="#s17">Contact Information</a></li>
+    </ol>
+  </div>
+
+  <!-- §1 -->
+  <h2 id="s1">§1 — Acceptance and Agreement</h2>
+  <p>
+    By accessing or using the YourMountains website located at <strong>yourmountains.life</strong>
+    (the "Site"), submitting any form, joining any waitlist, or otherwise interacting with any
+    service operated by YourMountains Outdoor Collective ("YourMountains," "we," "us," or "our"),
+    you agree to be bound by these Terms of Service ("Terms").
+  </p>
+  <p>
+    If you do not agree to these Terms, please do not use the Site or any of our services. These
+    Terms apply to all visitors, users, survey respondents, waitlist members, and anyone else who
+    accesses or uses our Site or services.
+  </p>
+  <p>
+    We reserve the right to modify these Terms at any time. Material changes will be reflected in
+    the "Last Updated" date at the top of this page. Continued use of the Site after changes
+    constitutes your acceptance of the revised Terms.
+  </p>
+
+  <!-- §2 -->
+  <h2 id="s2">§2 — Description of Service</h2>
+  <p>
+    YourMountains is an outdoor lifestyle and community platform currently in pre-launch development.
+    The Site provides information about the platform, collects survey responses to inform product
+    development, operates a Founder's Club waitlist, and provides contact and communication
+    functionality.
+  </p>
+  <p>
+    No fully functional application services are provided through this website at this time. Features,
+    pricing, and availability are subject to change. YourMountains makes no guarantees about the
+    launch timeline, scope, or final form of the platform.
+  </p>
+
+  <!-- §3 -->
+  <h2 id="s3">§3 — Eligibility and Age Restrictions</h2>
+  <p>
+    You must be at least 13 years of age to use the Site. By using the Site you represent and
+    warrant that you meet this age requirement and have the legal capacity to enter into a binding
+    agreement.
+  </p>
+  <p>
+    We do not knowingly collect personal information from children under 13. If we become aware
+    that we have collected personal information from a child under 13 without verifiable parental
+    consent, we will take steps to delete that information promptly. If you believe we have
+    inadvertently collected information from a child under 13, please contact us immediately at
+    <a href="mailto:policy@yourmountains.life">policy@yourmountains.life</a>.
+  </p>
+
+  <!-- §4 -->
+  <h2 id="s4">§4 — Communications, Unsubscribe, and Data Retention</h2>
+  <p>
+    By submitting your email address through any form on our Site, you agree to receive
+    communications from YourMountains, including but not limited to platform updates, beta launch
+    announcements, Founder's Club news, and other relevant information related to our community and
+    services.
+  </p>
+  <p>
+    You may unsubscribe at any time by emailing
+    <a href="mailto:policy@yourmountains.life">policy@yourmountains.life</a> or using the
+    unsubscribe link in our emails when available.
+  </p>
+  <div class="note">⚠️ TBD — Email platform is being rebuilt. Unsubscribe links will be available once the new email system is deployed.</div>
+  <p>
+    We retain submitted information for as long as reasonably necessary to fulfill the purposes
+    described in our Privacy Policy, or as required by applicable law.
+  </p>
+
+  <!-- §5 -->
+  <h2 id="s5">§5 — Survey Participation and License</h2>
+  <p>
+    By completing any survey on our Site, you grant YourMountains Outdoor Collective a worldwide,
+    perpetual, irrevocable, royalty-free license to use, reproduce, modify, adapt, publish,
+    translate, and distribute your survey responses for the purposes of product development,
+    research, marketing, and improving our services.
+  </p>
+  <p>
+    Survey participation is entirely voluntary. You may decline to answer any question. Submission
+    of a survey does not create any obligation on our part to act on your feedback or to provide
+    any particular product or service.
+  </p>
+
+  <!-- §6 -->
+  <h2 id="s6">§6 — Rewards, Promotions, and Founder's Benefits</h2>
+  <p>
+    YourMountains may, at its sole discretion, offer rewards, incentives, promotions, recognition
+    programs, early access benefits, reduced-fee arrangements, priority placement, exclusive status
+    designations, or other benefits to members, partners, survey respondents, or other participants
+    (collectively, "Promotional Benefits").
+  </p>
+  <p>
+    All Promotional Benefits are subject to availability, modification, or discontinuation at any
+    time with reasonable notice. YourMountains reserves the right to determine eligibility,
+    timing, scope, and terms of any Promotional Benefit at its sole discretion. No Promotional
+    Benefit constitutes a binding contract or guarantee of future value.
+  </p>
+
+  <!-- §7 -->
+  <h2 id="s7">§7 — User Conduct and Prohibited Activities</h2>
+  <p>
+    By using the Site, you agree not to engage in any of the following prohibited activities:
+  </p>
+  <ul>
+    <li>Using the Site for any unlawful purpose or in violation of any applicable local, state, national, or international law or regulation.</li>
+    <li>Submitting false, misleading, fraudulent, or spam content through any form or communication channel.</li>
+    <li>Impersonating any person or entity, or falsely claiming an affiliation with any person or entity.</li>
+    <li>Attempting to gain unauthorized access to any portion of the Site, its infrastructure, servers, or databases.</li>
+    <li>Interfering with or disrupting the integrity, performance, or availability of the Site or its services.</li>
+    <li>Using automated means (bots, scrapers, crawlers) to access or collect data from the Site without our express written permission.</li>
+    <li>Uploading or transmitting viruses or any other malicious code.</li>
+    <li>Engaging in any conduct that could harm YourMountains, its users, or third parties.</li>
+  </ul>
+
+  <!-- §8 -->
+  <h2 id="s8">§8 — Intellectual Property Rights</h2>
+  <p>
+    All content on the Site — including but not limited to text, graphics, logos, icons, images,
+    audio clips, video clips, software, and the overall design and compilation — is the exclusive
+    property of YourMountains Outdoor Collective or its content suppliers and is protected by
+    applicable intellectual property laws including copyright, trademark, and trade secret law.
+  </p>
+  <p>
+    You are granted a limited, non-exclusive, non-transferable, revocable license to access and
+    use the Site for personal, non-commercial purposes only. You may not reproduce, distribute,
+    publicly display, publicly perform, modify, adapt, translate, create derivative works from,
+    or exploit any content on the Site without our express prior written permission.
+  </p>
+  <p>
+    Any feedback, suggestions, or ideas you submit to us become the property of YourMountains,
+    subject to the terms of §5 where applicable.
+  </p>
+
+  <!-- §9 -->
+  <h2 id="s9">§9 — Disclaimer of Warranties</h2>
+  <p class="caps">
+    The site and all content, services, and features are provided on an "as is" and "as available"
+    basis without warranties of any kind, either express or implied, including but not limited to
+    implied warranties of merchantability, fitness for a particular purpose, title, and
+    non-infringement.
+  </p>
+  <p>
+    YourMountains does not warrant that: (a) the Site will be uninterrupted or error-free;
+    (b) defects will be corrected; (c) the Site or servers are free of viruses or other harmful
+    components; or (d) the content is accurate, complete, or current.
+  </p>
+  <p>
+    Any reliance on any information provided on or through the Site is at your sole risk.
+  </p>
+
+  <!-- §10 -->
+  <h2 id="s10">§10 — Third-Party Services</h2>
+  <p>
+    The Site may contain links to third-party websites, services, or resources. These links are
+    provided for your convenience only. YourMountains has no control over the content, privacy
+    policies, or practices of third-party sites and assumes no responsibility for them. Your use
+    of any third-party site is subject to the terms and privacy policy of that site.
+  </p>
+  <p>
+    Current third-party providers include <strong>Netlify</strong> (hosting and form processing),
+    <strong>Google Analytics</strong> (site analytics), and <strong>Supabase</strong> (data storage).
+    In our mobile application, additional providers include <strong>Google Gemini AI</strong> and
+    <strong>Mapbox</strong>.
+  </p>
+  <p>
+    We are not responsible for the availability, accuracy, content, or security of third-party
+    services. We encourage you to review the privacy policies and terms of service of any
+    third-party services you interact with.
+  </p>
+
+  <!-- §11 -->
+  <h2 id="s11">§11 — Privacy Policy and Cookies</h2>
+  <p>
+    Your use of the Site is also governed by our
+    <a href="privacy-policy.html">Privacy Policy</a>, available at
+    <strong>yourmountains.life/privacy-policy.html</strong>, which is incorporated into these
+    Terms by reference. Please review our Privacy Policy carefully — it describes how we collect,
+    use, and protect your personal information.
+  </p>
+  <p>
+    We use cookies and similar tracking technologies, including Google Analytics, to understand
+    how visitors use our Site and to improve your experience. You may manage your cookie
+    preferences via the consent banner displayed on your first visit to the Site. For more
+    information, see our <a href="privacy-policy.html">Privacy Policy</a>.
+  </p>
+
+  <!-- §12 -->
+  <h2 id="s12">§12 — Limitation of Liability</h2>
+  <p class="caps">
+    To the maximum extent permitted by applicable law, in no event shall yourmountains outdoor
+    collective, its officers, directors, employees, agents, or affiliates be liable for any
+    indirect, incidental, special, consequential, exemplary, or punitive damages, including but
+    not limited to loss of profits, loss of data, loss of goodwill, service interruption,
+    computer damage, or system failure, arising out of or in connection with your use of, or
+    inability to use, the site or any content or services obtained through the site, regardless
+    of the theory of liability (contract, tort, strict liability, or otherwise) and even if
+    yourmountains has been advised of the possibility of such damages.
+  </p>
+  <p>
+    In no event shall YourMountains' total liability to you for all claims exceed one hundred
+    U.S. dollars ($100.00).
+  </p>
+
+  <!-- §13 -->
+  <h2 id="s13">§13 — Indemnification</h2>
+  <p>
+    You agree to defend, indemnify, and hold harmless YourMountains Outdoor Collective and its
+    officers, directors, employees, agents, and affiliates from and against any claims, damages,
+    obligations, losses, liabilities, costs, and expenses (including reasonable attorneys' fees)
+    arising out of or related to: (a) your use of the Site; (b) your violation of these Terms;
+    (c) your violation of any third-party right, including any intellectual property or privacy
+    right; or (d) any claim that content you submitted caused damage to a third party.
+  </p>
+
+  <!-- §14 -->
+  <h2 id="s14">§14 — Termination</h2>
+  <p>
+    YourMountains reserves the right, in its sole discretion, to terminate or restrict your access
+    to the Site and its services at any time, with or without notice, for any reason, including
+    but not limited to violation of these Terms.
+  </p>
+  <p>
+    All provisions of these Terms which by their nature should survive termination shall survive,
+    including, without limitation, ownership provisions, warranty disclaimers, indemnity, and
+    limitations of liability.
+  </p>
+
+  <!-- §15 -->
+  <h2 id="s15">§15 — Changes to These Terms</h2>
+  <p>
+    YourMountains reserves the right to update or revise these Terms at any time. When we make
+    material changes, we will update the "Last Updated" date at the top of this page. Your
+    continued use of the Site after any such changes constitutes your acceptance of the revised
+    Terms. It is your responsibility to check this page periodically for changes.
+  </p>
+  <p>
+    If you do not agree to the revised Terms, you must stop using the Site immediately and may
+    request deletion of your data by contacting us at
+    <a href="mailto:policy@yourmountains.life">policy@yourmountains.life</a>.
+  </p>
+
+  <!-- §16 -->
+  <h2 id="s16">§16 — Governing Law and Dispute Resolution</h2>
+  <p>
+    These Terms shall be governed by and construed in accordance with the laws of the State of
+    <strong>Colorado</strong>, United States, without regard to its conflict of law provisions.
+  </p>
+  <p>
+    Any dispute arising out of or relating to these Terms or your use of the Site shall first be
+    subject to good-faith negotiation between the parties. If the dispute cannot be resolved
+    informally within 30 days, it shall be subject to binding arbitration administered in Colorado,
+    except that either party may seek injunctive or other equitable relief in any court of
+    competent jurisdiction to protect intellectual property or confidential information.
+  </p>
+  <p>
+    You agree that any claim arising out of or related to these Terms must be brought within one
+    (1) year of the date the cause of action arose.
+  </p>
+
+  <!-- §17 -->
+  <h2 id="s17">§17 — Contact Information</h2>
+  <p>
+    If you have any questions about these Terms of Service, please contact us:
+  </p>
+  <p>
+    <strong>YourMountains Outdoor Collective</strong><br>
+    Email: <a href="mailto:policy@yourmountains.life">policy@yourmountains.life</a><br>
+    Website: <a href="https://yourmountains.life">yourmountains.life</a>
+  </p>
+
+</div>
+
+<footer>
+  <p>
+    <a href="index.html">Home</a>
+    <a href="privacy-policy.html">Privacy Policy</a>
+  </p>
+  <p style="margin-top:10px;">&copy; 2026 YourMountains Outdoor Collective. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

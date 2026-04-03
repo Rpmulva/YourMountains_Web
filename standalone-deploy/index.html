@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your Mountains — The world's largest outdoor-minded community. No excuses. Get out there and move.">
+  <title>Your Mountains</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- GA4 — loaded only after cookie consent -->
+  <!-- TODO: Replace G-XXXXXXXXXX with your real GA4 Measurement ID from analytics.google.com -->
+  <script>
+    window.GA_ID = 'G-XXXXXXXXXX';
+    window.gaLoaded = false;
+    function loadGA() {
+      if (window.gaLoaded) return;
+      window.gaLoaded = true;
+      var s = document.createElement('script');
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_ID;
+      s.async = true;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', window.GA_ID);
+    }
+    // Restore consent from previous session
+    if (localStorage.getItem('ym_cookie_consent') === 'accepted') loadGA();
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand-orange: #B44A1F;
+      --brand-green:  #6F7D45;
+      --bg:           #0A0A0A;
+      --surface:      rgba(25, 25, 25, 0.88);
+      --surface-solid:#1a1a1a;
+      --border:       rgba(255,255,255,0.13);
+      --text:         #FFFFFF;
+      --text-2:       #E0E0E0;
+      --text-3:       #A0A0A0;
+      --radius-md:    12px;
+      --radius-lg:    16px;
+      --radius-xl:    20px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Background ─── */
+    .bg-image {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: url('Background_Hike_06.jpeg') center/cover no-repeat;
+      opacity: 0.18;
+      pointer-events: none;
+    }
+
+    /* ─── Cookie Banner ─── */
+    #cookie-banner {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 9999;
+      background: var(--surface-solid);
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      backdrop-filter: blur(8px);
+    }
+    #cookie-banner p {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-2);
+      min-width: 200px;
+    }
+    #cookie-banner a { color: var(--brand-orange); text-decoration: underline; }
+    .cookie-actions { display: flex; gap: 10px; }
+    .btn-cookie-accept {
+      background: var(--brand-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 10px 22px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-cookie-decline {
+      background: transparent;
+      color: var(--text-3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 18px;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ─── Header ─── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-logo img {
+      height: 40px;
+      display: block;
+    }
+    nav { display: flex; align-items: center; gap: 8px; }
+    nav a, nav button {
+      background: transparent;
+      border: none;
+      color: var(--text-2);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s, background 0.2s;
+    }
+    nav a:hover, nav button:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+    .nav-cta {
+      background: var(--brand-green) !important;
+      color: #fff !important;
+      font-weight: 600 !important;
+    }
+    .nav-cta:hover { opacity: 0.88; }
+    @media (max-width: 600px) {
+      header { padding: 0 16px; }
+      nav .nav-hide-mobile { display: none; }
+    }
+
+    /* ─── Sections ─── */
+    main { position: relative; z-index: 1; }
+    .section { padding: 80px 24px; }
+    .container { max-width: 900px; margin: 0 auto; }
+
+    /* ─── Hero ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.35) 60%, rgba(10,10,10,0.92) 100%);
+    }
+    .hero-content { max-width: 860px; }
+    .hero-tagline {
+      color: var(--brand-orange);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero-headline {
+      font-size: clamp(38px, 6vw, 60px);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 28px;
+      letter-spacing: -1px;
+    }
+    .hero-body {
+      font-size: clamp(17px, 2.2vw, 20px);
+      color: var(--text-2);
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto 16px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .btn-primary {
+      background: var(--brand-orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 16px 32px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(180,74,31,0.35);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--brand-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 16px 32px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(111,125,69,0.35);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-secondary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 15px 30px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--brand-orange); background: rgba(180,74,31,0.08); }
+
+    /* ─── Mission ─── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      backdrop-filter: blur(10px);
+    }
+    @media (max-width: 600px) { .card { padding: 28px 20px; } }
+    .section-label {
+      color: var(--brand-orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .mission-body {
+      font-size: 18px;
+      color: var(--text-2);
+      text-align: center;
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+    .mission-divider {
+      width: 80px;
+      height: 2px;
+      background: var(--brand-orange);
+      margin: 0 auto 32px;
+      border-radius: 1px;
+    }
+    .pillars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .pillar {
+      font-size: 16px;
+      color: var(--text-2);
+      font-style: italic;
+      text-align: center;
+      flex: 1;
+      min-width: 180px;
+      line-height: 1.6;
+    }
+    .mission-accent {
+      font-size: 18px;
+      color: var(--text);
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* ─── Survey ─── */
+    .h2 {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .intro {
+      font-size: 16px;
+      color: var(--text-2);
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+    .path-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 700px) { .path-grid { grid-template-columns: 1fr; } }
+    .path-card {
+      background: rgba(25,25,25,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px;
+    }
+    .path-icon {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      background: rgba(180,74,31,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+    }
+    .h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .body-text {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+    .btn-path {
+      background: var(--brand-orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 12px 22px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.2s;
+    }
+    .btn-path:hover { opacity: 0.88; }
+    .btn-path-green {
+      background: var(--brand-green);
+    }
+
+    /* ─── Founders Club ─── */
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .form-input {
+      width: 100%;
+      background: #252525;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      font-family: inherit;
+      font-size: 16px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--brand-orange); }
+    .form-input.error { border-color: #F44336; }
+    .form-error { font-size: 12px; color: #F44336; margin-top: 6px; }
+    .field-group { margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .join-as-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .join-as-opt {
+      padding: 10px 22px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-3);
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .join-as-opt.selected {
+      border-color: var(--brand-orange);
+      background: rgba(180,74,31,0.15);
+      color: var(--brand-orange);
+      font-weight: 600;
+    }
+    .btn-submit {
+      background: var(--brand-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 16px 40px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      margin: 28px auto 0;
+      min-width: 240px;
+      transition: opacity 0.2s;
+    }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:not(:disabled):hover { opacity: 0.88; }
+    .founders-path-body {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    .founders-bold { color: var(--brand-orange); font-weight: 700; }
+
+    /* ─── Footer ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    .footer-logo img { height: 50px; margin-bottom: 20px; }
+    .footer-links { margin-bottom: 16px; }
+    .footer-links button {
+      background: transparent;
+      border: none;
+      color: var(--brand-orange);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 6px 12px;
+      text-decoration: underline;
+    }
+    .footer-links a {
+      color: var(--text-3);
+      font-size: 14px;
+      text-decoration: none;
+      margin: 0 12px;
+    }
+    .footer-links a:hover { color: var(--text-2); }
+    .footer-copy { color: var(--text-3); font-size: 13px; }
+
+    /* ─── Modal ─── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      max-width: 520px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .modal-body {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      border-radius: var(--radius-md);
+      padding: 12px 22px;
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .btn-send {
+      background: var(--brand-orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 12px 28px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn-send:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-send:not(:disabled):hover { opacity: 0.88; }
+    .modal-textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    /* Welcome modal */
+    .welcome-icon { font-size: 48px; text-align: center; margin-bottom: 16px; }
+    .welcome-headline {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+    .welcome-para {
+      font-size: 15px;
+      color: var(--text-2);
+      line-height: 1.7;
+      margin-bottom: 10px;
+    }
+    .btn-got-it {
+      background: var(--brand-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-lg);
+      padding: 14px 36px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      margin: 24px auto 0;
+      transition: opacity 0.2s;
+    }
+    .btn-got-it:hover { opacity: 0.88; }
+
+    /* ─── Utility ─── */
+    .text-center { text-align: center; }
+    .mt-4 { margin-top: 4px; }
+    .mb-4 { margin-bottom: 4px; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Background photo -->
+  <div class="bg-image" aria-hidden="true"></div>
+
+  <!-- ── Cookie Consent Banner ────────────────────── -->
+  <div id="cookie-banner" role="complementary" aria-label="Cookie consent">
+    <p>
+      Your Mountains uses cookies to understand how visitors use our site and to improve your experience.
+      We do not sell your data. <a href="privacy-policy.html">Privacy Policy</a>
+    </p>
+    <div class="cookie-actions">
+      <button class="btn-cookie-decline" onclick="handleCookieConsent('declined')">Decline</button>
+      <button class="btn-cookie-accept" onclick="handleCookieConsent('accepted')">Accept</button>
+    </div>
+  </div>
+
+  <!-- ── Header ───────────────────────────────────── -->
+  <header>
+    <div class="header-logo">
+      <a href="#hero"><img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;color:#fff;font-weight:800;font-size:18px;">YOUR MOUNTAINS</span></a>
+    </div>
+    <nav>
+      <a href="#survey" class="nav-hide-mobile">Take the Survey</a>
+      <a href="#founders" class="nav-hide-mobile">Founder's Club</a>
+      <button onclick="openContactModal()" class="nav-cta">Contact Us</button>
+    </nav>
+  </header>
+
+  <!-- ── Main ─────────────────────────────────────── -->
+  <main>
+
+    <!-- Hero -->
+    <section id="hero">
+      <div class="hero-content">
+        <p class="hero-tagline">The outdoor collective</p>
+        <h1 class="hero-headline">No Excuses.<br>Get Out There and Move.</h1>
+        <p class="hero-body">
+          We're building the world's largest outdoor-minded community — powered by AI to inspire
+          movement, exploration, and thriving beyond walls.
+        </p>
+        <p class="hero-body">
+          Whether you are the busy mom planning your family's weekends and vacations, or a solo
+          explorer seeking your next adventure or even your tribe — we give you the tools to make
+          it happen.
+        </p>
+        <div class="hero-actions">
+          <a href="#founders" class="btn-secondary">Join the Founder's Club</a>
+          <a href="#survey" class="btn-outline">Take the Survey</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission -->
+    <section class="section">
+      <div class="container">
+        <div class="card">
+          <p class="section-label">Our Mission</p>
+          <p class="mission-body">
+            We make the outdoors radically more accessible by removing barriers, inspiring lifelong
+            motion, and proving that with community, anything is possible. We are the bridge between
+            human passion and innovation — a new era of outdoor connection.
+          </p>
+          <div class="mission-divider"></div>
+          <p class="section-label">We're Unlocking the Outdoors</p>
+          <div class="pillars">
+            <p class="pillar">&ldquo;Adventure is within your reach.&rdquo;</p>
+            <p class="pillar">&ldquo;The right gear is accessible.&rdquo;</p>
+            <p class="pillar">&ldquo;There is a community waiting for you.&rdquo;</p>
+          </div>
+          <p class="mission-accent">So that everyone can live a healthier life.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Survey -->
+    <section id="survey" class="section">
+      <div class="container">
+        <div class="card">
+          <h2 class="h2">Take the Survey</h2>
+          <p class="intro">
+            Help us shape the future of the Collective. We are not guessing what you need — we're
+            asking. Your input shapes what we build. Take the survey as an Explorer or a Vendor Partner.
+          </p>
+          <div class="path-grid">
+            <div class="path-card">
+              <div class="path-icon">🧭</div>
+              <h3 class="h3">Explorers</h3>
+              <p class="body-text">
+                What stops you from getting outside? Gear, time, or confidence? If you are an outdoor
+                enthusiast, or aspire to be, take the 2 minute survey and help us crush those barriers.
+              </p>
+              <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=MQA3jGPCNki0BLhvtw0_nFLgk1DC_whHmx5uhgS8F8lUMVpGSTJVQktESEFSREJRS1ZNRzhGNkM2UC4u"
+                 target="_blank" rel="noopener" class="btn-path"
+                 onclick="trackEvent('form_start','explorer_survey')">
+                Take the Explorer Survey
+              </a>
+            </div>
+            <div class="path-card">
+              <div class="path-icon">🏪</div>
+              <h3 class="h3">Vendor Partners</h3>
+              <p class="body-text">
+                Let's focus on meaningful impressions. If you are an outdoor business (e.g. gear shop,
+                guides, tour operator) tell us how we can help you reach high-intent, loyal customers.
+              </p>
+              <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=MQA3jGPCNki0BLhvtw0_nFLgk1DC_whHmx5uhgS8F8lUNlIwMEs1QktXRVFUQ05CT1Q3WDFEWFFFUS4u"
+                 target="_blank" rel="noopener" class="btn-path btn-path-green"
+                 onclick="trackEvent('form_start','vendor_survey')">
+                Take the Vendor Partner Survey
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Founders Club -->
+    <section id="founders" class="section">
+      <div class="container">
+        <div class="card">
+          <h2 class="h2">Join the Founder's Club</h2>
+          <p class="intro">
+            Build the Future of Outdoor Access. We're gathering the explorers, the guides, the gear
+            shops, and the dreamers. Join the Founder's Club to stay in touch and gain access to
+            founders only exclusives.
+          </p>
+          <div class="path-grid" style="margin-bottom:40px;">
+            <div class="path-card">
+              <div class="path-icon">🧭</div>
+              <h3 class="h3">Explorers</h3>
+              <p class="founders-path-body">
+                The first <span class="founders-bold">10,000 members</span> earn permanent Founder's
+                Club status — a once-ever honor. Enjoy exclusive badges, priority access, special
+                perks, and members-only invitations that will never be offered again.
+              </p>
+            </div>
+            <div class="path-card">
+              <div class="path-icon">🏪</div>
+              <h3 class="h3">Vendor Partners</h3>
+              <p class="founders-path-body">
+                We're opening just <span class="founders-bold">20 Founding Vendor Partner spots</span>
+                per region. Early partners receive lifetime reduced commissions, premium placement,
+                exclusive event access, and ongoing visibility that future vendors can't match.
+              </p>
+            </div>
+          </div>
+
+          <!-- Founders Signup Form -->
+          <form id="founders-form" onsubmit="handleFoundersSubmit(event)">
+            <div class="field-group">
+              <label class="form-label" for="founders-email">Email Address</label>
+              <input id="founders-email" name="email" type="email" class="form-input"
+                     placeholder="you@example.com" autocomplete="email" required
+                     oninput="clearError('founders-email-error')">
+              <p id="founders-email-error" class="form-error hidden"></p>
+            </div>
+            <div class="field-group">
+              <label class="form-label">I am joining as...</label>
+              <div class="join-as-row">
+                <button type="button" class="join-as-opt" data-role="explorer" onclick="selectRole(this)">an Explorer</button>
+                <button type="button" class="join-as-opt" data-role="vendor" onclick="selectRole(this)">a Vendor Partner</button>
+                <button type="button" class="join-as-opt" data-role="both" onclick="selectRole(this)">Both</button>
+              </div>
+              <p id="founders-role-error" class="form-error hidden" style="text-align:center;margin-top:8px;"></p>
+            </div>
+            <p style="text-align:center;font-size:12px;color:#666;margin-top:16px;">
+              By submitting you agree to our
+              <a href="terms-of-service.html" style="color:#B44A1F;">Terms of Service</a> and
+              <a href="privacy-policy.html" style="color:#B44A1F;">Privacy Policy</a>.
+            </p>
+            <button type="submit" class="btn-submit" id="founders-submit-btn">
+              Join the Founder's Club
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ───────────────────────────────────── -->
+  <footer>
+    <div class="footer-logo">
+      <img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none'">
+    </div>
+    <div class="footer-links">
+      <button onclick="openContactModal()">Contact Founders</button>
+      &nbsp;&nbsp;
+      <a href="vendor-survey.html" style="color:var(--brand-orange);font-weight:600;">Partner With Us &rarr;</a>
+      <br>
+      <a href="terms-of-service.html">Terms of Service</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+    </div>
+    <p class="footer-copy">&copy; 2026 Your Mountains</p>
+  </footer>
+
+  <!-- ── Contact Modal ─────────────────────────────── -->
+  <div id="contact-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title"
+       onclick="if(event.target===this)closeContactModal()">
+    <div class="modal-card">
+      <h2 class="modal-title" id="contact-modal-title">Contact Us</h2>
+      <p class="modal-body">
+        The best trails are forged together, and we can't build this without you. No question is too
+        small and no idea is too big. Drop us a line — we are real people on the other end, and
+        we'll do our best to respond ASAP.
+      </p>
+      <form id="contact-form" onsubmit="handleContactSubmit(event)">
+        <div class="field-group" style="max-width:100%;">
+          <label class="form-label" for="contact-email">Email Address</label>
+          <input id="contact-email" name="email" type="email" class="form-input"
+                 placeholder="you@example.com" autocomplete="email" required
+                 oninput="clearError('contact-email-error')">
+          <p id="contact-email-error" class="form-error hidden"></p>
+        </div>
+        <div class="field-group" style="max-width:100%;">
+          <label class="form-label" for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" class="form-input modal-textarea"
+                    placeholder="Write your message here..." required></textarea>
+        </div>
+        <p style="font-size:12px;color:#666;margin-bottom:8px;">
+          By submitting you agree to our
+          <a href="terms-of-service.html" style="color:#B44A1F;">Terms of Service</a> and
+          <a href="privacy-policy.html" style="color:#B44A1F;">Privacy Policy</a>.
+        </p>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="closeContactModal()">Cancel</button>
+          <button type="submit" class="btn-send" id="contact-submit-btn">Send Message</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Welcome Modal ─────────────────────────────── -->
+  <div id="welcome-modal" class="modal-overlay" role="dialog" aria-modal="true"
+       onclick="if(event.target===this)closeWelcomeModal()">
+    <div class="modal-card" style="text-align:center;">
+      <div class="welcome-icon">✅</div>
+      <h2 class="welcome-headline" id="welcome-headline"></h2>
+      <div id="welcome-body"></div>
+      <button class="btn-got-it" onclick="closeWelcomeModal()">Got it, let's go.</button>
+    </div>
+  </div>
+
+  <!-- ── Netlify Form Declarations (invisible — scraped at deploy time) ── -->
+  <form name="founders-signup" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="founders-signup">
+    <input name="bot-field">
+    <input name="email" type="email">
+    <input name="role">
+    <input name="form_source">
+    <input name="date">
+  </form>
+  <form name="contact" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="hidden" name="form-name" value="contact">
+    <input name="bot-field">
+    <input name="email" type="email">
+    <textarea name="message"></textarea>
+    <input name="form_source">
+    <input name="date">
+  </form>
+
+  <!-- ── Scripts ───────────────────────────────────── -->
+  <script>
+    /* ── Cookie Consent ── */
+    (function () {
+      var banner = document.getElementById('cookie-banner');
+      var stored = localStorage.getItem('ym_cookie_consent');
+      if (stored) banner.style.display = 'none';
+    })();
+
+    function handleCookieConsent(choice) {
+      localStorage.setItem('ym_cookie_consent', choice);
+      document.getElementById('cookie-banner').style.display = 'none';
+      if (choice === 'accepted') loadGA();
+    }
+
+    /* ── GA4 Event Tracking ── */
+    function trackEvent(action, label) {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', action, { event_label: label });
+      }
+    }
+
+    /* ── Role Selection ── */
+    var selectedRole = null;
+    function selectRole(btn) {
+      document.querySelectorAll('.join-as-opt').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      selectedRole = btn.getAttribute('data-role');
+      clearError('founders-role-error');
+      trackEvent('form_start', 'founders_signup');
+    }
+
+    /* ── Validation ── */
+    function clearError(id) {
+      var el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.classList.add('hidden'); }
+    }
+    function showError(id, msg) {
+      var el = document.getElementById(id);
+      if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+    }
+    function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()); }
+
+    /* ── Submit to Netlify Forms (backup capture) ── */
+    function submitToNetlify(formName, data) {
+      var params = Object.assign({ 'form-name': formName }, data);
+      return fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(params).toString(),
+      }).catch(function() { /* silent — Power Automate is the primary */ });
+    }
+
+    /* ── Founders Club Submit ── */
+    async function handleFoundersSubmit(e) {
+      e.preventDefault();
+      var email = document.getElementById('founders-email').value.trim();
+      var btn   = document.getElementById('founders-submit-btn');
+      var valid = true;
+
+      if (!email || !isValidEmail(email)) {
+        showError('founders-email-error', 'Please enter a valid email address.');
+        valid = false;
+      }
+      if (!selectedRole) {
+        showError('founders-role-error', 'Please select how you are joining.');
+        valid = false;
+      }
+      if (!valid) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Joining...';
+      trackEvent('form_submit', 'founders_signup');
+
+      var payload = {
+        Title: email,
+        email: email,
+        role: selectedRole,
+        message: '',
+        form_source: 'Signup',
+        date: new Date().toISOString(),
+      };
+
+      // Mirror to Netlify Forms
+      submitToNetlify('founders-signup', {
+        email: email, role: selectedRole, form_source: 'Signup', date: payload.date
+      });
+
+      try {
+        var res = await fetch('/.netlify/functions/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          showWelcomeModal(selectedRole);
+          document.getElementById('founders-form').reset();
+          document.querySelectorAll('.join-as-opt').forEach(function(b) { b.classList.remove('selected'); });
+          selectedRole = null;
+        } else {
+          var text = await res.text().catch(function(){ return ''; });
+          alert('Signup didn\'t go through. Please try again or email policy@yourmountains.life to join.');
+        }
+      } catch (err) {
+        alert('We couldn\'t reach the server. Please check your connection and try again, or email policy@yourmountains.life.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Join the Founder\'s Club';
+      }
+    }
+
+    /* ── Contact Modal ── */
+    function openContactModal() {
+      document.getElementById('contact-modal').classList.add('open');
+      trackEvent('form_start', 'contact');
+    }
+    function closeContactModal() {
+      document.getElementById('contact-modal').classList.remove('open');
+      document.getElementById('contact-form').reset();
+      clearError('contact-email-error');
+    }
+
+    async function handleContactSubmit(e) {
+      e.preventDefault();
+      var email   = document.getElementById('contact-email').value.trim();
+      var message = document.getElementById('contact-message').value.trim();
+      var btn     = document.getElementById('contact-submit-btn');
+      var valid   = true;
+
+      if (!email || !isValidEmail(email)) {
+        showError('contact-email-error', 'Please enter a valid email address.');
+        valid = false;
+      }
+      if (!valid) return;
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+      trackEvent('form_submit', 'contact');
+
+      var payload = { email: email, message: message, form_source: 'Contact', date: new Date().toISOString() };
+
+      submitToNetlify('contact', { email: email, message: message, form_source: 'Contact', date: payload.date });
+
+      try {
+        var res = await fetch('/.netlify/functions/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (res.ok) {
+          alert('Message sent! We\'ll reply as soon as we can.');
+          closeContactModal();
+        } else {
+          alert('We couldn\'t send your message. Please try again or email policy@yourmountains.life.');
+        }
+      } catch (err) {
+        alert('We couldn\'t reach the server. Check your connection or email policy@yourmountains.life.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Message';
+      }
+    }
+
+    /* ── Welcome Modal ── */
+    var welcomeContent = {
+      explorer: {
+        headline: 'The Trail Starts Here.',
+        body: [
+          "Welcome to the collective. You've just secured your spot as one of the first 10,000 members of Your Mountains.",
+          "We aren't just building an app; we're building a movement. As a Founder's Club member, you'll have early access and exclusive badges.",
+        ],
+      },
+      vendor: {
+        headline: 'Partnering for a New Era.',
+        body: [
+          "Thank you for believing in the vision. You're stepping up to shape how the outdoor industry connects with explorers.",
+          "We're limiting Founding Partner status to just 20 businesses per region. We'll be in touch shortly.",
+        ],
+      },
+      both: {
+        headline: 'Explorer by Day, Builder by Trade.',
+        body: [
+          "Welcome to the inner circle. You've joined not just as an explorer, but as a partner looking to fuel adventure for others.",
+          "You've secured your spot as a Founder's Club member, and we've flagged your interest as a Regional Founding Partner.",
+        ],
+      },
+    };
+
+    function showWelcomeModal(role) {
+      var content = welcomeContent[role] || welcomeContent.explorer;
+      document.getElementById('welcome-headline').textContent = content.headline;
+      var bodyEl = document.getElementById('welcome-body');
+      bodyEl.innerHTML = content.body.map(function(p) {
+        return '<p class="welcome-para">' + p + '</p>';
+      }).join('');
+      document.getElementById('welcome-modal').classList.add('open');
+    }
+    function closeWelcomeModal() {
+      document.getElementById('welcome-modal').classList.remove('open');
+    }
+  </script>
+
+</body>
+</html>

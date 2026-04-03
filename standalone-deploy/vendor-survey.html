@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your Mountains Vendor Partner Survey — Help shape the future of outdoor commerce.">
+  <title>Vendor Partner Survey — Your Mountains</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #B44A1F;
+      --green:  #6F7D45;
+      --bg:     #0A0A0A;
+      --surface:#141414;
+      --card:   rgba(22,22,22,0.95);
+      --border: rgba(255,255,255,0.12);
+      --text:   #FFFFFF;
+      --text-2: #E0E0E0;
+      --text-3: #A0A0A0;
+      --error:  #F44336;
+      --r-md:   12px;
+      --r-lg:   16px;
+    }
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    /* ── Header ── */
+    header {
+      background: rgba(10,10,10,0.96);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img { height: 36px; display: block; }
+    header a { color: var(--text-3); font-size: 14px; text-decoration: none; }
+    header a:hover { color: var(--orange); }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+    .survey-header { text-align: center; margin-bottom: 40px; }
+    .survey-tag {
+      display: inline-block;
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .survey-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+      line-height: 1.15;
+    }
+    .survey-intro {
+      font-size: 16px;
+      color: var(--text-2);
+      max-width: 560px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── Progress Bar ── */
+    .progress-wrap { margin-bottom: 36px; }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+    .progress-label span { color: var(--orange); font-weight: 600; }
+    .progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--orange);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── Section Card ── */
+    .section-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+    }
+    @media (max-width: 600px) { .section-card { padding: 24px 18px; } }
+    .section-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      border-left: 3px solid var(--orange);
+      padding-left: 14px;
+      margin-bottom: 32px;
+    }
+
+    /* ── Questions ── */
+    .q-block { margin-bottom: 28px; }
+    .q-label {
+      display: block;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
+    .q-label .q-num {
+      color: var(--orange);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .required-star { color: var(--error); }
+    .q-hint { font-size: 13px; color: var(--text-3); margin-top: -6px; margin-bottom: 10px; }
+
+    /* Radio / Checkbox options */
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .opt-item:hover { border-color: var(--orange); background: rgba(180,74,31,0.06); }
+    .opt-item input[type="radio"],
+    .opt-item input[type="checkbox"] {
+      margin-top: 2px;
+      accent-color: var(--orange);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .opt-item label {
+      font-size: 15px;
+      color: var(--text-2);
+      cursor: pointer;
+      line-height: 1.5;
+    }
+
+    /* Scale (Q3) */
+    .scale-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .scale-opt { flex: 1; min-width: 54px; }
+    .scale-opt input[type="radio"] { display: none; }
+    .scale-opt label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-align: center;
+    }
+    .scale-opt input:checked + label {
+      border-color: var(--orange);
+      background: rgba(180,74,31,0.12);
+    }
+    .scale-opt label:hover { border-color: rgba(180,74,31,0.5); }
+    .scale-num { font-size: 20px; font-weight: 700; color: var(--text); }
+    .scale-desc { font-size: 11px; color: var(--text-3); line-height: 1.3; }
+
+    /* Text inputs */
+    .q-input {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      padding: 13px 16px;
+      font-family: inherit;
+      font-size: 15px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .q-input:focus { border-color: var(--orange); }
+    .q-input.error { border-color: var(--error); }
+    .q-input::placeholder { color: var(--text-3); }
+    textarea.q-input { resize: vertical; min-height: 90px; }
+
+    /* Conditional reveal */
+    .conditional { margin-top: 12px; }
+    .conditional.hidden { display: none; }
+
+    /* Error text */
+    .field-error {
+      font-size: 12px;
+      color: var(--error);
+      margin-top: 6px;
+    }
+    .field-error.hidden { display: none; }
+
+    /* ── Navigation buttons ── */
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 36px;
+      gap: 12px;
+    }
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      border-radius: var(--r-lg);
+      padding: 13px 28px;
+      font-family: inherit;
+      font-size: 15px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--text-3); color: var(--text); }
+    .btn-next {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-lg);
+      padding: 13px 36px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-left: auto;
+    }
+    .btn-next:hover { opacity: 0.88; }
+    .btn-submit {
+      background: var(--green);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-lg);
+      padding: 14px 40px;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      margin-left: auto;
+    }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:not(:disabled):hover { opacity: 0.88; }
+
+    /* ── Thank-you state ── */
+    #thankyou {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+    }
+    .ty-icon { font-size: 56px; margin-bottom: 20px; }
+    .ty-headline {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .ty-body {
+      font-size: 16px;
+      color: var(--text-2);
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .btn-home {
+      display: inline-block;
+      background: var(--orange);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--r-lg);
+      padding: 13px 32px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 700;
+      transition: opacity 0.2s;
+    }
+    .btn-home:hover { opacity: 0.88; }
+
+    /* ── Hidden Netlify form ── */
+    .netlify-hidden { display: none; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 13px;
+    }
+    footer a { color: var(--text-3); text-decoration: none; margin: 0 8px; }
+    footer a:hover { color: var(--text-2); }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html"><img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;color:#fff;font-weight:800;">YOUR MOUNTAINS</span></a>
+  <a href="index.html">← Back to Home</a>
+</header>
+
+<div class="page">
+
+  <!-- Survey Header -->
+  <div class="survey-header">
+    <span class="survey-tag">Vendor Partner Survey</span>
+    <h1 class="survey-title">Help Shape the Future<br>of Outdoor Commerce</h1>
+    <p class="survey-intro">
+      We're building the outdoor industry's most connected community platform — and we want Founding
+      Partners who help shape it. 5 sections, 2 minutes. Your answers directly influence what we build.
+    </p>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-label">
+      <span id="progress-text">Section <span id="progress-current">1</span> of 5</span>
+      <span id="progress-section-name">Qualifying the Partner</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill" style="width:20%"></div>
+    </div>
+  </div>
+
+  <!-- ══ SURVEY FORM ══════════════════════════════ -->
+  <div id="survey-wrap">
+
+    <!-- Section 1: Qualifying the Partner -->
+    <div class="section-card" id="section-1">
+      <h2 class="section-title">Qualifying the Partner</h2>
+
+      <!-- Q1 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q1 &middot; Required</span>What best describes your business?</label>
+        <div class="opts" id="q1-opts">
+          <div class="opt-item"><input type="radio" name="business_type" id="q1a" value="Gear Retail/Rental"><label for="q1a">Gear Retail / Rental</label></div>
+          <div class="opt-item"><input type="radio" name="business_type" id="q1b" value="Guided Tours/Experiences"><label for="q1b">Guided Tours / Experiences</label></div>
+          <div class="opt-item"><input type="radio" name="business_type" id="q1c" value="Campsite/Lodging"><label for="q1c">Campsite / Lodging</label></div>
+          <div class="opt-item"><input type="radio" name="business_type" id="q1d" value="Wellness/Recovery"><label for="q1d">Wellness / Recovery</label></div>
+          <div class="opt-item"><input type="radio" name="business_type" id="q1e" value="Non-Profit/Club"><label for="q1e">Non-Profit / Club</label></div>
+          <div class="opt-item"><input type="radio" name="business_type" id="q1f" value="Medical or Clinical Provider"><label for="q1f">Medical or Clinical Provider</label></div>
+        </div>
+        <p class="field-error hidden" id="q1-error">Please select your business type.</p>
+      </div>
+
+      <!-- Q2 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q2 &middot; Select all that apply</span>What is your primary goal for the next 12 months?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="checkbox" name="primary_goals" id="q2a" value="Brand Awareness"><label for="q2a">Brand Awareness</label></div>
+          <div class="opt-item"><input type="checkbox" name="primary_goals" id="q2b" value="Direct Sales/Bookings"><label for="q2b">Direct Sales / Bookings</label></div>
+          <div class="opt-item"><input type="checkbox" name="primary_goals" id="q2c" value="Building Local Community Loyalty"><label for="q2c">Building Local Community Loyalty</label></div>
+          <div class="opt-item"><input type="checkbox" name="primary_goals" id="q2d" value="Offloading Excess Inventory"><label for="q2d">Offloading Excess Inventory</label></div>
+        </div>
+      </div>
+
+      <!-- Q3 Scale -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q3</span>On a scale of 1–5, how satisfied are you with your current digital marketing ROI?</label>
+        <div class="scale-row">
+          <div class="scale-opt"><input type="radio" name="marketing_roi_score" id="q3-1" value="1"><label for="q3-1"><span class="scale-num">1</span><span class="scale-desc">Hate it / Waste of money</span></label></div>
+          <div class="scale-opt"><input type="radio" name="marketing_roi_score" id="q3-2" value="2"><label for="q3-2"><span class="scale-num">2</span><span class="scale-desc">Bad experiences but open</span></label></div>
+          <div class="scale-opt"><input type="radio" name="marketing_roi_score" id="q3-3" value="3"><label for="q3-3"><span class="scale-num">3</span><span class="scale-desc">Neutral</span></label></div>
+          <div class="scale-opt"><input type="radio" name="marketing_roi_score" id="q3-4" value="4"><label for="q3-4"><span class="scale-num">4</span><span class="scale-desc">Getting the job done, sort of</span></label></div>
+          <div class="scale-opt"><input type="radio" name="marketing_roi_score" id="q3-5" value="5"><label for="q3-5"><span class="scale-num">5</span><span class="scale-desc">Love it / Highly profitable</span></label></div>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q4 &middot; Required</span>What is your biggest pain point with current customers?</label>
+        <div class="opts" id="q4-opts">
+          <div class="opt-item"><input type="radio" name="biggest_pain_point" id="q4a" value="Not enough of them"><label for="q4a">Not enough of them</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_pain_point" id="q4b" value="They ask a million questions but don't buy"><label for="q4b">They ask a million questions but don't buy</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_pain_point" id="q4c" value="One-time buyers, no loyalty"><label for="q4c">They are "one-time" buyers — no loyalty</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_pain_point" id="q4d" value="High acquisition cost"><label for="q4d">High acquisition cost</label></div>
+        </div>
+        <p class="field-error hidden" id="q4-error">Please select your biggest pain point.</p>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-next" onclick="nextSection(1)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Section 2: Validating the Solution -->
+    <div class="section-card" id="section-2" style="display:none;">
+      <h2 class="section-title">Validating the Solution</h2>
+
+      <!-- Q5 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q5</span>We connect you with "High Intent" users — e.g., a user tells our AI <em>"I need hiking boots for this Saturday."</em> Is this lead more valuable than a generic Facebook view?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="high_intent_value" id="q5a" value="Yes, significantly"><label for="q5a">Yes, significantly</label></div>
+          <div class="opt-item"><input type="radio" name="high_intent_value" id="q5b" value="Slightly"><label for="q5b">Slightly</label></div>
+          <div class="opt-item"><input type="radio" name="high_intent_value" id="q5c" value="No"><label for="q5c">No</label></div>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q6</span>Would you pay a "Success Fee" (commission) only when a customer actually books or buys from you through our app?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="commission_model_pref" id="q6a" value="Yes, that is my preferred model"><label for="q6a">Yes, that is my preferred model</label></div>
+          <div class="opt-item"><input type="radio" name="commission_model_pref" id="q6b" value="No, I prefer a flat monthly advertising fee"><label for="q6b">No, I prefer a flat monthly advertising fee</label></div>
+          <div class="opt-item"><input type="radio" name="commission_model_pref" id="q6c" value="No, I only want free exposure"><label for="q6c">No, I only want free exposure</label></div>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q7</span>What commission rate would you consider fair for a fully booked customer?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="fair_commission_rate" id="q7a" value="Less than 5%"><label for="q7a">Less than 5%</label></div>
+          <div class="opt-item"><input type="radio" name="fair_commission_rate" id="q7b" value="5%"><label for="q7b">5%</label></div>
+          <div class="opt-item"><input type="radio" name="fair_commission_rate" id="q7c" value="10%"><label for="q7c">10%</label></div>
+          <div class="opt-item"><input type="radio" name="fair_commission_rate" id="q7d" value="More than 10%"><label for="q7d">More than 10%</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(2)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(2)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Section 3: Building Confidence -->
+    <div class="section-card" id="section-3" style="display:none;">
+      <h2 class="section-title">Building Confidence</h2>
+
+      <!-- Q8 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q8</span>What is your BIGGEST hesitation about partnering with a new platform like YourMountains?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="biggest_hesitation" id="q8a" value="Not enough users"><label for="q8a">Not enough users</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_hesitation" id="q8b" value="Technology integration is too hard"><label for="q8b">Technology integration is too hard</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_hesitation" id="q8c" value="Fear of brand dilution"><label for="q8c">Fear of brand dilution</label></div>
+          <div class="opt-item"><input type="radio" name="biggest_hesitation" id="q8d" value="Cost/Fees"><label for="q8d">Cost / Fees</label></div>
+        </div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q9</span>To feel confident as a Founding Partner, how many pre-registered local users (Beta Signups) would you need to see?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="partner_threshold" id="q9a" value="100–500"><label for="q9a">100–500</label></div>
+          <div class="opt-item"><input type="radio" name="partner_threshold" id="q9b" value="500–1,000"><label for="q9b">500–1,000</label></div>
+          <div class="opt-item"><input type="radio" name="partner_threshold" id="q9c" value="1,000–5,000"><label for="q9c">1,000–5,000</label></div>
+          <div class="opt-item"><input type="radio" name="partner_threshold" id="q9d" value="5,000–10,000+"><label for="q9d">5,000–10,000+</label></div>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q10 &middot; Select all that apply</span>Which of these would build the most trust with you right now?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="checkbox" name="trust_builders" id="q10a" value="Seeing a working prototype of the app"><label for="q10a">Seeing a working prototype of the app</label></div>
+          <div class="opt-item"><input type="checkbox" name="trust_builders" id="q10b" value="Seeing a list of other partners who have joined"><label for="q10b">Seeing a list of other partners who have joined</label></div>
+          <div class="opt-item"><input type="checkbox" name="trust_builders" id="q10c" value="Seeing demographic data of our waiting list"><label for="q10c">Seeing demographic data of our waiting list</label></div>
+          <div class="opt-item"><input type="checkbox" name="trust_builders" id="q10d" value="Meeting the founders in person"><label for="q10d">Meeting the founders in person</label></div>
+        </div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q11</span>If we handled the "mental load" for the customer (itinerary, packing list, weather check) so they showed up to your shop ready to buy or rent — how much time would that save your staff?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="mental_load_value" id="q11a" value="None"><label for="q11a">None</label></div>
+          <div class="opt-item"><input type="radio" name="mental_load_value" id="q11b" value="A little"><label for="q11b">A little</label></div>
+          <div class="opt-item"><input type="radio" name="mental_load_value" id="q11c" value="A lot"><label for="q11c">A lot &mdash; <em>this is a huge value add</em></label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(3)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(3)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Section 4: Technical & Operational Fit -->
+    <div class="section-card" id="section-4" style="display:none;">
+      <h2 class="section-title">Technical &amp; Operational Fit</h2>
+
+      <!-- Q12 with conditional -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q12</span>Do you currently use booking software?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="uses_booking_software" id="q12no" value="no" onchange="toggleBookingSoftware()"><label for="q12no">No, we use phone / email</label></div>
+          <div class="opt-item"><input type="radio" name="uses_booking_software" id="q12yes" value="yes" onchange="toggleBookingSoftware()"><label for="q12yes">Yes</label></div>
+        </div>
+        <div class="conditional hidden" id="booking-software-conditional">
+          <label class="q-label" for="booking_software_name" style="margin-top:16px;margin-bottom:8px;font-weight:500;">Which one?</label>
+          <input type="text" id="booking_software_name" name="booking_software_name" class="q-input" placeholder="e.g. FareHarbor, Peek Pro, Checkfront…">
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q13</span>Are you open to offering an exclusive "Community Discount" (e.g., 5–10%) to YourMountains members?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="open_to_discount" id="q13a" value="Yes"><label for="q13a">Yes</label></div>
+          <div class="opt-item"><input type="radio" name="open_to_discount" id="q13b" value="No"><label for="q13b">No</label></div>
+          <div class="opt-item"><input type="radio" name="open_to_discount" id="q13c" value="Maybe"><label for="q13c">Maybe</label></div>
+        </div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q14</span>Would you be interested in hosting a "No Excuses" event (e.g., Beginner Gear Workshop) at your location if we drove the traffic?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="open_to_events" id="q14a" value="Yes, we love events"><label for="q14a">Yes, we love events</label></div>
+          <div class="opt-item"><input type="radio" name="open_to_events" id="q14b" value="No, we don't have the space or time"><label for="q14b">No, we don't have the space or time</label></div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(4)">&larr; Back</button>
+        <button class="btn-next" onclick="nextSection(4)">Next &rarr;</button>
+      </div>
+    </div>
+
+    <!-- Section 5: Partner Commitment & Contact -->
+    <div class="section-card" id="section-5" style="display:none;">
+      <h2 class="section-title">Partner Commitment &amp; Contact Info</h2>
+
+      <!-- Q15 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q15</span>We are selecting just 20 "Founding Partners" per region — lifetime priority placement, lower costs, and direct product roadmap input. Are you interested?</label>
+        <div class="opts">
+          <div class="opt-item"><input type="radio" name="founding_partner_interest" id="q15a" value="Yes, I want to secure one of the 20 spots"><label for="q15a">Yes, I want to secure one of the 20 spots</label></div>
+          <div class="opt-item"><input type="radio" name="founding_partner_interest" id="q15b" value="No"><label for="q15b">No</label></div>
+          <div class="opt-item"><input type="radio" name="founding_partner_interest" id="q15c" value="Maybe, keep me updated"><label for="q15c">Maybe, keep me updated</label></div>
+        </div>
+      </div>
+
+      <!-- Q16 -->
+      <div class="q-block">
+        <label class="q-label"><span class="q-num">Q16 &middot; Optional</span>If you answered "Yes," what is the one thing we could do today to get you to sign a Letter of Intent?</label>
+        <input type="text" id="loi_ask" name="loi_ask" class="q-input" placeholder="Your answer here…">
+      </div>
+
+      <hr style="border:none;border-top:1px solid var(--border);margin:8px 0 28px;">
+
+      <!-- Q17 -->
+      <div class="q-block">
+        <label class="q-label" for="business_name"><span class="q-num">Q17 &middot; Required</span>Business Name <span class="required-star">*</span></label>
+        <input type="text" id="business_name" name="business_name" class="q-input" placeholder="Your business name" required>
+        <p class="field-error hidden" id="q17-error">Business name is required.</p>
+      </div>
+
+      <!-- Q18 -->
+      <div class="q-block">
+        <label class="q-label" for="contact_person"><span class="q-num">Q18 &middot; Required</span>Contact Person <span class="required-star">*</span></label>
+        <input type="text" id="contact_person" name="contact_person" class="q-input" placeholder="Your name" required>
+        <p class="field-error hidden" id="q18-error">Contact name is required.</p>
+      </div>
+
+      <!-- Q19 -->
+      <div class="q-block">
+        <label class="q-label" for="email"><span class="q-num">Q19 &middot; Required</span>Email Address <span class="required-star">*</span></label>
+        <input type="email" id="email" name="email" class="q-input" placeholder="you@yourbusiness.com" required>
+        <p class="field-error hidden" id="q19-error">Please enter a valid email address.</p>
+      </div>
+
+      <!-- Q20 -->
+      <div class="q-block">
+        <label class="q-label" for="phone"><span class="q-num">Q20 &middot; Optional</span>Phone Number</label>
+        <input type="tel" id="phone" name="phone" class="q-input" placeholder="+1 (555) 000-0000">
+      </div>
+
+      <p style="font-size:12px;color:#666;margin-top:8px;text-align:center;">
+        By submitting you agree to our
+        <a href="terms-of-service.html" style="color:#B44A1F;">Terms of Service</a> and
+        <a href="privacy-policy.html" style="color:#B44A1F;">Privacy Policy</a>.
+      </p>
+      <div class="nav-row">
+        <button class="btn-back" onclick="prevSection(5)">&larr; Back</button>
+        <button class="btn-submit" id="submit-btn" onclick="handleSubmit()">Submit Survey</button>
+      </div>
+    </div>
+
+  </div><!-- /#survey-wrap -->
+
+  <!-- Thank You State -->
+  <div id="thankyou">
+    <div class="ty-icon">🏔️</div>
+    <h2 class="ty-headline">Thank You for Your Time.</h2>
+    <p class="ty-body">
+      A member of our team will be in touch soon about Founding Partner opportunities in your region.
+      We're building something special — and partners like you are exactly why.
+    </p>
+    <a href="index.html" class="btn-home">Back to YourMountains</a>
+  </div>
+
+</div><!-- /.page -->
+
+<!-- Netlify form declaration (hidden — scraped at deploy time) -->
+<form name="form-vendor-survey" data-netlify="true" netlify-honeypot="bot-field" class="netlify-hidden">
+  <input type="hidden" name="form-name" value="form-vendor-survey">
+  <input name="bot-field">
+  <input name="business_type"><input name="primary_goals">
+  <input name="marketing_roi_score"><input name="biggest_pain_point">
+  <input name="high_intent_value"><input name="commission_model_pref">
+  <input name="fair_commission_rate"><input name="biggest_hesitation">
+  <input name="partner_threshold"><input name="trust_builders">
+  <input name="mental_load_value"><input name="uses_booking_software">
+  <input name="booking_software_name"><input name="open_to_discount">
+  <input name="open_to_events"><input name="founding_partner_interest">
+  <input name="loi_ask"><input name="business_name">
+  <input name="contact_person"><input name="email" type="email"><input name="phone" type="tel">
+</form>
+
+<footer>
+  <a href="index.html">Home</a>
+  <a href="privacy-policy.html">Privacy Policy</a>
+  <a href="terms-of-service.html">Terms of Service</a>
+  <p style="margin-top:12px;">&copy; 2026 Your Mountains. All rights reserved.</p>
+</footer>
+
+<script>
+  /* ── Section names ── */
+  var SECTION_NAMES = ['Qualifying the Partner','Validating the Solution','Building Confidence','Technical & Operational Fit','Partner Commitment & Contact'];
+  var currentSection = 1;
+  var TOTAL = 5;
+
+  function updateProgress(n) {
+    document.getElementById('progress-current').textContent = n;
+    document.getElementById('progress-section-name').textContent = SECTION_NAMES[n-1];
+    document.getElementById('progress-fill').style.width = (n / TOTAL * 100) + '%';
+  }
+
+  /* ── Navigation ── */
+  function showSection(n) {
+    for (var i = 1; i <= TOTAL; i++) {
+      var el = document.getElementById('section-' + i);
+      if (el) el.style.display = (i === n) ? 'block' : 'none';
+    }
+    currentSection = n;
+    updateProgress(n);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function nextSection(from) {
+    if (!validateSection(from)) return;
+    showSection(from + 1);
+  }
+
+  function prevSection(from) {
+    showSection(from - 1);
+  }
+
+  /* ── Validation ── */
+  function validateSection(n) {
+    var ok = true;
+    if (n === 1) {
+      if (!document.querySelector('input[name="business_type"]:checked')) {
+        showErr('q1-error'); ok = false;
+      } else hideErr('q1-error');
+      if (!document.querySelector('input[name="biggest_pain_point"]:checked')) {
+        showErr('q4-error'); ok = false;
+      } else hideErr('q4-error');
+    }
+    if (n === 5) {
+      ok = validateSection5();
+    }
+    return ok;
+  }
+
+  function validateSection5() {
+    var ok = true;
+    var bizName = document.getElementById('business_name').value.trim();
+    if (!bizName) { showErr('q17-error'); document.getElementById('business_name').classList.add('error'); ok = false; }
+    else { hideErr('q17-error'); document.getElementById('business_name').classList.remove('error'); }
+
+    var contact = document.getElementById('contact_person').value.trim();
+    if (!contact) { showErr('q18-error'); document.getElementById('contact_person').classList.add('error'); ok = false; }
+    else { hideErr('q18-error'); document.getElementById('contact_person').classList.remove('error'); }
+
+    var email = document.getElementById('email').value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showErr('q19-error'); document.getElementById('email').classList.add('error'); ok = false;
+    } else { hideErr('q19-error'); document.getElementById('email').classList.remove('error'); }
+
+    return ok;
+  }
+
+  function showErr(id) { var e = document.getElementById(id); if (e) e.classList.remove('hidden'); }
+  function hideErr(id) { var e = document.getElementById(id); if (e) e.classList.add('hidden'); }
+
+  /* ── Q12 Conditional ── */
+  function toggleBookingSoftware() {
+    var yes = document.getElementById('q12yes').checked;
+    var cond = document.getElementById('booking-software-conditional');
+    if (yes) cond.classList.remove('hidden');
+    else { cond.classList.add('hidden'); document.getElementById('booking_software_name').value = ''; }
+  }
+
+  /* ── Collect form data ── */
+  function collectData() {
+    function radio(name) {
+      var el = document.querySelector('input[name="' + name + '"]:checked');
+      return el ? el.value : null;
+    }
+    function checkboxes(name) {
+      return Array.from(document.querySelectorAll('input[name="' + name + '"]:checked')).map(function(e){ return e.value; });
+    }
+    function text(id) {
+      var el = document.getElementById(id);
+      return el ? el.value.trim() || null : null;
+    }
+    return {
+      'form-name':              'form-vendor-survey',
+      business_type:            radio('business_type'),
+      primary_goals:            checkboxes('primary_goals'),
+      marketing_roi_score:      radio('marketing_roi_score') ? parseInt(radio('marketing_roi_score')) : null,
+      biggest_pain_point:       radio('biggest_pain_point'),
+      high_intent_value:        radio('high_intent_value'),
+      commission_model_pref:    radio('commission_model_pref'),
+      fair_commission_rate:     radio('fair_commission_rate'),
+      biggest_hesitation:       radio('biggest_hesitation'),
+      partner_threshold:        radio('partner_threshold'),
+      trust_builders:           checkboxes('trust_builders'),
+      mental_load_value:        radio('mental_load_value'),
+      uses_booking_software:    radio('uses_booking_software'),
+      booking_software_name:    text('booking_software_name'),
+      open_to_discount:         radio('open_to_discount'),
+      open_to_events:           radio('open_to_events'),
+      founding_partner_interest:radio('founding_partner_interest'),
+      loi_ask:                  text('loi_ask'),
+      business_name:            text('business_name'),
+      contact_person:           text('contact_person'),
+      email:                    text('email'),
+      phone:                    text('phone'),
+    };
+  }
+
+  /* ── Submit ── */
+  async function handleSubmit() {
+    if (!validateSection5()) return;
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    var data = collectData();
+
+    // Mirror to Netlify Forms
+    var netlifyParams = {
+      'form-name': 'form-vendor-survey',
+      business_name: data.business_name || '',
+      contact_person: data.contact_person || '',
+      email: data.email || '',
+    };
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(netlifyParams).toString(),
+    }).catch(function(){});
+
+    // POST to Supabase via Netlify function
+    var submitted = false;
+    try {
+      var res = await fetch('/.netlify/functions/form-submission', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (res.ok) submitted = true;
+    } catch (err) {
+      console.warn('form-submission error:', err);
+    }
+
+    // Show thank-you regardless (don't block on Supabase)
+    document.getElementById('survey-wrap').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    document.querySelector('.progress-wrap').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
