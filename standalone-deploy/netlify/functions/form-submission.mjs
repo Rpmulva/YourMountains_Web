@@ -18,6 +18,10 @@ const FORM_ROUTES = {
     table: 'influencer_survey_responses',
     map: mapInfluencerSurvey,
   },
+  'form-core-partner-survey': {
+    table: 'core_partner_survey_responses',
+    map: mapCorePartnerSurvey,
+  },
   // Future forms:
   // 'founders-signup': { table: 'founders_signups', map: mapFoundersSignup },
   // 'contact':         { table: 'contact_messages', map: mapContact },
@@ -75,6 +79,34 @@ function mapInfluencerSurvey(body) {
     creator_name:              body.creator_name,
     social_handle:             body.social_handle,
     email:                     body.email,
+  };
+}
+
+function mapCorePartnerSurvey(body) {
+  const toArr = (val) => val ? (Array.isArray(val) ? val : [val]) : [];
+  const toInt = (val) => val ? parseInt(val, 10) : null;
+  return {
+    org_type:                     body.org_type                     || null,
+    geography:                    body.geography                    || null,
+    audiences_served:             toArr(body.audiences_served),
+    annual_reach:                 body.annual_reach                 || null,
+    barriers_observed:            toArr(body.barriers_observed),
+    digital_tools_effectiveness:  toInt(body.digital_tools_effectiveness),
+    missing_resource:             body.missing_resource             || null,
+    programming_types:            toArr(body.programming_types),
+    attendance_challenge:         body.attendance_challenge         || null,
+    promotion_channels:           toArr(body.promotion_channels),
+    platform_promotion_value:     toInt(body.platform_promotion_value),
+    relevant_platform_aspects:    toArr(body.relevant_platform_aspects),
+    partnership_support_vision:   toArr(body.partnership_support_vision),
+    partnership_priorities:       toArr(body.partnership_priorities),
+    partnership_expectations:     body.partnership_expectations     || null,
+    collaboration_openness:       body.collaboration_openness       || null,
+    additional_context:           body.additional_context           || null,
+    org_name:                     body.org_name,
+    contact_name:                 body.contact_name,
+    contact_title:                body.contact_title                || null,
+    email:                        body.email,
   };
 }
 
