@@ -12,23 +12,23 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --orange:       #C3825A;
-      --orange-dark:  #B44A1F;
-      --green:        #6F7D45;
-      --bg:           #0A0A0A;
-      --surface:      #141414;
-      --card:         rgba(22,22,22,0.95);
-      --border:       rgba(255,255,255,0.12);
-      --text:         #FFFFFF;
-      --text-2:       #E0E0E0;
-      --text-3:       #A0A0A0;
+      --orange: #db7947;
+      --orange-dark: #db7947;
+      --green: #96966c;
+      --bg: #fff9de;
+      --surface:#fffbee;
+      --card: rgba(255,249,222,0.92);
+      --border: rgba(112,83,57,0.18);
+      --text: #705339;
+      --text-2: #5a4230;
+      --text-3: #96966c;
       --error:        #F44336;
       --r-md:         12px;
       --r-lg:         16px;
     }
     body {
       font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      background: var(--bg); color: var(--text);
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
@@ -36,7 +36,7 @@
 
     /* ── Header ── */
     header {
-      background: rgba(10,10,10,0.96);
+      background: #705339;
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
       height: 60px;
@@ -280,7 +280,7 @@
       align-items: center;
       gap: 12px;
       padding: 12px 16px;
-      background: #1a1a1a;
+      background: rgba(255,255,255,0.55);
       border: 1px solid var(--border);
       border-radius: var(--r-md);
       cursor: grab;
@@ -350,7 +350,7 @@
     /* Text inputs */
     .q-input {
       width: 100%;
-      background: #1e1e1e;
+      background: rgba(255,255,255,0.55);
       border: 1px solid var(--border);
       border-radius: var(--r-md);
       padding: 13px 16px;

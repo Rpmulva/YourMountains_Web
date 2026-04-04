@@ -12,23 +12,23 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --purple: #7C5C9A;
-      --purple-light: #9B7DBB;
-      --green:  #6F7D45;
-      --bg:     #0A0A0A;
-      --surface:#141414;
-      --card:   rgba(22,22,22,0.95);
-      --border: rgba(255,255,255,0.12);
-      --text:   #FFFFFF;
-      --text-2: #E0E0E0;
-      --text-3: #A0A0A0;
+      --purple: #f6ba68;
+      --purple-light: #e0a050;
+      --green: #96966c;
+      --bg: #fff9de;
+      --surface:#fffbee;
+      --card: rgba(255,249,222,0.92);
+      --border: rgba(112,83,57,0.18);
+      --text: #705339;
+      --text-2: #5a4230;
+      --text-3: #96966c;
       --error:  #F44336;
       --r-md:   12px;
       --r-lg:   16px;
     }
     body {
       font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-      background: var(--bg);
+      background: var(--bg); color: var(--text);
       color: var(--text);
       min-height: 100vh;
       line-height: 1.6;
@@ -36,7 +36,7 @@
 
     /* ── Header ── */
     header {
-      background: rgba(10,10,10,0.96);
+      background: #705339;
       border-bottom: 1px solid var(--border);
       padding: 0 32px;
       height: 60px;
@@ -153,7 +153,7 @@
       cursor: pointer;
       transition: border-color 0.15s, background 0.15s;
     }
-    .opt-item:hover { border-color: var(--purple); background: rgba(124,92,154,0.08); }
+    .opt-item:hover { border-color: var(--purple); background: rgba(219,121,71,0.08); }
     .opt-item input[type="radio"],
     .opt-item input[type="checkbox"] {
       margin-top: 2px;
@@ -173,10 +173,10 @@
     /* ── Founding Creator CTA option (Q19 "Very interested") ── */
     .opt-item.accent-opt {
       border-color: var(--purple);
-      background: rgba(124,92,154,0.12);
+      background: rgba(219,121,71,0.12);
     }
     .opt-item.accent-opt:hover {
-      background: rgba(124,92,154,0.2);
+      background: rgba(219,121,71,0.2);
     }
     .opt-item.accent-opt label {
       color: var(--text);
@@ -218,16 +218,16 @@
     }
     .scale-opt input:checked + label {
       border-color: var(--purple);
-      background: rgba(124,92,154,0.15);
+      background: rgba(219,121,71,0.15);
     }
-    .scale-opt label:hover { border-color: rgba(124,92,154,0.5); }
+    .scale-opt label:hover { border-color: rgba(219,121,71,0.5); }
     .scale-num { font-size: 20px; font-weight: 700; color: var(--text); }
     .scale-desc { font-size: 11px; color: var(--text-3); line-height: 1.3; }
 
     /* Text inputs */
     .q-input {
       width: 100%;
-      background: #1e1e1e;
+      background: rgba(255,255,255,0.55);
       border: 1px solid var(--border);
       border-radius: var(--r-md);
       padding: 13px 16px;
