@@ -60,7 +60,7 @@
     .bg-image {
       position: fixed; inset: 0; z-index: 0;
       background: url('Background_Hike_06.jpeg') center/cover no-repeat;
-      opacity: 0.22;
+      opacity: 0.45;
       pointer-events: none;
     }
 
@@ -167,12 +167,12 @@
     }
     .btn-hdr-survey:hover { opacity: 0.88; }
     .btn-hdr-founders {
-      background: var(--orange); color: #fff; border: none;
+      background: var(--green); color: #fff; border: none;
       border-radius: var(--r-md); padding: 8px 18px;
       font-family: inherit; font-size: 13px; font-weight: 700;
       cursor: pointer; text-decoration: none; display: inline-block;
       white-space: nowrap; transition: opacity 0.15s;
-      opacity: 0.82;
+      opacity: 0.88;
     }
     .btn-hdr-founders:hover { opacity: 1; }
     @media (max-width: 480px) {
@@ -185,6 +185,17 @@
     .section { padding: 80px 24px; }
     .container { max-width: 920px; margin: 0 auto; }
 
+    /* ─── Hero logo (large, scrolls naturally) ─── */
+    .hero-logo-large {
+      opacity: 0;
+      margin-bottom: 32px;
+    }
+    .hero-logo-large img {
+      width: clamp(220px, 36vw, 340px);
+      height: auto; display: block;
+      margin: 0 auto;
+    }
+
     /* ─── Hero ─── */
     #hero {
       min-height: 100vh;
@@ -192,9 +203,9 @@
       text-align: center;
       padding: 120px 24px 80px;
       background: linear-gradient(180deg,
-        rgba(255,249,222,0.02) 0%,
-        rgba(255,249,222,0.18) 60%,
-        rgba(255,249,222,0.80) 100%);
+        rgba(255,249,222,0.00) 0%,
+        rgba(255,249,222,0.08) 55%,
+        rgba(255,249,222,0.55) 100%);
     }
     .hero-content { max-width: 860px; }
     .hero-tagline {
@@ -224,12 +235,12 @@
     }
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-secondary {
-      background: var(--orange); color: #fff; border: none;
+      background: var(--green); color: #fff; border: none;
       border-radius: var(--r-lg); padding: 15px 30px;
       font-family: inherit; font-size: 16px; font-weight: 700;
       cursor: pointer; text-decoration: none; display: inline-block;
-      box-shadow: 0 4px 20px rgba(219,121,71,0.22);
-      opacity: 0.82;
+      box-shadow: 0 4px 20px rgba(150,150,108,0.28);
+      opacity: 0.88;
       transition: opacity 0.15s, transform 0.1s;
     }
     .btn-secondary:hover { opacity: 1; transform: translateY(-1px); }
@@ -307,31 +318,49 @@
     .btn-path:hover { opacity: 0.88; }
 
     /* ─── Founders Club ─── */
-    .founders-instruction {
-      text-align: center; font-size: 15px; color: var(--text-3);
-      margin: -16px auto 28px; max-width: 480px; line-height: 1.5;
+    .founders-benefits {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+      margin-bottom: 40px;
     }
-    .founders-card {
-      display: flex; flex-direction: column;
+    @media (max-width: 600px) { .founders-benefits { grid-template-columns: 1fr; } }
+    .benefit-block {
+      background: rgba(255,249,222,0.60); border: 1px solid rgba(112,83,57,0.12);
+      border-radius: var(--r-lg); padding: 22px 20px;
+      display: flex; flex-direction: column; gap: 8px;
     }
-    .founders-card-selected {
-      border-color: var(--orange) !important;
-      background: rgba(219,121,71,0.07) !important;
+    .benefit-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(150,150,108,0.14);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .founders-path-body {
-      font-size: 14px; color: var(--text-2); line-height: 1.65;
-      flex: 1; margin-bottom: 18px;
+    .benefit-title {
+      font-size: 15px; font-weight: 700; color: var(--brown);
     }
-    .founders-bold { color: var(--orange); font-weight: 700; }
-    .founders-seg-btn {
-      display: inline-block; background: var(--orange); color: #fff;
-      border: none; border-radius: var(--r-md); padding: 11px 20px;
-      font-family: inherit; font-size: 14px; font-weight: 700;
-      cursor: pointer; transition: opacity 0.15s; align-self: flex-start;
+    .benefit-body {
+      font-size: 13px; color: var(--text-2); line-height: 1.6;
     }
-    .founders-seg-btn:hover { opacity: 0.88; }
-    .founders-seg-btn.selected {
-      box-shadow: 0 0 0 3px rgba(219,121,71,0.35);
+    .seg-pills {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      justify-content: center; margin: 0 auto 12px;
+    }
+    .seg-pill {
+      background: transparent; color: var(--text-2);
+      border: 2px solid var(--border);
+      border-radius: 100px; padding: 10px 22px;
+      font-family: inherit; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .seg-pill:hover { border-color: var(--green); color: var(--green); }
+    .seg-pill.active {
+      background: var(--green); color: #fff;
+      border-color: var(--green);
+      box-shadow: 0 2px 10px rgba(150,150,108,0.30);
+    }
+    .seg-instruction {
+      text-align: center; font-size: 14px; color: var(--text-3);
+      margin: 0 auto 32px; max-width: 480px; line-height: 1.5;
+      font-style: italic;
     }
 
     /* ─── Form ─── */
@@ -360,11 +389,12 @@
       color: var(--orange); font-weight: 700; font-style: normal;
     }
     .btn-submit {
-      background: var(--orange); color: #fff; border: none;
+      background: var(--green); color: #fff; border: none;
       border-radius: var(--r-lg); padding: 15px 40px;
       font-family: inherit; font-size: 16px; font-weight: 700;
       cursor: pointer; display: block; margin: 28px auto 0; min-width: 220px;
       transition: opacity 0.15s;
+      box-shadow: 0 4px 20px rgba(150,150,108,0.28);
     }
     .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-submit:not(:disabled):hover { opacity: 0.88; }
@@ -379,7 +409,12 @@
       padding: 40px 24px; text-align: center;
       position: relative; z-index: 1;
     }
-    .footer-logo img { height: 48px; margin-bottom: 18px; display: block; margin-left: auto; margin-right: auto; }
+    .footer-logo img {
+      width: 44%; max-width: 420px; min-width: 180px;
+      height: auto; margin-bottom: 22px;
+      display: block; margin-left: auto; margin-right: auto;
+    }
+    @media (max-width: 600px) { .footer-logo img { width: 84%; } }
     .footer-links { margin-bottom: 14px; }
     .footer-links button {
       background: transparent; border: none;
@@ -491,6 +526,10 @@
     <!-- Hero -->
     <section id="hero">
       <div class="hero-content">
+        <div class="hero-logo-large" id="hero-logo-large">
+          <img src="brand-logo.png" alt="Your Mountains"
+               onerror="this.style.display='none'">
+        </div>
         <p class="hero-tagline">The outdoor collective</p>
         <h1 class="hero-headline">No Excuses.<br>Get Out There and Move.</h1>
         <p class="hero-body">
@@ -521,9 +560,9 @@
           <div class="mission-divider"></div>
           <p class="section-label">We're Unlocking the Outdoors</p>
           <div class="pillars">
-            <p class="pillar">&ldquo;Adventure is within your reach.&rdquo;</p>
-            <p class="pillar">&ldquo;The right gear is accessible.&rdquo;</p>
-            <p class="pillar">&ldquo;There is a community waiting for you.&rdquo;</p>
+            <p class="pillar">&ldquo;<strong>Adventure</strong> is within your reach.&rdquo;</p>
+            <p class="pillar">&ldquo;The right gear is <strong>Accessible</strong>.&rdquo;</p>
+            <p class="pillar">&ldquo;There is a <strong>Community</strong> waiting for you.&rdquo;</p>
           </div>
           <p class="mission-accent">So that everyone can live a healthier life.</p>
         </div>
@@ -544,7 +583,7 @@
             <!-- Explorer -->
             <div class="path-card">
               <div class="path-icon" style="background:rgba(219,121,71,0.12);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#db7947" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#db7947" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
               </div>
               <h3 class="h3">Explorers</h3>
               <p class="body-text">
@@ -559,7 +598,7 @@
             <!-- Vendor Partner -->
             <div class="path-card">
               <div class="path-icon" style="background:rgba(150,150,108,0.14);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5 1.3-8.44 4.3-11.1 9.15-.28.5-.14 1.1.3 1.46l4 3.17c.42.34 1.04.3 1.41-.1C12.93 18.48 16 15.6 16 11c0-2.25 1-3 3-3"/><path d="M5 15.5c-.5-2.5 1.5-7.5 5-7"/><path d="M14 18.5c2.5-.5 7.5-1.5 7-5"/><circle cx="16" cy="5" r="3"/></svg>
               </div>
               <h3 class="h3">Vendor Partners</h3>
               <p class="body-text">
@@ -571,25 +610,25 @@
               </a>
             </div>
 
-            <!-- Collective Partner -->
+            <!-- Community Anchor -->
             <div class="path-card">
               <div class="path-icon" style="background:rgba(114,145,161,0.14);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7291a1" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7291a1" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="5" r="3"/><line x1="12" y1="8" x2="12" y2="22"/><path d="M5 15H2a10 10 0 0 0 20 0h-3"/></svg>
               </div>
-              <h3 class="h3">Collective Partners</h3>
+              <h3 class="h3">Community Anchors</h3>
               <p class="body-text">
                 Nonprofits, land managers, tourism boards, and local government — you build the trails
                 and run the programs. Partner with us to amplify your reach.
               </p>
               <a href="core-partner-survey.html" class="btn-path" style="background:var(--blue);" onclick="trackEvent('form_start','core_partner_survey')">
-                Collective Partner Survey →
+                Community Anchor Survey →
               </a>
             </div>
 
             <!-- Influencer / Creator -->
             <div class="path-card">
               <div class="path-icon" style="background:rgba(246,186,104,0.18);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
               </div>
               <h3 class="h3">Influencers &amp; Creators</h3>
               <p class="body-text">
@@ -612,95 +651,72 @@
         <div class="card">
           <h2 class="h2">Join the Founders Club</h2>
           <p class="intro">
-            Build the Future of Outdoor Access. We're gathering the explorers, the guides, the gear
-            shops, and the dreamers. Join now to stay in touch and gain access to founders-only exclusives.
+            Build the future of outdoor access from day one. Founders get early access, a permanent
+            badge, direct input on the roadmap, and perks that follow them forever.
           </p>
-          <p class="founders-instruction">Choose the option that fits — or select more than one if you wear multiple hats.</p>
 
-          <div class="path-grid" style="margin-bottom:40px;" id="founders-boxes">
-
-            <!-- Explorer box -->
-            <div class="path-card founders-card" id="box-explorer" style="border-top:3px solid #db7947;">
-              <div class="path-icon" style="background:rgba(219,121,71,0.12);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#db7947" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
+          <!-- Part A: Benefit blocks -->
+          <div class="founders-benefits">
+            <div class="benefit-block">
+              <div class="benefit-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               </div>
-              <h3 class="h3">Explorer</h3>
-              <p class="founders-path-body">
-                You live for the mountains. Whether you're a first-timer finding your footing or a
-                seasoned backcountry regular — YourMountains was built for you. Join the Founders Club
-                and help shape the platform that removes every barrier between you and your next adventure.
-              </p>
-              <button type="button" class="founders-seg-btn" data-role="explorer" onclick="selectRole(this)">Join Explorers</button>
+              <p class="benefit-title">Early Access</p>
+              <p class="benefit-body">Be first through the door — beta features, new trails, and community tools before anyone else.</p>
             </div>
-
-            <!-- Vendor Partner box -->
-            <div class="path-card founders-card" id="box-vendor" style="border-top:3px solid #96966c;">
-              <div class="path-icon" style="background:rgba(150,150,108,0.14);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <div class="benefit-block">
+              <div class="benefit-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
               </div>
-              <h3 class="h3">Vendor Partner</h3>
-              <p class="founders-path-body">
-                You outfit, guide, and power the outdoor experience. Gear shops, rental operations,
-                guided tour companies, wellness providers — YourMountains connects you with high-intent
-                customers who are ready to go, not just browsing. Founding Vendor Partners get priority
-                placement and direct input on how commerce works on our platform.
-              </p>
-              <button type="button" class="founders-seg-btn" data-role="vendor" onclick="selectRole(this)">Join Vendor Partners</button>
+              <p class="benefit-title">Founding Member Badge</p>
+              <p class="benefit-body">A permanent mark on your profile that shows you were here from the very beginning.</p>
             </div>
-
-            <!-- Collective Partner box -->
-            <div class="path-card founders-card" id="box-collective" style="border-top:3px solid #7291a1;">
-              <div class="path-icon" style="background:rgba(114,145,161,0.14);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#7291a1" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <div class="benefit-block">
+              <div class="benefit-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               </div>
-              <h3 class="h3">Collective Partner</h3>
-              <p class="founders-path-body">
-                Your organization is the backbone of outdoor access in our mountain communities.
-                Land managers, recreation nonprofits, tourism boards, chambers, and local government —
-                you build the trails, run the programs, and welcome the world to these places. Partner
-                with YourMountains to amplify your reach and connect your community with the tools
-                they need to get outside.
-              </p>
-              <button type="button" class="founders-seg-btn" data-role="collective" onclick="selectRole(this)">Join Collective Partners</button>
+              <p class="benefit-title">Direct Influence</p>
+              <p class="benefit-body">Your voice shapes what we build. Founders get direct access to the team and a seat at the table.</p>
             </div>
-
-            <!-- Creator box -->
-            <div class="path-card founders-card" id="box-creator" style="border-top:3px solid #f6ba68;">
-              <div class="path-icon" style="background:rgba(246,186,104,0.18);">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <div class="benefit-block">
+              <div class="benefit-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#96966c" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
-              <h3 class="h3">Outdoor Influencer &amp; Creator</h3>
-              <p class="founders-path-body">
-                You bring the mountains to life for your audience — and they trust you because you
-                actually live it. YourMountains is building a creator program from scratch, and we want
-                the people who help shape it to be the ones who care most about this community.
-                Founding Creators get early access, direct input on the creator model, and a platform
-                built for outdoor audiences — not algorithms.
-              </p>
-              <button type="button" class="founders-seg-btn" data-role="creator" onclick="selectRole(this)">Join Creators</button>
+              <p class="benefit-title">Lifetime Perks</p>
+              <p class="benefit-body">Founding members lock in exclusive pricing and privileges that stay with them as the platform grows.</p>
             </div>
-
           </div>
 
+          <!-- Part B: Email input -->
           <form id="founders-form" onsubmit="handleFoundersSubmit(event)">
             <div class="field-group">
               <label class="form-label" for="founders-email">Email Address</label>
               <input id="founders-email" name="email" type="email" class="form-input"
                      placeholder="you@example.com" autocomplete="email" required
-                     oninput="clearError('founders-email-error')">
+                     oninput="onFoundersInputChange()">
               <p id="founders-email-error" class="form-error hidden"></p>
             </div>
-            <div class="field-group" style="text-align:center;">
-              <p class="form-label" style="margin-bottom:4px;">Joining as:</p>
-              <p id="role-display" class="role-display">Select a segment above ↑</p>
-              <p id="founders-role-error" class="form-error hidden" style="text-align:center;margin-top:4px;"></p>
+
+            <!-- Part C: Segment pills -->
+            <div class="seg-pills" id="seg-pills">
+              <button type="button" class="seg-pill" data-segment="Explorer" onclick="toggleSegment(this)">Explorer</button>
+              <button type="button" class="seg-pill" data-segment="Vendor Partner" onclick="toggleSegment(this)">Vendor Partner</button>
+              <button type="button" class="seg-pill" data-segment="Community Anchor" onclick="toggleSegment(this)">Community Anchor</button>
+              <button type="button" class="seg-pill" data-segment="Influencer &amp; Creator" onclick="toggleSegment(this)">Influencer &amp; Creator</button>
             </div>
+            <p id="founders-seg-error" class="form-error hidden" style="text-align:center;margin-bottom:8px;"></p>
+
+            <!-- Part D: Instruction -->
+            <p class="seg-instruction">Select everything that describes you — most of us wear more than one hat.</p>
+
             <p class="consent-text">
               By submitting you agree to our
               <a href="terms-of-service.html">Terms of Service</a> and
               <a href="privacy-policy.html">Privacy Policy</a>.
             </p>
-            <button type="submit" class="btn-submit" id="founders-submit-btn">
+
+            <!-- Part E: Green submit, disabled until email + segment -->
+            <button type="submit" class="btn-submit" id="founders-submit-btn" disabled>
               Join the Founders Club
             </button>
           </form>
@@ -773,7 +789,7 @@
   <!-- Netlify form declarations (invisible — scraped at deploy time) -->
   <form name="founders-signup" data-netlify="true" netlify-honeypot="bot-field" class="netlify-hidden">
     <input type="hidden" name="form-name" value="founders-signup">
-    <input name="bot-field"><input name="email" type="email"><input name="role">
+    <input name="bot-field"><input name="email" type="email"><input name="segments">
     <input name="form_source"><input name="date">
   </form>
   <form name="contact" data-netlify="true" netlify-honeypot="bot-field" class="netlify-hidden">
@@ -784,10 +800,19 @@
 
   <!-- ══ SCRIPTS ════════════════════════════════════ -->
   <script>
-    /* ── Intro Animation ──────────────────────────── */
+    /* ── Intro Animation (first visit only) ─────── */
     (function () {
-      var overlay  = document.getElementById('intro-overlay');
-      var introTxt = document.getElementById('intro-text');
+      var overlay   = document.getElementById('intro-overlay');
+      var heroLogo  = document.getElementById('hero-logo-large');
+
+      if (localStorage.getItem('ym_intro_seen')) {
+        overlay.classList.add('gone');
+        if (heroLogo) { heroLogo.style.transition = 'opacity 0.6s ease'; heroLogo.style.opacity = '1'; }
+        return;
+      }
+      localStorage.setItem('ym_intro_seen', 'true');
+
+      var introTxt  = document.getElementById('intro-text');
       var introLogo = document.getElementById('intro-logo');
       var headerLogo = document.querySelector('.header-logo img');
 
@@ -808,7 +833,10 @@
       }, 3000);
 
       setTimeout(function () { overlay.classList.add('fading'); }, 3900);
-      setTimeout(function () { overlay.classList.add('gone'); }, 5700);
+      setTimeout(function () {
+        overlay.classList.add('gone');
+        if (heroLogo) { heroLogo.style.transition = 'opacity 1.2s ease'; heroLogo.style.opacity = '1'; }
+      }, 5700);
     })();
 
     /* ── Cookie Consent ──────────────────────────── */
@@ -828,28 +856,29 @@
       if (typeof window.gtag === 'function') gtag('event', action, { event_label: label });
     }
 
-    /* ── Role Selection ──────────────────────────── */
-    var selectedRole = null;
-    var ROLE_LABELS = {
-      explorer:   'Explorer',
-      vendor:     'Vendor Partner',
-      collective: 'Collective Partner',
-      creator:    'Outdoor Influencer & Creator',
-    };
-    function selectRole(btn) {
-      document.querySelectorAll('.founders-seg-btn').forEach(function (b) { b.classList.remove('selected'); });
-      document.querySelectorAll('.founders-card').forEach(function (c) { c.classList.remove('founders-card-selected'); });
-      btn.classList.add('selected');
-      btn.closest('.founders-card').classList.add('founders-card-selected');
-      selectedRole = btn.getAttribute('data-role');
-      var display = document.getElementById('role-display');
-      display.textContent = ROLE_LABELS[selectedRole] || selectedRole;
-      display.classList.add('chosen');
-      clearError('founders-role-error');
-      trackEvent('form_start', 'founders_signup');
-      setTimeout(function () {
-        document.getElementById('founders-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+    /* ── Segment Multi-Select ────────────────────── */
+    var selectedSegments = new Set();
+    function toggleSegment(btn) {
+      var seg = btn.getAttribute('data-segment');
+      if (selectedSegments.has(seg)) {
+        selectedSegments.delete(seg);
+        btn.classList.remove('active');
+      } else {
+        selectedSegments.add(seg);
+        btn.classList.add('active');
+      }
+      clearError('founders-seg-error');
+      updateFoundersSubmitBtn();
+      if (selectedSegments.size === 1) trackEvent('form_start', 'founders_signup');
+    }
+    function onFoundersInputChange() {
+      clearError('founders-email-error');
+      updateFoundersSubmitBtn();
+    }
+    function updateFoundersSubmitBtn() {
+      var email = document.getElementById('founders-email').value.trim();
+      var btn = document.getElementById('founders-submit-btn');
+      btn.disabled = !(email && isValidEmail(email) && selectedSegments.size > 0);
     }
 
     /* ── Validation helpers ──────────────────────── */
@@ -873,34 +902,32 @@
       var btn = document.getElementById('founders-submit-btn');
       var valid = true;
       if (!email || !isValidEmail(email)) { showError('founders-email-error', 'Please enter a valid email address.'); valid = false; }
-      if (!selectedRole) { showError('founders-role-error', 'Please select how you are joining above.'); valid = false; }
+      if (selectedSegments.size === 0) { showError('founders-seg-error', 'Please select at least one segment above.'); valid = false; }
       if (!valid) return;
 
+      var segments = Array.from(selectedSegments).join(', ');
       btn.disabled = true; btn.textContent = 'Joining…';
       trackEvent('form_submit', 'founders_signup');
 
-      var payload = { Title: email, email: email, role: selectedRole, message: '', form_source: 'Signup', date: new Date().toISOString() };
-      submitToNetlify('founders-signup', { email: email, role: selectedRole, form_source: 'Signup', date: payload.date });
+      var payload = { Title: email, email: email, segments: segments, message: '', form_source: 'Signup', date: new Date().toISOString() };
+      submitToNetlify('founders-signup', { email: email, segments: segments, form_source: 'Signup', date: payload.date });
 
       try {
         var res = await fetch('/.netlify/functions/signup', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
         if (res.ok) {
-          showWelcomeModal(selectedRole);
+          showWelcomeModal(segments);
           document.getElementById('founders-form').reset();
-          document.querySelectorAll('.founders-seg-btn').forEach(function (b) { b.classList.remove('selected'); });
-          document.querySelectorAll('.founders-card').forEach(function (c) { c.classList.remove('founders-card-selected'); });
-          var display = document.getElementById('role-display');
-          display.textContent = 'Select a segment above ↑';
-          display.classList.remove('chosen');
-          selectedRole = null;
+          document.querySelectorAll('.seg-pill').forEach(function (b) { b.classList.remove('active'); });
+          selectedSegments.clear();
+          updateFoundersSubmitBtn();
         } else {
           alert('Signup didn\'t go through. Please try again or email policy@yourmountains.life.');
+          btn.disabled = false; btn.textContent = 'Join the Founders Club';
         }
       } catch (err) {
         alert('We couldn\'t reach the server. Please try again or email policy@yourmountains.life.');
-      } finally {
         btn.disabled = false; btn.textContent = 'Join the Founders Club';
       }
     }
@@ -936,16 +963,11 @@
     }
 
     /* ── Welcome Modal ───────────────────────────── */
-    var WELCOME = {
-      explorer:   { headline: 'The Trail Starts Here.', body: ["Welcome to the collective. You've just secured your spot as one of the first 10,000 members of Your Mountains.", "We aren't just building an app — we're building a movement. You'll have early access and exclusive Founders Club badges."] },
-      vendor:     { headline: 'Partnering for a New Era.', body: ["Thank you for believing in the vision. You're stepping up to shape how the outdoor industry connects with explorers.", "We're limiting Founding Partner status to just 20 businesses per region. We'll be in touch shortly."] },
-      collective: { headline: 'Your Community. Amplified.', body: ["Thank you for everything you already do for our mountain communities. Your organization is exactly the kind of partner that makes this work matter.", "We'll be in touch soon to explore how we can support your mission and grow together."] },
-      creator:    { headline: 'The Mountains Are Your Stage.', body: ["You're exactly who we want shaping the creator program from day one. Founding Creators get early access, direct input on the model, and a platform built for audiences like yours.", "We'll be in touch with next steps for Founding Creator onboarding soon."] },
-    };
-    function showWelcomeModal(role) {
-      var c = WELCOME[role] || WELCOME.explorer;
-      document.getElementById('welcome-headline').textContent = c.headline;
-      document.getElementById('welcome-body').innerHTML = c.body.map(function (p) { return '<p class="welcome-para">' + p + '</p>'; }).join('');
+    function showWelcomeModal(segments) {
+      document.getElementById('welcome-headline').textContent = "You're In. Welcome to the Founders Club.";
+      document.getElementById('welcome-body').innerHTML =
+        '<p class="welcome-para">You\'ve secured your spot as one of the founding members of Your Mountains. Joining as: <strong>' + segments + '</strong>.</p>' +
+        '<p class="welcome-para">We\'ll be in touch with early access, founding member details, and next steps. This is just the beginning.</p>';
       document.getElementById('welcome-modal').classList.add('open');
     }
     function closeWelcomeModal() { document.getElementById('welcome-modal').classList.remove('open'); }
