@@ -59,7 +59,7 @@
     /* ─── Background photo ─── */
     .bg-image {
       position: fixed; inset: 0; z-index: 0;
-      background: url('Background_Hike_06.jpeg') center/cover no-repeat;
+      background: url('Background_Hike_06.jpeg') center 68% / cover no-repeat;
       opacity: 0.45;
       pointer-events: none;
     }
@@ -188,10 +188,10 @@
     /* ─── Hero logo (large, scrolls naturally) ─── */
     .hero-logo-large {
       opacity: 0;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
     .hero-logo-large img {
-      width: clamp(220px, 36vw, 340px);
+      width: clamp(130px, 18vw, 190px);
       height: auto; display: block;
       margin: 0 auto;
     }
@@ -199,9 +199,9 @@
     /* ─── Hero ─── */
     #hero {
       min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: flex-start; justify-content: center;
       text-align: center;
-      padding: 120px 24px 80px;
+      padding: 100px 24px 80px;
       background: linear-gradient(180deg,
         rgba(112,83,57,0.00) 0%,
         rgba(112,83,57,0.15) 55%,
