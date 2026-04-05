@@ -59,9 +59,26 @@
     /* ─── Background photo ─── */
     .bg-image {
       position: fixed; inset: 0; z-index: 0;
+      /* Mobile — face sits below the logo at 68% vertical anchor (confirmed working) */
       background: url('Background_Hike_06.jpeg') center 68% / cover no-repeat;
       opacity: 0.45;
       pointer-events: none;
+    }
+    /* Tablet portrait — wider viewport; anchor to top so face stays visible */
+    @media (min-width: 768px) {
+      .bg-image { background-position: center top; }
+    }
+    /* iPad landscape / small desktop */
+    @media (min-width: 1024px) {
+      .bg-image { background-position: center top 8%; }
+    }
+    /* Standard laptop */
+    @media (min-width: 1280px) {
+      .bg-image { background-position: center top 12%; }
+    }
+    /* Large desktop */
+    @media (min-width: 1440px) {
+      .bg-image { background-position: center top 15%; }
     }
 
     /* ══════════════════════════════════════
