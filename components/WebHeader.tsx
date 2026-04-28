@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   headerButton: {
-    backgroundColor: '#C3825A',
+    backgroundColor: '#db7947',
     borderRadius: Radius.md,
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,3 +1,130 @@
+/* YourMountains Outdoor Collective — Design Tokens (v1.1)
+ * THE LAW: only six base colors exist. Do not introduce new ones.
+ * Mirrors standalone-deploy/colors_and_type.css. Source of truth: DeDe brief
+ * (TOKENS_colors_and_type_css.md, ratified 2026-04-21).
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  /* ————— THE SIX — Locked palette ————— */
+  --ym-orange:    #db7947; /* CTAs, primary highlights, Explorers */
+  --ym-green:     #96966c; /* Nature/outdoor, Vendor Partners */
+  --ym-blue:      #7291a1; /* Trust / info, Community Anchors */
+  --ym-yellow:    #f6ba68; /* Warmth/energy, Outdoor Influencers & Creators */
+  --ym-brown:     #705339; /* Grounding, heritage, frames */
+  --ym-sandstone: #fff9de; /* Background warmth, light surface */
+
+  /* ————— Tonal derivatives (v1.1 ratified 2026-04-21 — shades of the six) ————— */
+  --ym-brown-deep:       #2c2419;
+  --ym-brown-ink:        #3a2d20;
+  --ym-brown-ink-2:      #4a3a2a;
+  --ym-brown-ink-muted:  #7a6a55;
+  --ym-sandstone-2:      #f4ecc9;
+  --ym-sandstone-3:      #e9dfb5;
+
+  /* ————— Segment colors ————— */
+  --seg-explorers:   var(--ym-orange);
+  --seg-vendors:     var(--ym-green);
+  --seg-anchors:     var(--ym-blue);
+  --seg-creators:    var(--ym-yellow);
+
+  /* ————— Semantic aliases ————— */
+  --action-primary:  var(--ym-orange);
+  --action-on:       #ffffff;
+  --surface-base:    var(--ym-sandstone);
+  --surface-raised:  #ffffff;
+  --surface-dark:    var(--ym-brown-deep);
+  --frame:           var(--ym-brown);
+  --ink:             var(--ym-brown-ink);
+  --ink-2:           var(--ym-brown-ink-2);
+  --ink-muted:       var(--ym-brown-ink-muted);
+  --divider:         var(--ym-sandstone-3);
+
+  /* ————— Fonts ————— */
+  --font-sans: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Montserrat', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', SFMono-Regular, Menlo, monospace;
+
+  /* ————— Type scale ————— */
+  --fs-caption: 12px;   --lh-caption: 16px;
+  --fs-small:   14px;   --lh-small:   20px;
+  --fs-body:    16px;   --lh-body:    24px;
+  --fs-lead:    18px;   --lh-lead:    28px;
+  --fs-h4:      18px;   --lh-h4:      24px;
+  --fs-h3:      20px;   --lh-h3:      28px;
+  --fs-h2:      24px;   --lh-h2:      32px;
+  --fs-h1:      28px;   --lh-h1:      36px;
+  --fs-display: 36px;   --lh-display: 44px;
+  --fs-hero:    52px;   --lh-hero:    58px;
+
+  /* ————— Spacing (4px base, 8-step) ————— */
+  --sp-0: 0;
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  /* ————— Radii ————— */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-2xl: 28px;
+  --r-round: 9999px;
+
+  /* ————— Elevation (brown-tinted shadows) ————— */
+  --shadow-sm: 0 1px 2px rgba(44,36,25,0.08), 0 2px 4px rgba(44,36,25,0.06);
+  --shadow-md: 0 4px 8px rgba(44,36,25,0.10), 0 8px 16px rgba(44,36,25,0.08);
+  --shadow-lg: 0 8px 16px rgba(44,36,25,0.12), 0 16px 32px rgba(44,36,25,0.12);
+  --shadow-glow-orange: 0 4px 12px rgba(219,121,71,0.35);
+
+  /* ————— Motion ————— */
+  --dur-quick: 120ms;
+  --dur-base:  200ms;
+  --dur-slow:  360ms;
+  --ease-out:  cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ————— Hit targets ————— */
+  --hit-min: 44px;
+}
+
+/* ————— Semantic base styles ————— */
+html, body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--surface-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ym-display { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-display); line-height: var(--lh-display); letter-spacing: -0.5px; color: var(--ink); }
+.ym-hero    { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-hero); line-height: var(--lh-hero); letter-spacing: -1px; color: var(--ink); text-wrap: balance; }
+h1, .ym-h1 { font-family: var(--font-sans); font-weight: 800; font-size: var(--fs-h1); line-height: var(--lh-h1); letter-spacing: -0.3px; color: var(--ink); }
+h2, .ym-h2 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h2); line-height: var(--lh-h2); letter-spacing: -0.2px; color: var(--ink); }
+h3, .ym-h3 { font-family: var(--font-sans); font-weight: 700; font-size: var(--fs-h3); line-height: var(--lh-h3); color: var(--ink); }
+h4, .ym-h4 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-h4); line-height: var(--lh-h4); color: var(--ink); }
+p, .ym-body { font-size: var(--fs-body); line-height: var(--lh-body); color: var(--ink-2); text-wrap: pretty; }
+.ym-lead    { font-size: var(--fs-lead); line-height: var(--lh-lead); color: var(--ink-2); }
+.ym-small   { font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-2); }
+.ym-caption { font-size: var(--fs-caption); line-height: var(--lh-caption); color: var(--ink-muted); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+code, .ym-mono { font-family: var(--font-mono); font-size: 13px; }
+
+.ym-eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: var(--ym-orange);
+}

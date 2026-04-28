@@ -11,12 +11,13 @@
     </script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Your Mountains — The world's largest outdoor-minded community. No excuses. Get out there and move.">
-  <title>Your Mountains</title>
+  <meta name="description" content="YourMountains — The world's largest outdoor-minded community. No excuses. Get out there and move.">
+  <title>YourMountains</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <!-- GA4 — loaded only after cookie consent -->
   <!-- TODO: Replace G-XXXXXXXXXX with your real GA4 Measurement ID from analytics.google.com -->
@@ -50,14 +51,14 @@
       --sand:    #fff9de;
       --border:  rgba(112,83,57,0.18);
       --text:    #705339;
-      --text-2:  #5a4230;
+      --text-2:  #4a3a2a;
       --text-3:  #96966c;
       --r-md: 12px;
       --r-lg: 16px;
     }
     html { scroll-behavior: smooth; }
     body {
-      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
       background: var(--sand);
       color: var(--text);
       min-height: 100vh;
@@ -355,7 +356,7 @@
     }
     .benefit-icon {
       width: 40px; height: 40px; border-radius: 10px;
-      background: rgba(232,160,32,0.14);
+      background: rgba(246,186,104,0.14);
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
@@ -378,19 +379,19 @@
     }
     .seg-pill:hover { border-color: var(--green); color: var(--green); }
     /* Per-segment active states */
-    [data-segment="Explorer"].active {
+    [data-segment="Explorers"].active {
       background: rgba(219,121,71,0.35); border-color: #db7947; color: #db7947;
       box-shadow: 0 2px 14px rgba(219,121,71,0.55);
     }
-    [data-segment="Vendor Partner"].active {
+    [data-segment="Vendor Partners"].active {
       background: rgba(150,150,108,0.35); border-color: #96966c; color: #96966c;
       box-shadow: 0 2px 14px rgba(150,150,108,0.55);
     }
-    [data-segment="Community Anchor"].active {
+    [data-segment="Community Anchors"].active {
       background: rgba(114,145,161,0.35); border-color: #7291a1; color: #7291a1;
       box-shadow: 0 2px 14px rgba(114,145,161,0.55);
     }
-    [data-segment="Influencer & Creator"].active {
+    [data-segment="Outdoor Influencers & Creators"].active {
       background: rgba(246,186,104,0.35); border-color: #f6ba68; color: #c8882a;
       box-shadow: 0 2px 14px rgba(246,186,104,0.55);
     }
@@ -413,9 +414,9 @@
       outline: none; transition: border-color 0.15s;
     }
     .form-input:focus { border-color: var(--orange); }
-    .form-input.error { border-color: #F44336; }
+    .form-input.error { border-color: var(--orange); }
     .form-input::placeholder { color: var(--text-3); }
-    .form-error { font-size: 12px; color: #F44336; margin-top: 6px; }
+    .form-error { font-size: 12px; color: var(--orange); margin-top: 6px; }
     .form-error.hidden { display: none; }
     .field-group { margin: 0 auto 20px; max-width: 500px; }
     .role-display {
@@ -539,7 +540,7 @@
   <!-- ══ COOKIE BANNER ═════════════════════════════ -->
   <div id="cookie-banner" role="complementary" aria-label="Cookie consent">
     <p>
-      Your Mountains uses cookies to understand how visitors use our site and to improve your experience.
+      YourMountains uses cookies to understand how visitors use our site and to improve your experience.
       We do not sell your data. <a href="privacy-policy.html">Privacy Policy</a>
     </p>
     <div class="cookie-actions">
@@ -553,7 +554,7 @@
     <div class="header-left">
       <div class="header-logo">
         <a href="#hero">
-          <img src="brand-logo.png" alt="Your Mountains"
+          <img src="brand-logo.png" alt="YourMountains"
                onerror="this.style.display='none';this.nextSibling.style.display='block'">
           <span style="display:none;color:#fff9de;font-weight:800;font-size:16px;">YOUR MOUNTAINS</span>
         </a>
@@ -573,7 +574,7 @@
     <section id="hero">
       <div class="hero-content">
         <div class="hero-logo-large" id="hero-logo-large">
-          <img src="brand-logo.png" alt="Your Mountains"
+          <img src="brand-logo.png" alt="YourMountains"
                onerror="this.style.display='none'">
         </div>
         <h1 class="hero-headline">No Excuses.<br>Get Out There and Move.</h1>
@@ -685,7 +686,7 @@
               <div class="path-icon" style="background:rgba(246,186,104,0.18);">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>
               </div>
-              <h3 class="h3">Influencers &amp; Creators</h3>
+              <h3 class="h3">Outdoor Influencers &amp; Creators</h3>
               <p class="body-text">
                 Content creators and outdoor ambassadors who inspire others to move. Tell us about
                 your audience and how you want to shape this community.
@@ -714,28 +715,28 @@
           <div class="founders-benefits">
             <div class="benefit-block">
               <div class="benefit-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
               </div>
               <p class="benefit-title">Early Access</p>
               <p class="benefit-body">Be first through the door — beta features, new trails, and community tools before anyone else.</p>
             </div>
             <div class="benefit-block">
               <div class="benefit-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
               </div>
               <p class="benefit-title">Founding Member Badge</p>
               <p class="benefit-body">A permanent mark on your profile that shows you were here from the very beginning.</p>
             </div>
             <div class="benefit-block">
               <div class="benefit-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               </div>
               <p class="benefit-title">Direct Influence</p>
               <p class="benefit-body">Your voice shapes what we build. Founders get direct access to the team and a seat at the table.</p>
             </div>
             <div class="benefit-block">
               <div class="benefit-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f6ba68" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
               </div>
               <p class="benefit-title">Lifetime Perks</p>
               <p class="benefit-body">Founding members lock in exclusive pricing and privileges that stay with them as the platform grows.</p>
@@ -754,10 +755,10 @@
 
             <!-- Part C: Segment pills -->
             <div class="seg-pills" id="seg-pills">
-              <button type="button" class="seg-pill" data-segment="Explorer" onclick="toggleSegment(this)">Explorer</button>
-              <button type="button" class="seg-pill" data-segment="Vendor Partner" onclick="toggleSegment(this)">Vendor Partner</button>
-              <button type="button" class="seg-pill" data-segment="Community Anchor" onclick="toggleSegment(this)">Community Anchor</button>
-              <button type="button" class="seg-pill" data-segment="Influencer &amp; Creator" onclick="toggleSegment(this)">Influencer &amp; Creator</button>
+              <button type="button" class="seg-pill" data-segment="Explorers" onclick="toggleSegment(this)">Explorers</button>
+              <button type="button" class="seg-pill" data-segment="Vendor Partners" onclick="toggleSegment(this)">Vendor Partners</button>
+              <button type="button" class="seg-pill" data-segment="Community Anchors" onclick="toggleSegment(this)">Community Anchors</button>
+              <button type="button" class="seg-pill" data-segment="Outdoor Influencers &amp; Creators" onclick="toggleSegment(this)">Outdoor Influencers &amp; Creators</button>
             </div>
             <p id="founders-seg-error" class="form-error hidden" style="text-align:center;margin-bottom:8px;"></p>
 
@@ -785,7 +786,7 @@
   <!-- ══ FOOTER ═════════════════════════════════════ -->
   <footer>
     <div class="footer-logo">
-      <img src="brand-logo.png" alt="Your Mountains" onerror="this.style.display='none'">
+      <img src="brand-logo.png" alt="YourMountains" onerror="this.style.display='none'">
     </div>
     <div class="footer-links">
       <button class="btn-contact-founders" onclick="openContactModal()">Contact Founders</button>
@@ -793,7 +794,7 @@
       <a href="terms-of-service.html">Terms of Service</a>
       <a href="privacy-policy.html">Privacy Policy</a>
     </div>
-    <p class="footer-copy">&copy; 2026 Your Mountains</p>
+    <p class="footer-copy">&copy; 2026 YourMountains Outdoor Collective</p>
   </footer>
 
   <!-- ══ CONTACT MODAL ══════════════════════════════ -->
@@ -1021,7 +1022,7 @@
     function showWelcomeModal(segments) {
       document.getElementById('welcome-headline').textContent = "You're In. Welcome to the Founders Club.";
       document.getElementById('welcome-body').innerHTML =
-        '<p class="welcome-para">You\'ve secured your spot as one of the founding members of Your Mountains. Joining as: <strong>' + segments + '</strong>.</p>' +
+        '<p class="welcome-para">You\'ve secured your spot as one of the founding members of YourMountains. Joining as: <strong>' + segments + '</strong>.</p>' +
         '<p class="welcome-para">We\'ll be in touch with early access, founding member details, and next steps. This is just the beginning.</p>';
       document.getElementById('welcome-modal').classList.add('open');
     }

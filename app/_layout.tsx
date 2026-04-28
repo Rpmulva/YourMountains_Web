@@ -101,7 +101,7 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   container: { 
     flex: 1, 
-    backgroundColor: '#000000', // Dark background to prevent white flash
+    backgroundColor: '#2c2419', // brand brown-deep — dark background to prevent white flash
     overflow: 'hidden',
   },
   containerWeb: {

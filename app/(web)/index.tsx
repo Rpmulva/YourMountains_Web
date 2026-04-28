@@ -904,7 +904,7 @@ export default function WebLandingScreen() {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: "#0A0A0A",
+    backgroundColor: "#2c2419",
     position: "relative",
     ...(isWeb && { minHeight: "100vh" as unknown as number }),
     zIndex: 0,
@@ -988,7 +988,7 @@ const styles = StyleSheet.create({
         fontSize: 52,
         lineHeight: 58,
         marginBottom: Spacing.xl,
-        fontFamily: "'Outfit', system-ui, sans-serif",
+        fontFamily: "'Montserrat', system-ui, sans-serif",
         fontWeight: "800",
       } as object)),
   },
@@ -1211,7 +1211,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     ...(isWeb &&
       ({
-        fontFamily: "'Outfit', system-ui, sans-serif",
+        fontFamily: "'Montserrat', system-ui, sans-serif",
         fontWeight: "700",
         fontSize: 30,
         lineHeight: 36,
@@ -1249,13 +1249,13 @@ const styles = StyleSheet.create({
     width: 260,
     padding: 10,
     borderRadius: 36,
-    backgroundColor: "#1c1c1e",
+    backgroundColor: "#3a2d20",
     transform: [{ rotate: "-8deg" }],
     ...Shadows.claire,
     ...(isWeb &&
       ({
         boxShadow:
-          "0 20px 40px rgba(0,0,0,0.4), 0 0 0 2px rgba(255,255,255,0.06)",
+          "0 20px 40px rgba(44,36,25,0.4), 0 0 0 2px rgba(255,255,255,0.06)",
       } as object)),
   },
   phoneScreen: {
@@ -1263,7 +1263,7 @@ const styles = StyleSheet.create({
     height: 520,
     borderRadius: 28,
     overflow: "hidden",
-    backgroundColor: "#0A0A0A",
+    backgroundColor: "#2c2419",
   },
   phoneScreenImage: {
     width: "100%",
@@ -1466,7 +1466,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius.xl,
     padding: Spacing.xxl,
     borderWidth: 1,
-    borderColor: "rgba(255,107,53,0.25)",
+    borderColor: "rgba(219,121,71,0.25)",
     alignItems: "center",
     ...Shadows.lg,
   },
