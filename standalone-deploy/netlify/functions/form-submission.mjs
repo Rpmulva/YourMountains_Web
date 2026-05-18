@@ -1,35 +1,73 @@
 /**
  * Handles form submissions that need to be mirrored to the Supabase marketing DB.
- * Routes by form name to the correct table in yourmountains-marketing project.
+ * Routes by form name to the correct table in yourmountains-marketing project,
+ * then sends a confirmation email to the submitter and an internal alert to
+ * rpmulva@gmail.com via Resend.
  *
  * Required env vars (set in Netlify site settings):
  *   MARKETING_SUPABASE_URL  = https://jeukkkxmamedvubookiw.supabase.co
  *   MARKETING_SUPABASE_KEY  = service_role key from Supabase dashboard → Settings → API
+ *   RESEND_API_KEY          = send-only API key from Resend dashboard
  *
- * To extend: add a new case to FORM_ROUTES below and a mapper function.
+ * To extend: add a new case to FORM_ROUTES below, a mapper function, and a
+ * confirmation template in email-templates.mjs.
  */
+
+import { Resend } from 'resend';
+import { CONFIRMATION_BUILDERS, internalAlert } from './email-templates.mjs';
+
+const SENDER = 'Ryan Mulvaney <Ryan@YourMountains.Life>';
+const INTERNAL_ALERT_TO = 'rpmulva@gmail.com';
 
 const FORM_ROUTES = {
   'form-vendor-survey': {
     table: 'vendor_survey_responses',
     map: mapVendorSurvey,
+    submitterEmailFrom: (rec) => rec.email,
   },
   'form-influencer-survey': {
     table: 'influencer_survey_responses',
     map: mapInfluencerSurvey,
+    submitterEmailFrom: (rec) => rec.email,
   },
   'form-core-partner-survey': {
     table: 'core_partner_survey_responses',
     map: mapCorePartnerSurvey,
+    submitterEmailFrom: (rec) => rec.email,
   },
   'form-explorer-survey': {
     table: 'explorer_survey_responses',
     map: mapExplorerSurvey,
+    submitterEmailFrom: (rec) => rec.email,
   },
-  // Future forms:
-  // 'founders-signup': { table: 'founders_signups', map: mapFoundersSignup },
-  // 'contact':         { table: 'contact_messages', map: mapContact },
+  'form-contact-founders': {
+    table: 'contact_messages',
+    map: mapContactFounders,
+    submitterEmailFrom: (rec) => rec.email,
+  },
+  'form-founders-club': {
+    table: 'founders_club_signups',
+    map: mapFoundersClub,
+    submitterEmailFrom: (rec) => rec.email,
+  },
 };
+
+function mapContactFounders(body) {
+  return {
+    email:   body.email,
+    name:    body.name    || null,
+    message: body.message || null,
+  };
+}
+
+function mapFoundersClub(body) {
+  // Frontend collects multi-select `segments` (joined string). Brief schema
+  // is `role text` — single column, so we store the joined value here.
+  return {
+    email: body.email,
+    role:  body.role || body.segments || null,
+  };
+}
 
 function mapVendorSurvey(body) {
   return {
@@ -142,25 +180,34 @@ function mapExplorerSurvey(body) {
 }
 
 export default async (req) => {
+  console.log('form-submission: entry, method:', req.method);
+
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
 
   const supabaseUrl = process.env.MARKETING_SUPABASE_URL;
   const supabaseKey = process.env.MARKETING_SUPABASE_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('MARKETING_SUPABASE_URL or MARKETING_SUPABASE_KEY not set');
+    console.error('form-submission: MARKETING_SUPABASE_URL or MARKETING_SUPABASE_KEY not set');
     return new Response(JSON.stringify({ error: 'Server configuration error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 
+  if (!resendKey) {
+    // We still want the DB write to succeed; mail is best-effort downstream.
+    console.warn('form-submission: RESEND_API_KEY not set — DB write will proceed, mail will be skipped');
+  }
+
   let body;
   try {
     body = await req.json();
   } catch {
+    console.error('form-submission: invalid JSON body');
     return new Response(JSON.stringify({ error: 'Invalid JSON body' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
@@ -179,8 +226,10 @@ export default async (req) => {
   }
 
   const record = route.map(body);
+  console.log('form-submission: routed', formName, '→', route.table);
 
   try {
+    console.log('form-submission: writing to Supabase', route.table);
     const res = await fetch(`${supabaseUrl}/rest/v1/${route.table}`, {
       method: 'POST',
       headers: {
@@ -194,10 +243,23 @@ export default async (req) => {
 
     if (!res.ok) {
       const text = await res.text();
-      console.error('Supabase insert failed:', res.status, text);
+      console.error('form-submission: Supabase insert failed', res.status, text);
       return new Response(JSON.stringify({ error: 'Database insert failed' }), {
         status: 502,
         headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // ── Best-effort email send. DB write is the source of truth; if mail
+    //    fails we log and still return success so the user gets the
+    //    thank-you state. AC#7/AC#8 verification depends on watching logs.
+    if (resendKey) {
+      await sendMails({
+        resendKey,
+        formName,
+        route,
+        record,
+        body,
       });
     }
 
@@ -206,10 +268,53 @@ export default async (req) => {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (err) {
-    console.error('form-submission error:', err);
+    console.error('form-submission: unhandled error', err);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
   }
 };
+
+async function sendMails({ resendKey, formName, route, record, body }) {
+  const resend = new Resend(resendKey);
+  const submittedAt = new Date().toISOString();
+
+  // Internal alert — always sent.
+  const alert = internalAlert({ formName, submittedAt, record });
+  try {
+    console.log('form-submission: sending internal alert to', INTERNAL_ALERT_TO);
+    const r = await resend.emails.send({
+      from: SENDER,
+      to: INTERNAL_ALERT_TO,
+      subject: alert.subject,
+      text: alert.text,
+    });
+    if (r?.error) console.error('form-submission: internal alert send error', r.error);
+  } catch (err) {
+    console.error('form-submission: internal alert threw', err);
+  }
+
+  // Submitter confirmation — only when we have an email and a template.
+  const builder = CONFIRMATION_BUILDERS[formName];
+  const to = route.submitterEmailFrom(record);
+  if (builder && to) {
+    const template = builder(body);
+    try {
+      console.log('form-submission: sending confirmation to', to);
+      const r = await resend.emails.send({
+        from: SENDER,
+        to,
+        replyTo: 'Ryan@YourMountains.Life',
+        subject: template.subject,
+        html: template.html,
+        text: template.text,
+      });
+      if (r?.error) console.error('form-submission: confirmation send error', r.error);
+    } catch (err) {
+      console.error('form-submission: confirmation threw', err);
+    }
+  } else if (!to) {
+    console.warn('form-submission: no submitter email on record — skipping confirmation');
+  }
+}
