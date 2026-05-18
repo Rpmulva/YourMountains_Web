@@ -2,7 +2,7 @@
  * Handles form submissions that need to be mirrored to the Supabase marketing DB.
  * Routes by form name to the correct table in yourmountains-marketing project,
  * then sends a confirmation email to the submitter and an internal alert to
- * rpmulva@gmail.com via Resend.
+ * Ryan@yourmountains.life via Resend.
  *
  * Required env vars (set in Netlify site settings):
  *   MARKETING_SUPABASE_URL  = https://jeukkkxmamedvubookiw.supabase.co
@@ -17,7 +17,7 @@ import { Resend } from 'resend';
 import { CONFIRMATION_BUILDERS, internalAlert } from './email-templates.mjs';
 
 const SENDER = 'Ryan Mulvaney <Ryan@yourmountains.life>';
-const INTERNAL_ALERT_TO = 'rpmulva@gmail.com';
+const INTERNAL_ALERT_TO = 'Ryan@yourmountains.life';
 
 const FORM_ROUTES = {
   'form-vendor-survey': {
