@@ -16,7 +16,7 @@
 import { Resend } from 'resend';
 import { CONFIRMATION_BUILDERS, internalAlert } from './email-templates.mjs';
 
-const SENDER = 'Ryan Mulvaney <Ryan@YourMountains.Life>';
+const SENDER = 'Ryan Mulvaney <Ryan@yourmountains.life>';
 const INTERNAL_ALERT_TO = 'rpmulva@gmail.com';
 
 const FORM_ROUTES = {
@@ -305,7 +305,7 @@ async function sendMails({ resendKey, formName, route, record, body }) {
       const r = await resend.emails.send({
         from: SENDER,
         to,
-        replyTo: 'Ryan@YourMountains.Life',
+        replyTo: 'Ryan@yourmountains.life',
         subject: template.subject,
         html: template.html,
         text: template.text,

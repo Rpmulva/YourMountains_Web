@@ -3,7 +3,7 @@
  *
  * Each export returns { subject, html, text } so the function can hand them
  * directly to resend. Confirmations go to the submitter and are signed
- * personally by Ryan to match the Ryan@YourMountains.Life sender identity.
+ * personally by Ryan to match the Ryan@yourmountains.life sender identity.
  *
  * Constraints (per brief v2):
  *   - minimal HTML, brand orange #db7947 as accent only
