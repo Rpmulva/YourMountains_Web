@@ -1,10 +1,9 @@
-# Power Automate env vars (set in Netlify site settings → Environment variables):
-#   MS_FLOW_SIGNUP_URL   = HTTP trigger URL for YM Signup List (Founder's Club)
-#   MS_FLOW_MESSAGES_URL = HTTP trigger URL for YM Messages (Contact Founders)
-#
-# Optional Supabase mirror (set once tables are created):
+# Marketing form submission env vars (set in Netlify site settings):
 #   MARKETING_SUPABASE_URL = https://jeukkkxmamedvubookiw.supabase.co
-#   MARKETING_SUPABASE_KEY = (service role key from Supabase dashboard)
+#   MARKETING_SUPABASE_KEY = service role key from Supabase dashboard
+#   RESEND_API_KEY         = send-only API key from Resend dashboard
+#
+# Power Automate (MS_FLOW_*) removed in feature/marketing-forms-supabase-resend-cutover.
 
 [build]
   publish = "."

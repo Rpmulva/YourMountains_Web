@@ -967,11 +967,21 @@
       btn.disabled = true; btn.textContent = 'Joining…';
       trackEvent('form_submit', 'founders_signup');
 
-      var payload = { Title: email, email: email, segments: segments, message: '', form_source: 'Signup', date: new Date().toISOString() };
+      var payload = {
+        'form-name': 'form-founders-club',
+        email: email,
+        role: segments,
+        // legacy fields preserved for the Netlify Forms mirror below
+        Title: email,
+        segments: segments,
+        message: '',
+        form_source: 'Signup',
+        date: new Date().toISOString(),
+      };
       submitToNetlify('founders-signup', { email: email, segments: segments, form_source: 'Signup', date: payload.date });
 
       try {
-        var res = await fetch('/.netlify/functions/signup', {
+        var res = await fetch('/.netlify/functions/form-submission', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
         if (res.ok) {
@@ -981,11 +991,11 @@
           selectedSegments.clear();
           updateFoundersSubmitBtn();
         } else {
-          alert('Signup didn\'t go through. Please try again or email policy@yourmountains.life.');
+          alert('Signup didn\'t go through. Please try again or email Ryan@YourMountains.Life.');
           btn.disabled = false; btn.textContent = 'Join the Founders Club';
         }
       } catch (err) {
-        alert('We couldn\'t reach the server. Please try again or email policy@yourmountains.life.');
+        alert('We couldn\'t reach the server. Please try again or email Ryan@YourMountains.Life.');
         btn.disabled = false; btn.textContent = 'Join the Founders Club';
       }
     }
@@ -1005,16 +1015,23 @@
       if (!email || !isValidEmail(email)) { showError('contact-email-error', 'Please enter a valid email address.'); return; }
       btn.disabled = true; btn.textContent = 'Sending…';
       trackEvent('form_submit', 'contact');
-      var payload = { email: email, message: message, form_source: 'Contact', date: new Date().toISOString() };
+      var payload = {
+        'form-name': 'form-contact-founders',
+        email: email,
+        message: message,
+        // legacy fields preserved for the Netlify Forms mirror below
+        form_source: 'Contact',
+        date: new Date().toISOString(),
+      };
       submitToNetlify('contact', { email: email, message: message, form_source: 'Contact', date: payload.date });
       try {
-        var res = await fetch('/.netlify/functions/contact', {
+        var res = await fetch('/.netlify/functions/form-submission', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
-        if (res.ok) { alert('Message sent! We\'ll reply as soon as we can.'); closeContactModal(); }
-        else { alert('Couldn\'t send your message. Email policy@yourmountains.life directly.'); }
+        if (res.ok) { alert('Message sent! Ryan will reply as soon as he can.'); closeContactModal(); }
+        else { alert('Couldn\'t send your message. Email Ryan@YourMountains.Life directly.'); }
       } catch (err) {
-        alert('Connection error. Email policy@yourmountains.life directly.');
+        alert('Connection error. Email Ryan@YourMountains.Life directly.');
       } finally {
         btn.disabled = false; btn.textContent = 'Send Message';
       }
