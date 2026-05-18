@@ -62,10 +62,15 @@ function mapContactFounders(body) {
 
 function mapFoundersClub(body) {
   // Frontend collects multi-select `segments` (joined string). Brief schema
-  // is `role text` — single column, so we store the joined value here.
+  // is `role text` — single column. Defensively normalize: if either field
+  // arrives as an array (older clients / future code), join into a string
+  // so the text column accepts the write.
+  const raw = body.role ?? body.segments ?? null;
+  let role = raw;
+  if (Array.isArray(raw)) role = raw.join(', ');
   return {
     email: body.email,
-    role:  body.role || body.segments || null,
+    role,
   };
 }
 
@@ -250,25 +255,32 @@ export default async (req) => {
       });
     }
 
-    // ── Best-effort email send. DB write is the source of truth; if mail
-    //    fails we log and still return success so the user gets the
-    //    thank-you state. AC#7/AC#8 verification depends on watching logs.
+    // ── Lead capture success is decoupled from email-send success.
+    //    DB write is the source of truth: row exists ⇒ frontend gets 200.
+    //    Email is best-effort; any failure is logged and surfaced in the
+    //    response body (`emailSent` + `errors`) but never causes a 5xx.
+    //    AC#6 — frontend must not show "didn't go through" when row landed.
+    let emailSent = { confirmation: null, internal: null };
+    const mailErrors = [];
     if (resendKey) {
-      await sendMails({
-        resendKey,
-        formName,
-        route,
-        record,
-        body,
-      });
+      try {
+        emailSent = await sendMails({ resendKey, formName, route, record, body, mailErrors });
+      } catch (err) {
+        // Final safety net — should never trip given sendMails' own guards,
+        // but keep it so a thrown template build can't ever surface as 5xx.
+        console.error(`[${formName}] form-submission: sendMails outer catch`, err);
+        mailErrors.push({ stage: 'sendMails-outer', message: String(err?.message ?? err) });
+      }
+    } else {
+      console.warn(`[${formName}] form-submission: skipping mail — RESEND_API_KEY missing`);
     }
 
-    return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({ ok: true, leadSaved: true, emailSent, errors: mailErrors }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } },
+    );
   } catch (err) {
-    console.error('form-submission: unhandled error', err);
+    console.error(`[${formName ?? 'unknown'}] form-submission: unhandled error before/at DB write`, err);
     return new Response(JSON.stringify({ error: 'Internal server error' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
@@ -276,45 +288,85 @@ export default async (req) => {
   }
 };
 
-async function sendMails({ resendKey, formName, route, record, body }) {
+async function sendMails({ resendKey, formName, route, record, body, mailErrors }) {
   const resend = new Resend(resendKey);
   const submittedAt = new Date().toISOString();
+  const result = { confirmation: null, internal: null };
 
-  // Internal alert — always sent.
-  const alert = internalAlert({ formName, submittedAt, record });
+  // ─── Internal alert ─────────────────────────────────────────────────────
   try {
-    console.log('form-submission: sending internal alert to', INTERNAL_ALERT_TO);
+    const alert = internalAlert({ formName, submittedAt, record });
+    console.log(`[${formName}] sending internal alert to`, INTERNAL_ALERT_TO);
     const r = await resend.emails.send({
       from: SENDER,
       to: INTERNAL_ALERT_TO,
       subject: alert.subject,
       text: alert.text,
     });
-    if (r?.error) console.error('form-submission: internal alert send error', r.error);
+    if (r?.error) {
+      console.error(`[${formName}] internal alert Resend error`, JSON.stringify(r.error));
+      mailErrors.push({ stage: 'internal-alert', message: r.error?.message ?? String(r.error), code: r.error?.statusCode });
+      result.internal = false;
+    } else {
+      console.log(`[${formName}] internal alert sent`, r?.data?.id ?? '(no id)');
+      result.internal = true;
+    }
   } catch (err) {
-    console.error('form-submission: internal alert threw', err);
+    console.error(`[${formName}] internal alert threw`, err);
+    mailErrors.push({ stage: 'internal-alert-throw', message: String(err?.message ?? err) });
+    result.internal = false;
   }
 
-  // Submitter confirmation — only when we have an email and a template.
+  // ─── Submitter confirmation ─────────────────────────────────────────────
   const builder = CONFIRMATION_BUILDERS[formName];
   const to = route.submitterEmailFrom(record);
-  if (builder && to) {
-    const template = builder(body);
-    try {
-      console.log('form-submission: sending confirmation to', to);
-      const r = await resend.emails.send({
-        from: SENDER,
-        to,
-        replyTo: 'Ryan@yourmountains.life',
-        subject: template.subject,
-        html: template.html,
-        text: template.text,
-      });
-      if (r?.error) console.error('form-submission: confirmation send error', r.error);
-    } catch (err) {
-      console.error('form-submission: confirmation threw', err);
-    }
-  } else if (!to) {
-    console.warn('form-submission: no submitter email on record — skipping confirmation');
+
+  if (!to) {
+    console.warn(`[${formName}] no submitter email on record — skipping confirmation`);
+    result.confirmation = 'skipped-no-email';
+    return result;
   }
+  if (!builder) {
+    console.warn(`[${formName}] no confirmation builder registered — skipping confirmation`);
+    result.confirmation = 'skipped-no-template';
+    return result;
+  }
+
+  let template;
+  try {
+    template = builder(body);
+  } catch (err) {
+    console.error(`[${formName}] confirmation template build threw`, err);
+    mailErrors.push({ stage: 'template-build', message: String(err?.message ?? err) });
+    result.confirmation = false;
+    return result;
+  }
+
+  try {
+    console.log(`[${formName}] sending confirmation to`, to);
+    const r = await resend.emails.send({
+      from: SENDER,
+      to,
+      replyTo: 'Ryan@yourmountains.life',
+      subject: template.subject,
+      html: template.html,
+      text: template.text,
+    });
+    if (r?.error) {
+      // Surface the full error shape — this is the critical log for diagnosing
+      // why surveys don't deliver. Resend errors include name + message + statusCode.
+      console.error(`[${formName}] confirmation Resend error`, JSON.stringify(r.error));
+      mailErrors.push({ stage: 'confirmation', message: r.error?.message ?? String(r.error), code: r.error?.statusCode, name: r.error?.name });
+      result.confirmation = false;
+    } else {
+      console.log(`[${formName}] confirmation sent`, r?.data?.id ?? '(no id)');
+      result.confirmation = true;
+    }
+  } catch (err) {
+    console.error(`[${formName}] confirmation send threw`, err);
+    mailErrors.push({ stage: 'confirmation-throw', message: String(err?.message ?? err) });
+    result.confirmation = false;
+  }
+
+  return result;
 }

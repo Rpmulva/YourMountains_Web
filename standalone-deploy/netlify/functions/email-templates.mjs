@@ -57,7 +57,11 @@ export function contactFoundersConfirmation(body) {
 }
 
 export function foundersClubConfirmation(body) {
-  const role = body.role || body.segments || '';
+  // Defensive normalization: role may arrive as string (canonical), array
+  // (future/alternate clients), or null. Always render as a comma-joined
+  // string so the template literal never throws on unexpected shape.
+  const raw = body.role ?? body.segments ?? '';
+  const role = Array.isArray(raw) ? raw.join(', ') : String(raw);
   return {
     subject: "You're on the Founder's Club list",
     html: shell({
