@@ -13,16 +13,18 @@
 --   - no fc_member_seq, no random_alphanumeric_6, no assign_member_number
 --   - no naming collision with profiles/partners/invite_codes tables
 --
--- Companion: members_marketing.sql (full migration with seed for marketing).
+-- Companion: members_marketing.sql (schema migration for marketing).
+-- Transaction management is handled by Supabase apply_migration — no explicit
+-- BEGIN/COMMIT here.
 -- ─────────────────────────────────────────────────────────────────────────────
-
-BEGIN;
 
 -- 1. Create table ────────────────────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS public.members (
   id            uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
   email         text          NOT NULL,
+  first_name    text,
+  last_name     text,
   segments      text[]        NOT NULL DEFAULT '{}',
   member_number text          UNIQUE,
   tier          text          NOT NULL DEFAULT 'founder'
@@ -50,7 +52,7 @@ END $$;
 
 CREATE SEQUENCE IF NOT EXISTS public.fc_member_seq START WITH 1;
 
--- 3. Random 6-char alphanumeric helper ───────────────────────────────────────
+-- 3. Helpers ─────────────────────────────────────────────────────────────────
 
 CREATE OR REPLACE FUNCTION public.random_alphanumeric_6()
 RETURNS text
@@ -68,9 +70,35 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION public.year_to_roman(p_year int)
+RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+  numerals int[]  := ARRAY[1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  symbols  text[] := ARRAY['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+  result   text   := '';
+  i        int;
+  n        int    := p_year;
+BEGIN
+  IF n <= 0 THEN
+    RAISE EXCEPTION 'year_to_roman expects positive year, got %', p_year;
+  END IF;
+  FOR i IN 1..array_length(numerals, 1) LOOP
+    WHILE n >= numerals[i] LOOP
+      result := result || symbols[i];
+      n := n - numerals[i];
+    END LOOP;
+  END LOOP;
+  RETURN result;
+END;
+$$;
+
 -- 4. Number assignment trigger ───────────────────────────────────────────────
 -- Identical behavior to marketing-side trigger — see members_marketing.sql
--- for design notes on TOCTOU and retry budget.
+-- for design notes on TOCTOU and retry budget. Member-tier prefix uses
+-- Roman numerals per README 2026-05-19 (e.g. 2026 → 'MMXXVI').
 
 CREATE OR REPLACE FUNCTION public.assign_member_number()
 RETURNS TRIGGER
@@ -89,7 +117,8 @@ BEGIN
   ELSE
     LOOP
       attempt := attempt + 1;
-      candidate := EXTRACT(YEAR FROM NOW())::text || '-' || public.random_alphanumeric_6();
+      candidate := public.year_to_roman(EXTRACT(YEAR FROM NOW())::int)
+                || '-' || public.random_alphanumeric_6();
       EXIT WHEN NOT EXISTS (
         SELECT 1 FROM public.members WHERE member_number = candidate
       );
@@ -147,5 +176,3 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION public.upsert_member_segments(text, text[]) TO service_role;
-
-COMMIT;

@@ -3,21 +3,20 @@
 --
 -- Project: yourmountains-marketing (ref jeukkkxmamedvubookiw)
 -- Brief:   Member identity schema + multi-segment normalization
---          (Claudia, 2026-05-18 — schema work parallel to FC Welcome Experience)
--- Scope:   Renames founders_club_signups → members in marketing,
---          restructures schema, installs trigger-based number assignment,
---          seeds FC-000001..FC-000004 (co-founders), seeds historical FC
---          signups, then Three Partners. Sequence advanced past last assigned.
+--          (Claudia, 2026-05-18; README update 2026-05-19)
+-- Scope:   Schema only — renames founders_club_signups → members, restructures,
+--          installs trigger-based number assignment + UPSERT RPC.
+--          Seed lives in 08_final_seed_sql.sql (45 rows), applied separately
+--          immediately after this migration per the prepared bundle.
 --
 -- Pre-flight verified 2026-05-18:
 --   - founders_club_signups row_count = 0 (safe to ALTER in place)
---   - no members table exists in this project
---   - no fc_member_seq exists in this project
+--   - no members table, no fc_member_seq, no helper functions in this project
 --
--- Companion: members_claire.sql (DDL-only mirror for Claire app project).
+-- Companion: members_claire.sql (DDL-only mirror for the Claire app project).
+-- Transaction management is handled by Supabase apply_migration — no explicit
+-- BEGIN/COMMIT here.
 -- ─────────────────────────────────────────────────────────────────────────────
-
-BEGIN;
 
 -- 1. Rename + restructure ────────────────────────────────────────────────────
 
@@ -25,13 +24,14 @@ ALTER TABLE public.founders_club_signups RENAME TO members;
 
 ALTER TABLE public.members
   DROP COLUMN role,
-  ADD COLUMN segments      text[]                  NOT NULL DEFAULT '{}',
-  ADD COLUMN member_number text                    UNIQUE,
-  ADD COLUMN tier          text                    NOT NULL DEFAULT 'founder'
+  ADD COLUMN first_name    text,
+  ADD COLUMN last_name     text,
+  ADD COLUMN segments      text[]      NOT NULL DEFAULT '{}',
+  ADD COLUMN member_number text        UNIQUE,
+  ADD COLUMN tier          text        NOT NULL DEFAULT 'founder'
     CHECK (tier IN ('founder', 'member'));
 
--- Email must be present once we treat it as the canonical identity.
--- Existing rows pass (table is empty) — defensive guard for future inserts.
+-- Email is the canonical identity once this migration lands.
 ALTER TABLE public.members
   ALTER COLUMN email SET NOT NULL;
 
@@ -39,7 +39,7 @@ ALTER TABLE public.members
 CREATE UNIQUE INDEX IF NOT EXISTS idx_members_email_lower
   ON public.members (LOWER(email));
 
--- Rename existing RLS policy to match new table name.
+-- Re-target the RLS policy to the new table name.
 DROP POLICY IF EXISTS service_role_insert_founders_club_signups ON public.members;
 DO $$
 BEGIN
@@ -54,8 +54,9 @@ END $$;
 
 CREATE SEQUENCE IF NOT EXISTS public.fc_member_seq START WITH 1;
 
--- 3. Random 6-char alphanumeric helper ───────────────────────────────────────
+-- 3. Helpers ─────────────────────────────────────────────────────────────────
 
+-- Random 6-char alphanumeric for tier='member' suffix.
 CREATE OR REPLACE FUNCTION public.random_alphanumeric_6()
 RETURNS text
 LANGUAGE plpgsql
@@ -72,15 +73,40 @@ BEGIN
 END;
 $$;
 
+-- Year-to-Roman-numeral converter. Member-tier numbers use ROMAN-XXXXXX per
+-- README 2026-05-19: e.g. 2026 → 'MMXXVI', 2027 → 'MMXXVII'.
+CREATE OR REPLACE FUNCTION public.year_to_roman(p_year int)
+RETURNS text
+LANGUAGE plpgsql
+IMMUTABLE
+AS $$
+DECLARE
+  numerals int[]  := ARRAY[1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+  symbols  text[] := ARRAY['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+  result   text   := '';
+  i        int;
+  n        int    := p_year;
+BEGIN
+  IF n <= 0 THEN
+    RAISE EXCEPTION 'year_to_roman expects positive year, got %', p_year;
+  END IF;
+  FOR i IN 1..array_length(numerals, 1) LOOP
+    WHILE n >= numerals[i] LOOP
+      result := result || symbols[i];
+      n := n - numerals[i];
+    END LOOP;
+  END LOOP;
+  RETURN result;
+END;
+$$;
+
 -- 4. Number assignment trigger ───────────────────────────────────────────────
 --
 -- - Explicit member_number on insert (seed / backfill) → preserved
 -- - tier='founder' without member_number → next FC-XXXXXX from fc_member_seq
--- - tier='member' without member_number → YYYY-XXXXXX, retry up to 10 on collision
---
--- Note on TOCTOU: the EXISTS check + INSERT isn't atomic; the UNIQUE constraint
--- on member_number is the actual safety. At ~10k members, collision probability
--- per insert is ~5e-6 against the 36^6 candidate space, so 10 retries is overkill.
+-- - tier='member' without member_number → ROMAN-XXXXXX (year in Roman),
+--   retry up to 10 on collision. README §7 test 4 expects 'MMXXVI-XXXXXX'
+--   for 2026.
 
 CREATE OR REPLACE FUNCTION public.assign_member_number()
 RETURNS TRIGGER
@@ -99,7 +125,8 @@ BEGIN
   ELSE
     LOOP
       attempt := attempt + 1;
-      candidate := EXTRACT(YEAR FROM NOW())::text || '-' || public.random_alphanumeric_6();
+      candidate := public.year_to_roman(EXTRACT(YEAR FROM NOW())::int)
+                || '-' || public.random_alphanumeric_6();
       EXIT WHEN NOT EXISTS (
         SELECT 1 FROM public.members WHERE member_number = candidate
       );
@@ -119,11 +146,12 @@ CREATE TRIGGER trg_assign_member_number
   BEFORE INSERT ON public.members
   FOR EACH ROW EXECUTE FUNCTION public.assign_member_number();
 
--- 5. UPSERT RPC for the function (atomic, segments-union semantics) ──────────
+-- 5. UPSERT RPC (atomic, segments-union semantics) ───────────────────────────
 --
 -- form-submission.mjs calls this via POST /rest/v1/rpc/upsert_member_segments.
--- Returns the canonical row (member_number, segments, created_at, was_new)
--- so the function can surface memberNumber in its response.
+-- On conflict, segments are merged as DISTINCT union; member_number and
+-- created_at are preserved. Returns the canonical row so the function can
+-- surface memberNumber in its response.
 
 CREATE OR REPLACE FUNCTION public.upsert_member_segments(
   p_email     text,
@@ -158,51 +186,4 @@ BEGIN
 END;
 $$;
 
--- Allow service_role to call the RPC (it bypasses RLS but PostgREST checks
--- function execute privilege).
 GRANT EXECUTE ON FUNCTION public.upsert_member_segments(text, text[]) TO service_role;
-
--- 6. Co-founders seed (FC-000001..FC-000004) ─────────────────────────────────
--- All 'Explorers'. created_at uniform at BETA_LAUNCH_DATE.
--- @TODO[BETA_LAUNCH_DATE]: replace the placeholder timestamp before running.
-
-INSERT INTO public.members (email, segments, tier, member_number, created_at)
-VALUES
-  ('Ryan@YourMountains.Life',    ARRAY['Explorers'], 'founder', 'FC-000001', '__BETA_LAUNCH_DATE__'::timestamptz),
-  ('Rachel@YourMountains.Life',  ARRAY['Explorers'], 'founder', 'FC-000002', '__BETA_LAUNCH_DATE__'::timestamptz),
-  ('Owen@YourMountains.Life',    ARRAY['Explorers'], 'founder', 'FC-000003', '__BETA_LAUNCH_DATE__'::timestamptz),
-  ('jillwindrum@gmail.com',      ARRAY['Explorers'], 'founder', 'FC-000004', '__BETA_LAUNCH_DATE__'::timestamptz);
-
--- 7. Historical FC signups (FC-000005..FC-0000NN) ────────────────────────────
--- @TODO[historical]: replaced by import-prep script output.
--- Source merge: SharePoint List "YM Signup List" ∪ MS Forms FC opt-ins.
--- Dedupe by LOWER(email), sort by earliest signup_date ascending.
--- Role normalization: explorer→['Explorers'], vendor→['Vendor Partners'],
--- both→['Explorers','Vendor Partners'].
--- Preserves original signup_date as created_at.
---
--- INSERT INTO public.members (email, segments, tier, member_number, created_at) VALUES
---   ('historical-1@example.com',  ARRAY['Explorers'],                      'founder', 'FC-000005', '2026-04-12 14:23:00+00'::timestamptz),
---   ('historical-2@example.com',  ARRAY['Vendor Partners'],                'founder', 'FC-000006', '2026-04-13 09:11:00+00'::timestamptz),
---   ('historical-3@example.com',  ARRAY['Explorers','Vendor Partners'],    'founder', 'FC-000007', '2026-04-14 18:02:00+00'::timestamptz);
-
--- 8. Three Partners seed (appended after historical) ─────────────────────────
--- @TODO[partner-emails]: replace placeholders with real contact addresses.
--- @TODO[FC-XXXXXX]: replace with sequential numbers continuing past historical NN.
---
--- INSERT INTO public.members (email, segments, tier, member_number, created_at) VALUES
---   ('__FDRD_EMAIL__',              ARRAY['Community Anchors'], 'founder', 'FC-XXXXXX', '__BETA_LAUNCH_DATE__'::timestamptz),
---   ('__SOS_OUTREACH_EMAIL__',      ARRAY['Community Anchors'], 'founder', 'FC-XXXXXX', '__BETA_LAUNCH_DATE__'::timestamptz),
---   ('__WALKING_MOUNTAINS_EMAIL__', ARRAY['Community Anchors'], 'founder', 'FC-XXXXXX', '__BETA_LAUNCH_DATE__'::timestamptz);
-
--- 9. Advance sequence past last explicitly-assigned number ───────────────────
--- @TODO[setval]: pass the highest assigned FC number after seeds.
--- Form `SELECT setval('public.fc_member_seq', N, true)` — `true` means
--- next nextval() returns N+1.
---
--- After co-founders only (no historical, no partners):
---   SELECT setval('public.fc_member_seq', 4, true);
--- After full seed:
---   SELECT setval('public.fc_member_seq', __LAST_FC_NUMBER__, true);
-
-COMMIT;
