@@ -963,29 +963,38 @@
       if (selectedSegments.size === 0) { showError('founders-seg-error', 'Please select at least one segment above.'); valid = false; }
       if (!valid) return;
 
-      var segments = Array.from(selectedSegments).join(', ');
+      // Canonical shape: segments is a JSON array (1+ element). Backend's
+      // mapFoundersClub still accepts a comma-joined string as a fallback,
+      // but the array form is the source of truth post member-identity-schema.
+      var segmentsArr = Array.from(selectedSegments);
+      var segmentsStr = segmentsArr.join(', ');
       btn.disabled = true; btn.textContent = 'Joining…';
       trackEvent('form_submit', 'founders_signup');
 
       var payload = {
         'form-name': 'form-founders-club',
         email: email,
-        role: segments,
-        // legacy fields preserved for the Netlify Forms mirror below
+        segments: segmentsArr,
+        // legacy fields preserved for the Netlify Forms mirror only
         Title: email,
-        segments: segments,
         message: '',
         form_source: 'Signup',
         date: new Date().toISOString(),
       };
-      submitToNetlify('founders-signup', { email: email, segments: segments, form_source: 'Signup', date: payload.date });
+      // Netlify Forms mirror still gets the joined-string form (its URL-encoded
+      // body can't carry arrays cleanly).
+      submitToNetlify('founders-signup', { email: email, segments: segmentsStr, form_source: 'Signup', date: payload.date });
 
       try {
         var res = await fetch('/.netlify/functions/form-submission', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
         if (res.ok) {
-          showWelcomeModal(segments);
+          // memberNumber is reserved for Claudia's welcome-copy workstream;
+          // not displayed today but parsed so the field is wired end-to-end.
+          var data = {};
+          try { data = await res.json(); } catch (e) {}
+          showWelcomeModal(segmentsStr, data && data.memberNumber);
           document.getElementById('founders-form').reset();
           document.querySelectorAll('.seg-pill').forEach(function (b) { b.classList.remove('active'); });
           selectedSegments.clear();
@@ -1038,7 +1047,10 @@
     }
 
     /* ── Welcome Modal ───────────────────────────── */
-    function showWelcomeModal(segments) {
+    // memberNumber is reserved for Claudia's FC Welcome Experience copy work —
+    // currently passed through but not rendered. The data flow is wired so
+    // copy can drop in without touching the submit handler.
+    function showWelcomeModal(segments, _memberNumber) {
       document.getElementById('welcome-headline').textContent = "You're In. Welcome to the Founders Club.";
       document.getElementById('welcome-body').innerHTML =
         '<p class="welcome-para">You\'ve secured your spot as one of the founding members of YourMountains. Joining as: <strong>' + segments + '</strong>.</p>' +
