@@ -46,9 +46,14 @@ const FORM_ROUTES = {
     submitterEmailFrom: (rec) => rec.email,
   },
   'form-founders-club': {
-    table: 'founders_club_signups',
+    // FC writes through an UPSERT RPC instead of direct insert so the
+    // members table can merge segment arrays on repeat submissions while
+    // preserving the original member_number + created_at. See
+    // database/migrations/members_marketing.sql for the RPC definition.
+    table: 'members',
     map: mapFoundersClub,
     submitterEmailFrom: (rec) => rec.email,
+    write: 'rpc-upsert-member',
   },
 };
 
@@ -61,16 +66,24 @@ function mapContactFounders(body) {
 }
 
 function mapFoundersClub(body) {
-  // Frontend collects multi-select `segments` (joined string). Brief schema
-  // is `role text` — single column. Defensively normalize: if either field
-  // arrives as an array (older clients / future code), join into a string
-  // so the text column accepts the write.
-  const raw = body.role ?? body.segments ?? null;
-  let role = raw;
-  if (Array.isArray(raw)) role = raw.join(', ');
+  // Schema is now `segments text[]` on the members table. Frontend sends
+  // segments as a JSON array. Defensively coerce older shapes (legacy
+  // comma-string from a cached frontend bundle, or `role` field from the
+  // pre-migration payload) into an array so the cutover window is safe.
+  let segments = body.segments;
+  if (!Array.isArray(segments)) {
+    const raw = body.segments ?? body.role ?? '';
+    if (Array.isArray(raw)) {
+      segments = raw;
+    } else if (typeof raw === 'string' && raw.trim()) {
+      segments = raw.split(/,\s*/).map((s) => s.trim()).filter(Boolean);
+    } else {
+      segments = [];
+    }
+  }
   return {
     email: body.email,
-    role,
+    segments,
   };
 }
 
@@ -233,26 +246,55 @@ export default async (req) => {
   const record = route.map(body);
   console.log('form-submission: routed', formName, '→', route.table);
 
+  // Lead capture into Supabase. FC route uses an UPSERT RPC for segment-union
+  // semantics; all others use a direct insert.
+  let memberNumber = null;
   try {
-    console.log('form-submission: writing to Supabase', route.table);
-    const res = await fetch(`${supabaseUrl}/rest/v1/${route.table}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apikey': supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify(record),
-    });
-
-    if (!res.ok) {
-      const text = await res.text();
-      console.error('form-submission: Supabase insert failed', res.status, text);
-      return new Response(JSON.stringify({ error: 'Database insert failed' }), {
-        status: 502,
-        headers: { 'Content-Type': 'application/json' },
+    if (route.write === 'rpc-upsert-member') {
+      console.log(`[${formName}] form-submission: rpc upsert_member_segments`);
+      const rpcRes = await fetch(`${supabaseUrl}/rest/v1/rpc/upsert_member_segments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+        },
+        body: JSON.stringify({ p_email: record.email, p_segments: record.segments }),
       });
+      if (!rpcRes.ok) {
+        const text = await rpcRes.text();
+        console.error(`[${formName}] form-submission: upsert RPC failed`, rpcRes.status, text);
+        return new Response(JSON.stringify({ error: 'Database write failed' }), {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      const arr = await rpcRes.json();
+      if (Array.isArray(arr) && arr[0]) {
+        memberNumber = arr[0].member_number ?? null;
+        console.log(`[${formName}] form-submission: upsert complete`, JSON.stringify({ memberNumber, wasNew: arr[0].was_new, segments: arr[0].segments }));
+      }
+    } else {
+      console.log(`[${formName}] form-submission: writing to Supabase`, route.table);
+      const res = await fetch(`${supabaseUrl}/rest/v1/${route.table}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${supabaseKey}`,
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify(record),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        console.error(`[${formName}] form-submission: Supabase insert failed`, res.status, text);
+        return new Response(JSON.stringify({ error: 'Database insert failed' }), {
+          status: 502,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     // ── Lead capture success is decoupled from email-send success.
@@ -276,7 +318,7 @@ export default async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ ok: true, leadSaved: true, emailSent, errors: mailErrors }),
+      JSON.stringify({ ok: true, leadSaved: true, memberNumber, emailSent, errors: mailErrors }),
       { status: 200, headers: { 'Content-Type': 'application/json' } },
     );
   } catch (err) {
