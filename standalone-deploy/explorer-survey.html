@@ -1050,11 +1050,14 @@
     } catch (_) { /* non-fatal */ }
 
     try {
-      await fetch('/.netlify/functions/form-submission', {
+      const res = await fetch('/.netlify/functions/form-submission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      if (res.ok && typeof window.gtag === 'function') {
+        window.gtag('event', 'survey_submit_explorer', {});
+      }
     } catch (_) { /* non-fatal */ }
 
     document.getElementById('survey-wrap').style.display = 'none';
