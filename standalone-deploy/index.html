@@ -19,27 +19,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-  <!-- GA4 — loaded only after cookie consent -->
-  <!-- TODO: Replace G-XXXXXXXXXX with your real GA4 Measurement ID from analytics.google.com -->
-  <script>
-    window.GA_ID = 'G-XXXXXXXXXX';
-    window.gaLoaded = false;
-    function loadGA() {
-      if (window.gaLoaded) return;
-      window.gaLoaded = true;
-      var s = document.createElement('script');
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.GA_ID;
-      s.async = true;
-      document.head.appendChild(s);
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ dataLayer.push(arguments); }
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', window.GA_ID);
-    }
-    if (localStorage.getItem('ym_cookie_consent') === 'accepted') loadGA();
-  </script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -990,11 +969,19 @@
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
         if (res.ok) {
-          // memberNumber is reserved for Claudia's welcome-copy workstream;
-          // not displayed today but parsed so the field is wired end-to-end.
+          // Parse response body once — memberNumber feeds both the welcome
+          // modal (reserved for Claudia's welcome-copy workstream, not
+          // displayed today) and the GA4 signup_fc conversion event.
           var data = {};
-          try { data = await res.json(); } catch (e) {}
-          showWelcomeModal(segmentsStr, data && data.memberNumber);
+          try { data = await res.json(); } catch (_) {}
+          var memberNumber = (data && data.memberNumber) || null;
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'signup_fc', {
+              segments: segmentsStr,
+              member_number: memberNumber,
+            });
+          }
+          showWelcomeModal(segmentsStr, memberNumber);
           document.getElementById('founders-form').reset();
           document.querySelectorAll('.seg-pill').forEach(function (b) { b.classList.remove('active'); });
           selectedSegments.clear();
@@ -1037,7 +1024,10 @@
         var res = await fetch('/.netlify/functions/form-submission', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
         });
-        if (res.ok) { alert('Message sent! Ryan will reply as soon as he can.'); closeContactModal(); }
+        if (res.ok) {
+          if (typeof window.gtag === 'function') window.gtag('event', 'contact_form_submit', {});
+          alert('Message sent! Ryan will reply as soon as he can.'); closeContactModal();
+        }
         else { alert('Couldn\'t send your message. Email Ryan@YourMountains.Life directly.'); }
       } catch (err) {
         alert('Connection error. Email Ryan@YourMountains.Life directly.');

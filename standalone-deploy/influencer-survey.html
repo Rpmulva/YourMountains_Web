@@ -925,11 +925,14 @@
 
     try {
       // Fire to Supabase via form-submission function
-      await fetch('/.netlify/functions/form-submission', {
+      const res = await fetch('/.netlify/functions/form-submission', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+      if (res.ok && typeof window.gtag === 'function') {
+        window.gtag('event', 'survey_submit_influencer', {});
+      }
     } catch (_) { /* non-fatal */ }
 
     // Show thank-you

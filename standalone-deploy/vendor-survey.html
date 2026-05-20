@@ -806,7 +806,10 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-      if (res.ok) submitted = true;
+      if (res.ok) {
+        submitted = true;
+        if (typeof window.gtag === 'function') window.gtag('event', 'survey_submit_vendor', {});
+      }
     } catch (err) {
       console.warn('form-submission error:', err);
     }
