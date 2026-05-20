@@ -81,9 +81,16 @@ function mapFoundersClub(body) {
       segments = [];
     }
   }
+  // G-2026-05-20-FC-NAMES — capture business_name (Vendor Partners) and
+  // org_name (Community Anchors). Trim; empty string becomes null so the
+  // DB's NULLIF in upsert_member_segments treats them identically.
+  const businessName = typeof body.business_name === 'string' ? body.business_name.trim() : null;
+  const orgName      = typeof body.org_name      === 'string' ? body.org_name.trim()      : null;
   return {
     email: body.email,
     segments,
+    business_name: businessName || null,
+    org_name:      orgName      || null,
   };
 }
 
@@ -259,7 +266,12 @@ export default async (req) => {
           'apikey': supabaseKey,
           'Authorization': `Bearer ${supabaseKey}`,
         },
-        body: JSON.stringify({ p_email: record.email, p_segments: record.segments }),
+        body: JSON.stringify({
+          p_email:         record.email,
+          p_segments:      record.segments,
+          p_business_name: record.business_name,
+          p_org_name:      record.org_name,
+        }),
       });
       if (!rpcRes.ok) {
         const text = await rpcRes.text();
@@ -272,6 +284,11 @@ export default async (req) => {
       const arr = await rpcRes.json();
       if (Array.isArray(arr) && arr[0]) {
         memberNumber = arr[0].member_number ?? null;
+        // Annotate the body so the template builder downstream can pick up
+        // the canonical (DB-resolved) business_name/org_name — covers the
+        // COALESCE-protect case where an existing row already had values.
+        body.business_name = arr[0].business_name ?? body.business_name ?? null;
+        body.org_name      = arr[0].org_name      ?? body.org_name      ?? null;
         console.log(`[${formName}] form-submission: upsert complete`, JSON.stringify({ memberNumber, wasNew: arr[0].was_new, segments: arr[0].segments }));
       }
     } else {

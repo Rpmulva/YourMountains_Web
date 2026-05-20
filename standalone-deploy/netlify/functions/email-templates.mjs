@@ -62,6 +62,20 @@ export function foundersClubConfirmation(body) {
   // string so the template literal never throws on unexpected shape.
   const raw = body.role ?? body.segments ?? '';
   const role = Array.isArray(raw) ? raw.join(', ') : String(raw);
+
+  // G-2026-05-20-FC-NAMES — merge vars with payload-assembly fallbacks
+  // (Resend doesn't support Liquid |default; we inject defaults here so
+  // template body never sees a literal {{var|default}}). Empty string and
+  // null treated identically. Per scope limit, the current HTML body below
+  // does not reference these vars yet — Claudia's Welcome Experience
+  // workstream owns the actual copy. Variables are exposed via the
+  // returned object so future template revisions can drop them in.
+  const businessName = (typeof body.business_name === 'string' && body.business_name.trim())
+    ? body.business_name.trim()
+    : 'your business';
+  const orgName = (typeof body.org_name === 'string' && body.org_name.trim())
+    ? body.org_name.trim()
+    : 'your organization';
   return {
     subject: "You're on the Founder's Club list",
     html: shell({
@@ -71,6 +85,13 @@ export function foundersClubConfirmation(body) {
 <p style="margin:0 0 12px 0;color:#555;">What happens next: I'll reach out with early access details and founding member perks before the public beta opens.</p>`,
     }),
     text: `You're on the Founder's Club waitlist${role ? ` as ${role}` : ''}. What happens next: I'll reach out with early access details and founding member perks before the public beta opens. — Ryan`,
+    // Merge vars exposed for the next Welcome Experience revision. Defaults
+    // pre-applied — template author can reference these directly without
+    // a Liquid fallback pipe.
+    mergeVars: {
+      business_name: businessName,
+      org_name:      orgName,
+    },
   };
 }
 

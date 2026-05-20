@@ -398,6 +398,9 @@
     .form-input::placeholder { color: var(--text-3); }
     .form-error { font-size: 12px; color: var(--orange); margin-top: 6px; }
     .form-error.hidden { display: none; }
+    /* G-2026-05-20-FC-NAMES — generic hidden + helper text for conditional FC inputs */
+    .hidden { display: none !important; }
+    .form-helper { font-size: 12px; color: var(--text-3); margin-top: 6px; }
     .field-group { margin: 0 auto 20px; max-width: 500px; }
     .role-display {
       text-align: center; font-size: 15px; color: var(--text-3);
@@ -746,6 +749,22 @@
             <!-- Part D: Instruction -->
             <p class="seg-instruction">Select everything that describes you — most of us wear more than one hat.</p>
 
+            <!-- G-2026-05-20-FC-NAMES — conditional name capture per segment.
+                 Vendor Partner → business_name. Community Anchor → org_name.
+                 Both optional. Shown/hidden by toggleSegment() per segment state. -->
+            <div class="field-group hidden" id="founders-business-name-group">
+              <label class="form-label" for="founders-business-name">Business name</label>
+              <input id="founders-business-name" name="business_name" type="text" maxlength="200"
+                     class="form-input" placeholder="">
+              <p class="form-helper">We use this to address you correctly in our welcome message.</p>
+            </div>
+            <div class="field-group hidden" id="founders-org-name-group">
+              <label class="form-label" for="founders-org-name">Organization name</label>
+              <input id="founders-org-name" name="org_name" type="text" maxlength="200"
+                     class="form-input" placeholder="">
+              <p class="form-helper">We use this to address you correctly in our welcome message.</p>
+            </div>
+
             <p class="consent-text">
               By submitting you agree to our
               <a href="terms-of-service.html">Terms of Service</a> and
@@ -906,7 +925,16 @@
       }
       clearError('founders-seg-error');
       updateFoundersSubmitBtn();
+      updateConditionalNameFields();
       if (selectedSegments.size === 1) trackEvent('form_start', 'founders_signup');
+    }
+    /* G-2026-05-20-FC-NAMES — show business_name when Vendor Partners selected,
+       org_name when Community Anchors selected. Both visible if both. */
+    function updateConditionalNameFields() {
+      var bizGroup = document.getElementById('founders-business-name-group');
+      var orgGroup = document.getElementById('founders-org-name-group');
+      if (bizGroup) bizGroup.classList.toggle('hidden', !selectedSegments.has('Vendor Partners'));
+      if (orgGroup) orgGroup.classList.toggle('hidden', !selectedSegments.has('Community Anchors'));
     }
     function onFoundersInputChange() {
       clearError('founders-email-error');
@@ -947,6 +975,15 @@
       // but the array form is the source of truth post member-identity-schema.
       var segmentsArr = Array.from(selectedSegments);
       var segmentsStr = segmentsArr.join(', ');
+      // G-2026-05-20-FC-NAMES — only send the conditional fields when the
+      // matching segment is selected. Trim; empty string is intentional
+      // (backend treats empty === null via NULLIF).
+      var businessName = selectedSegments.has('Vendor Partners')
+        ? (document.getElementById('founders-business-name').value || '').trim()
+        : '';
+      var orgName = selectedSegments.has('Community Anchors')
+        ? (document.getElementById('founders-org-name').value || '').trim()
+        : '';
       btn.disabled = true; btn.textContent = 'Joining…';
       trackEvent('form_submit', 'founders_signup');
 
@@ -954,6 +991,8 @@
         'form-name': 'form-founders-club',
         email: email,
         segments: segmentsArr,
+        business_name: businessName,
+        org_name: orgName,
         // legacy fields preserved for the Netlify Forms mirror only
         Title: email,
         message: '',
@@ -985,6 +1024,7 @@
           document.getElementById('founders-form').reset();
           document.querySelectorAll('.seg-pill').forEach(function (b) { b.classList.remove('active'); });
           selectedSegments.clear();
+          updateConditionalNameFields();
           updateFoundersSubmitBtn();
         } else {
           alert('Signup didn\'t go through. Please try again or email Ryan@YourMountains.Life.');
