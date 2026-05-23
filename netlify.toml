@@ -16,6 +16,12 @@
 [functions]
   directory = "standalone-deploy/netlify/functions"
 
+# Extensionless aasa needs an explicit MIME type for swcd.
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
