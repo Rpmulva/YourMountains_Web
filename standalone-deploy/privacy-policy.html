@@ -155,7 +155,7 @@
   <h1>Privacy Policy</h1>
   <p class="meta">
     <strong>Effective Date:</strong> April 3, 2026 &nbsp;|&nbsp;
-    <strong>Last UpdatedJuly 27, 2026</strong> April 3, 2026
+    <strong>Last Updated:</strong> July 27, 2026
   </p>
   <p class="plain-english">
     Written in plain English — no legalese. We want you to actually understand this.
@@ -170,6 +170,7 @@
       <li><a href="#use">How We Use It</a></li>
       <li><a href="#store">How We Store It</a></li>
       <li><a href="#third-party">Third-Party Services</a></li>
+      <li><a href="#calendar">Calendar Free/Busy (Mobile App)</a></li>
       <li><a href="#cookies">Cookies</a></li>
       <li><a href="#analytics">Analytics Disclosure</a></li>
       <li><a href="#children">Children's Privacy</a></li>
@@ -206,6 +207,7 @@
     <li>Messages you send us via the contact form</li>
     <li>Business information provided by vendor partners (business name, contact name, phone)</li>
     <li>Your stated role — Explorer, Vendor Partner, or Both</li>
+    <li>If you use the mobile app and choose to connect a calendar: OAuth tokens for Google Calendar or Outlook, free/busy availability (busy blocks), and your preferred training windows (for example before work, lunch, evenings, or whenever you have gaps)</li>
   </ul>
 
   <p><strong>Information collected automatically:</strong></p>
@@ -234,6 +236,7 @@
     <li>Respond to your messages and questions</li>
     <li>Analyze Site usage to improve the experience (analytics data only)</li>
     <li>Evaluate vendor partner interest and reach out about Founding Partner opportunities</li>
+    <li>If you connect a calendar in the mobile app: suggest open training times from free/busy gaps and your preferred windows</li>
   </ul>
   <div class="highlight-box">
     <strong>We do not sell your data. We do not share your data with advertisers. Full stop.</strong>
@@ -247,6 +250,7 @@
     <li><strong>Supabase</strong> — form data is mirrored to our Supabase PostgreSQL database, hosted on Amazon Web Services in the United States.</li>
     <li><strong>Microsoft SharePoint</strong> — waitlist and contact submissions are routed through Microsoft Power Automate and stored in SharePoint for team access.</li>
     <li><strong>Google Analytics</strong> — analytics data is processed and stored by Google per their data retention settings.</li>
+    <li><strong>Supabase (mobile app)</strong> — if you connect Google Calendar or Outlook, refresh tokens are stored encrypted on our servers (not in plaintext on your device). Free/busy busy blocks are used to suggest open training times; we do not use event titles when reading free/busy APIs.</li>
   </ul>
   <p>
     We apply reasonable technical and organizational safeguards appropriate to the sensitivity of
@@ -285,8 +289,31 @@
     We encourage you to review their policies.
   </p>
 
-  <!-- §7 Cookies -->
-  <h2 id="cookies">7. Cookies</h2>
+  <!-- §7 Calendar Free/Busy -->
+  <h2 id="calendar">7. Calendar Free/Busy (Mobile App)</h2>
+  <p>
+    If you connect Google Calendar or Outlook, we request read-only free/busy access and use busy
+    blocks (not event titles) only to suggest open training times. You can disconnect in Settings
+    anytime. Refresh tokens are stored encrypted on our servers.
+  </p>
+  <p>
+    You may also set preferred windows in Settings (for example before work, lunch, evenings, or
+    whenever you have gaps). Those preferences stay with your account and are used only to prioritize
+    suggested open times. Connecting a calendar is optional. YourMountains is for adults 18 and older.
+  </p>
+  <ul>
+    <li>
+      <strong>Google Calendar</strong> — free/busy via Google Calendar APIs.
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a>
+    </li>
+    <li>
+      <strong>Microsoft Outlook / Microsoft Graph</strong> — free/busy via schedule APIs.
+      <a href="https://privacy.microsoft.com" target="_blank" rel="noopener">privacy.microsoft.com</a>
+    </li>
+  </ul>
+
+  <!-- §8 Cookies -->
+  <h2 id="cookies">8. Cookies</h2>
   <p>
     We use Google Analytics cookies to understand how visitors use our Site. These cookies are
     <strong>only loaded after you click "Accept"</strong> on the cookie consent banner that appears
@@ -306,8 +333,8 @@
     profiling for commercial purposes.
   </p>
 
-  <!-- §8 Analytics -->
-  <h2 id="analytics">8. Analytics Disclosure</h2>
+  <!-- §9 Analytics -->
+  <h2 id="analytics">9. Analytics Disclosure</h2>
   <p>
     We may use analytics tools, including but not limited to Google Analytics, to understand how
     visitors use our Site. We may add additional analytics tools in the future and will update
@@ -318,8 +345,8 @@
     explicitly accept cookies via our consent banner.
   </p>
 
-  <!-- §9 Children -->
-  <h2 id="children">9. Children's Privacy / Age Eligibility</h2>
+  <!-- §10 Children -->
+  <h2 id="children">10. Children's Privacy / Age Eligibility</h2>
   <p>
     YourMountains is for adults 18 years of age or older. Our Site and mobile app are not directed
     at anyone under 18. We do not knowingly collect personal information from anyone under 18. If we
@@ -336,8 +363,8 @@
     not use Apple Screen Time, Declared Age Range, Family Controls, or other Age Assurance APIs.
   </p>
 
-  <!-- §10 Retention -->
-  <h2 id="retention">10. Data Retention</h2>
+  <!-- §11 Retention -->
+  <h2 id="retention">11. Data Retention</h2>
   <p>
     We retain your information for as long as reasonably necessary to fulfill the purposes described
     in this policy, or as required by applicable law. In practice:
@@ -347,11 +374,12 @@
     <li><strong>Survey responses</strong> — retained indefinitely for product research unless you request deletion.</li>
     <li><strong>Contact messages</strong> — retained for up to 2 years.</li>
     <li><strong>Analytics data</strong> — subject to Google Analytics' data retention settings (we use the default 14-month retention).</li>
+    <li><strong>Calendar connection data</strong> — encrypted OAuth refresh tokens and preferred windows are retained while your account is active and the calendar stays connected; disconnecting removes the connection and associated tokens. Account deletion also purges calendar connection data.</li>
   </ul>
   <p>You may request deletion of your data at any time — see Your Rights below.</p>
 
-  <!-- §11 Rights -->
-  <h2 id="rights">11. Your Rights &amp; Data Deletion</h2>
+  <!-- §12 Rights -->
+  <h2 id="rights">12. Your Rights &amp; Data Deletion</h2>
   <p>You have the right to:</p>
   <ul>
     <li>Request access to the personal data we hold about you</li>
@@ -374,8 +402,8 @@
     </p>
   </div>
 
-  <!-- §12 CPA -->
-  <h2 id="cpa">12. Colorado Privacy Act — Forward-Looking Note</h2>
+  <!-- §13 CPA -->
+  <h2 id="cpa">13. Colorado Privacy Act — Forward-Looking Note</h2>
   <div class="cpa-box">
     <p>
       We intend to comply with the <strong>Colorado Consumer Privacy Act (CPA)</strong> and similar
@@ -385,8 +413,8 @@
     </p>
   </div>
 
-  <!-- §13 Changes -->
-  <h2 id="changes">13. Changes to This Policy</h2>
+  <!-- §14 Changes -->
+  <h2 id="changes">14. Changes to This Policy</h2>
   <p>
     We may update this Privacy Policy from time to time. When we do, we will update the "Last
     Updated" date at the top of this page. We encourage you to review this policy periodically.
@@ -397,8 +425,8 @@
     <a href="mailto:policy@yourmountains.life">policy@yourmountains.life</a>.
   </p>
 
-  <!-- §14 Contact -->
-  <h2 id="contact">14. Contact Us</h2>
+  <!-- §15 Contact -->
+  <h2 id="contact">15. Contact Us</h2>
   <p>
     Privacy questions, data requests, or concerns — we want to hear from you:
   </p>
