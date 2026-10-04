@@ -82,9 +82,9 @@ export function foundersClubConfirmation(body) {
       heading: "You're in",
       body: `${greeting(body.name)}
 <p style="margin:0 0 12px 0;">You're on the Founder's Club waitlist${role ? ` as <strong style="color:${ACCENT};">${escapeHtml(role)}</strong>` : ''}.</p>
-<p style="margin:0 0 12px 0;color:#555;">What happens next: I'll reach out with early access details and founding member perks before the public beta opens.</p>`,
+<p style="margin:0 0 12px 0;color:#555;">What happens next: I'll reach out with early access details and founding member perks.</p>`,
     }),
-    text: `You're on the Founder's Club waitlist${role ? ` as ${role}` : ''}. What happens next: I'll reach out with early access details and founding member perks before the public beta opens. — Ryan`,
+    text: `You're on the Founder's Club waitlist${role ? ` as ${role}` : ''}. What happens next: I'll reach out with early access details and founding member perks. — Ryan`,
     // Merge vars exposed for the next Welcome Experience revision. Defaults
     // pre-applied — template author can reference these directly without
     // a Liquid fallback pipe.
@@ -141,9 +141,9 @@ export function explorerSurveyConfirmation(body) {
       heading: 'Thanks for taking the time',
       body: `${greeting(body.name)}
 <p style="margin:0 0 12px 0;">Your explorer survey is in. Real explorer input is what keeps the product honest — every answer here shapes what we build first.</p>
-<p style="margin:0 0 12px 0;color:#555;">What happens next: founding explorer details will come your way before public beta.</p>`,
+<p style="margin:0 0 12px 0;color:#555;">What happens next: founding explorer details will come your way.</p>`,
     }),
-    text: `Your explorer survey is in. Real explorer input keeps the product honest — every answer shapes what we build first. What happens next: founding explorer details will come before public beta. — Ryan`,
+    text: `Your explorer survey is in. Real explorer input keeps the product honest — every answer shapes what we build first. What happens next: founding explorer details will come your way. — Ryan`,
   };
 }
 
