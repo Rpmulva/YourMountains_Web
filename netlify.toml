@@ -22,6 +22,22 @@
   [headers.values]
     Content-Type = "application/json"
 
+# OAuth return carries a code in the query. Block Netlify RUM and any other
+# external script from running or connecting. Static file still wins the route.
+[[headers]]
+  for = "/calendar-oauth"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src 'none'; img-src 'none'; frame-src 'none'; form-action 'none'"
+    Referrer-Policy = "no-referrer"
+    X-Robots-Tag = "noindex"
+
+[[headers]]
+  for = "/calendar-oauth.html"
+  [headers.values]
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src 'none'; img-src 'none'; frame-src 'none'; form-action 'none'"
+    Referrer-Policy = "no-referrer"
+    X-Robots-Tag = "noindex"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
