@@ -11,6 +11,12 @@
 [functions]
   directory = "netlify/functions"
 
+# Extensionless aasa must be JSON for swcd. No redirect on this path.
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type = "application/json"
+
 # OAuth return carries a code in the query. Block Netlify RUM and any other
 # external script from running or connecting. Static file still wins the route.
 [[headers]]
