@@ -5,8 +5,12 @@
       {
         "appIDs": ["4T7DNH2633.com.yourmountains.outdoor"],
         "appID": "4T7DNH2633.com.yourmountains.outdoor",
-        "paths": ["*"],
+        "paths": ["NOT /calendar-oauth*", "*"],
         "components": [
+          {
+            "/": "/calendar-oauth*",
+            "exclude": true
+          },
           {
             "/": "/*",
             "comment": "Match all paths for Universal Link routing"
