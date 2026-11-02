@@ -42,6 +42,9 @@
     return;
   }
 
+  // G81 — not a calendar-oauth link, so the app's open sign-in resolves as
+  // dismissed (no false "Sign-in expired") and Calendar reloads on focus.
+  document.getElementById('return-app').href = 'yourmountains://profile/calendar';
   var message = document.querySelector('p');
   var params = new URLSearchParams(location.search);
   var code = params.get('code');
