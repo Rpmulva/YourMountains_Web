@@ -33,6 +33,51 @@
 <p>Returning to YourMountains…</p>
 <p><a id="return-app" href="yourmountains://calendar-oauth">Return to YourMountains</a></p>
 <script>
-  document.getElementById('return-app').href = 'yourmountains://calendar-oauth' + location.search;
-  location.replace('yourmountains://calendar-oauth' + location.search);
+(function () {
+  // G78 — Android finishes the connection here, on the server. The app link
+  // carries no code or state, so the app never calls complete_oauth.
+  if (navigator.userAgent.indexOf('Android') === -1) {
+    document.getElementById('return-app').href = 'yourmountains://calendar-oauth' + location.search;
+    location.replace('yourmountains://calendar-oauth' + location.search);
+    return;
+  }
+
+  var message = document.querySelector('p');
+  var params = new URLSearchParams(location.search);
+  var code = params.get('code');
+  var state = params.get('state');
+  var oauthError = params.get('error');
+  history.replaceState(null, '', location.pathname);
+
+  if (oauthError || !code || !state) {
+    message.textContent = 'Calendar not connected.';
+    return;
+  }
+
+  message.textContent = 'Connecting your calendar…';
+  fetch('https://sbjaqhsexlwqfowckddk.supabase.co/functions/v1/calendar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'complete_oauth_return', code: code, state: state }),
+    credentials: 'omit'
+  })
+    .then(function (res) {
+      return res.json().then(
+        function (data) { return { ok: res.ok, data: data || {} }; },
+        function () { return { ok: false, data: {} }; }
+      );
+    })
+    .then(function (out) {
+      if (out.ok && out.data.ok === true) {
+        message.textContent = 'Google Calendar connected';
+      } else if (out.data.error === 'state_expired') {
+        message.textContent = 'That link expired. Go back to YourMountains and tap Connect again.';
+      } else {
+        message.textContent = "We couldn't finish connecting your calendar. Go back to YourMountains and try again.";
+      }
+    })
+    .catch(function () {
+      message.textContent = "We couldn't finish connecting your calendar. Go back to YourMountains and try again.";
+    });
+})();
 </script>

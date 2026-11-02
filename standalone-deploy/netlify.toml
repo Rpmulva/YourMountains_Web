@@ -22,14 +22,14 @@
 [[headers]]
   for = "/calendar-oauth"
   [headers.values]
-    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src 'none'; img-src 'none'; frame-src 'none'; form-action 'none'"
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src https://sbjaqhsexlwqfowckddk.supabase.co; img-src 'none'; frame-src 'none'; form-action 'none'"
     Referrer-Policy = "no-referrer"
     X-Robots-Tag = "noindex"
 
 [[headers]]
   for = "/calendar-oauth.html"
   [headers.values]
-    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src 'none'; img-src 'none'; frame-src 'none'; form-action 'none'"
+    Content-Security-Policy = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; base-uri 'none'; connect-src https://sbjaqhsexlwqfowckddk.supabase.co; img-src 'none'; frame-src 'none'; form-action 'none'"
     Referrer-Policy = "no-referrer"
     X-Robots-Tag = "noindex"
 
