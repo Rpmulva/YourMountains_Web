@@ -1,12 +1,6 @@
--- K175. Stamp every existing row before the trigger exists so none of them are emailed.
--- The webhook header is read from Vault when a member is inserted. A missing secret
--- or a failed call warns and still lets the signup finish.
-
-alter table public.members add column if not exists welcome_sent_at timestamptz;
-
-update public.members
-set welcome_sent_at = created_at
-where welcome_sent_at is null;
+-- K175. A new website member is handed to the app project's welcome sender.
+-- The shared ledger there stops a second welcome. A missing secret or a failed
+-- call warns and still lets the signup finish.
 
 create extension if not exists pg_net with schema extensions;
 
@@ -27,16 +21,16 @@ begin
     limit 1;
 
     if webhook_secret is null or webhook_secret = '' then
-      raise warning 'k175: vault secret ym_webhook_secret is not set; welcome email not queued for %', new.id;
+      raise warning 'k175: vault secret ym_webhook_secret is not set; welcome handoff not queued for %', new.id;
       return new;
     end if;
 
     perform net.http_post(
-      url => 'https://jeukkkxmamedvubookiw.supabase.co/functions/v1/send-founders-welcome',
+      url => 'https://sbjaqhsexlwqfowckddk.supabase.co/functions/v1/send-welcome-emails',
       body => jsonb_build_object(
-        'type', 'INSERT',
-        'table', 'members',
-        'record', to_jsonb(new)
+        'source', 'website',
+        'email', new.email,
+        'member_id', new.id
       ),
       headers => jsonb_build_object(
         'Content-Type', 'application/json',
@@ -46,7 +40,7 @@ begin
     );
   exception
     when others then
-      raise warning 'k175: welcome webhook failed for %: %', new.id, sqlerrm;
+      raise warning 'k175: welcome handoff failed for %: %', new.id, sqlerrm;
   end;
 
   return new;
